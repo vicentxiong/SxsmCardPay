@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/key_one"
+            android:background="@drawable/key_selector"
+            android:textColor="@color/fontcolor"
+            android:textSize="50dp"
+            android:id="@+id/key_one_button" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/key_two"
+            android:background="@drawable/key_selector"
+            android:textColor="@color/fontcolor"
+            android:textSize="50dp"
+            android:id="@+id/key_two_button" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/key_three"
+            android:background="@drawable/key_selector"
+            android:textColor="@color/fontcolor"
+            android:textSize="50dp"
+            android:id="@+id/key_three_button" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/key_four"
+            android:background="@drawable/key_selector"
+            android:textColor="@color/fontcolor"
+            android:textSize="50dp"
+            android:id="@+id/key_four_button" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/key_five"
+            android:background="@drawable/key_selector"
+            android:textColor="@color/fontcolor"
+            android:textSize="50dp"
+            android:id="@+id/key_five_button" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/key_six"
+            android:background="@drawable/key_selector"
+            android:textColor="@color/fontcolor"
+            android:textSize="50dp"
+            android:id="@+id/key_six_button" />
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/key_seven"
+            android:background="@drawable/key_selector"
+            android:textColor="@color/fontcolor"
+            android:textSize="50dp"
+            android:id="@+id/key_seven_button" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/key_eight"
+            android:background="@drawable/key_selector"
+            android:textColor="@color/fontcolor"
+            android:textSize="50dp"
+            android:id="@+id/key_eight_button" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/key_nine"
+            android:background="@drawable/key_selector"
+            android:textColor="@color/fontcolor"
+            android:textSize="50dp"
+            android:id="@+id/key_nine_button" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/key_point_fork_press"
+            android:textColor="@color/fontcolor"
+            android:src="@drawable/key_point"
+            android:id="@+id/key_point_button"  />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/key_zero"
+            android:background="@drawable/key_selector"
+            android:textColor="@color/fontcolor"
+            android:textSize="50dp"
+            android:id="@+id/key_zero_button"  />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/key_point_fork_press"
+            android:textColor="@color/fontcolor"
+            android:src="@drawable/key_fork"
+            android:id="@+id/key_fork_button" />
+
+    </LinearLayout>
+</LinearLayout>

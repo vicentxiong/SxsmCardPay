@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="code01">交易失败，请联系发卡行</string>
+    <string name="code02">交易失败，请联系发卡行</string>
+    <string name="code03">商户未登记</string>
+    <string name="code04">没收卡，请联系收单行</string>
+    <string name="code05">交易失败，请联系发卡行</string>
+    <string name="code06">交易失败，请联系发卡行</string>
+    <string name="code07">没收卡，请联系收单行</string>
+    <string name="code09">交易失败，请重试</string>
+    <string name="code12">交易失败，请重试</string>
+    <string name="code13">交易金额超限，请重试</string>
+    <string name="code14">无效卡号，请联系发卡行</string>
+    <string name="code15">交易不存在</string>
+    <string name="code19">交易失败，请联系发卡行</string>
+    <string name="code20">交易失败，请联系发卡行</string>
+    <string name="code21">交易失败，请联系发卡行</string>
+    <string name="code22">操作有误，请重试</string>
+    <string name="code23">签退后重新签订</string>
+    <string name="code25">交易失败，请联系发卡行</string>
+    <string name="code30">交易失败，请重试</string>
+    <string name="code33">过期卡，请联系发卡行</string>
+    <string name="code34">没收卡，请联系收单行</string>
+    <string name="code35">没收卡，请联系收单行</string>
+    <string name="code36">此卡有误，请换卡重试</string>
+    <string name="code37">没收卡，请联系收单行</string>
+    <string name="code38">密码错误次数超限</string>
+
+    <string name="code40">交易失败，请联系发卡行</string>
+    <string name="code41">没收卡，请联系收单行</string>
+    <string name="code42">帐户已开通，无需再次开通</string>
+    <string name="code43">没收卡，请联系收单行</string>
+
+    <string name="code51">余额不足，请查询</string>
+    <string name="code52">交易失败，请联系发卡行</string>
+    <string name="code53">交易失败，请联系发卡行</string>
+    <string name="code54">过期卡，请联系发卡行</string>
+    <string name="code55">密码错，请重试</string>
+    <string name="code56">交易失败，请联系发卡行</string>
+    <string name="code57">交易失败，请联系发卡行</string>
+    <string name="code58">终端无效，请联系收单行或银联</string>
+    <string name="code59">交易失败，请联系发卡行</string>
+    <string name="code60">交易失败，请联系发卡行</string>
+    <string name="code61">金额太大</string>
+    <string name="code62">交易失败，请联系发卡行</string>
+    <string name="code63">交易失败，请联系发卡行</string>
+    <string name="code64">交易失败，请联系发卡行</string>
+    <string name="code65">超出取款次数限制</string>
+    <string name="code66">交易失败，请联系收单行或银联</string>
+    <string name="code67">没收卡</string>
+    <string name="code68">交易超时，请重试</string>
+    <string name="code75">密码错误次数超限，卡已被锁</string>
+    <string name="code77">请向网络中心签到</string>
+    <string name="code79">终端重传交易数据</string>
+
+    <string name="code81">请先关闭自行车租赁功能</string>
+    <string name="code82">无此客户信息</string>
+    <string name="code83">联机帐户不存在</string>
+    <string name="code84">与卡中心联系</string>
+    <string name="code85">与卡中心联系</string>
+    <string name="code86">已挂失，无需挂失</string>
+    <string name="code87">已被锁定卡片</string>
+    <string name="code88">可能是自行车租赁退资申请未通过，查询退资申请状态</string>
+
+    <string name="code90">交易失败，请稍后重试</string>
+    <string name="code91">交易失败，请稍后重试</string>
+    <string name="code92">交易失败，请稍后重试</string>
+    <string name="code93">交易失败，请联系发卡行</string>
+    <string name="code94">交易失败，请稍后重试</string>
+    <string name="code95">交易失败，请稍后重试</string>
+    <string name="code96">交易失败，请稍后重试</string>
+    <string name="code97">终端未登记，请联系收单行或银联</string>
+    <string name="code98">交易超时，请重试</string>
+    <string name="code99">校验错，请重新签到</string>
+    <string name="codeA0">校验错，请重新签到</string>
+
+
+</resources>

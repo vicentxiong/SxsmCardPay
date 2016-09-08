@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="30dp"
+        android:textSize="25dp"
+        android:text="@string/cardnum_text"
+        android:id="@+id/cardnum" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="30dp"
+        android:textSize="25dp"
+        android:visibility="invisible"
+        android:text="@string/consumption_amount"
+        android:id="@+id/consumption_amount_textView" />
+    <EditText
+        android:id="@+id/cardpassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/prompt_password"
+        android:imeOptions="actionUnspecified"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:focusable="false"
+        android:textSize="20dp"
+        android:layout_marginTop="25dp"
+        android:gravity="center"
+        android:background="@drawable/editbackground"/>
+
+    <Button
+        android:layout_width="320dp"
+        android:layout_height="60dp"
+        android:text="@string/confirm_cardpwd"
+        android:id="@+id/confirm_cardpwd"
+        android:layout_gravity="center_horizontal"
+        android:textSize="25dp"
+        android:layout_marginTop="27dp"
+        android:textStyle="bold"
+        android:textColor="@color/fontcolor"
+        android:background="@drawable/button_press"/>
+  <include
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="12dp"
+      layout="@layout/input_num"
+      />
+
+
+
+</LinearLayout>

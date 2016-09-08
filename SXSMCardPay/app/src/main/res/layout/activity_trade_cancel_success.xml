@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/trade_cancel_success"
+        android:layout_marginTop="40dp"
+        android:textSize="40dp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tradenum"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="40dp"
+        android:id="@+id/trade_num_tradecancel_success"
+        android:textSize="25dp"
+
+        />
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:textColor="@color/fontcolor"
+        android:textStyle="bold"
+        android:text="@string/confirm"
+        android:textSize="30dp"
+        android:background="@drawable/button_press"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/confirm_button"/>
+</LinearLayout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="socket_timeout" >30000</integer>
+    <integer name="socket_port">55555</integer>
+    <string name="socket_address">192.168.1.122</string>
+    <string name="db_name">POS_DATABASE</string>
+    <integer name="db_version">1</integer>
+    <integer name="threadpool_count">5</integer>
+    <string name="ftp_addresss"></string>
+    <string name="ftp_user"></string>
+    <string name="ftp_passwd"></string>
+    <integer name="ftp_port">21</integer>
+    <integer name="request_retry">2</integer>
+    <string-array name="db_tables">
+        <item>com.mwdev.sxsmcardpay.database.TranslationRecord</item>
+        <item>com.mwdev.sxsmcardpay.database.Flushes</item>
+    </string-array>
+    <integer name="welcome_timeout">3000</integer>
+    <integer name="respone_timeout">30000</integer>
+</resources>

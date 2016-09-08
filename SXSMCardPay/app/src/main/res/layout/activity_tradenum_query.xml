@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/trade_num_text"
+        android:layout_marginTop="50dp"
+        android:inputType="text"
+        android:maxLines="1"
+        android:focusable="false"
+        android:textSize="20dp"
+        android:id="@+id/input_tradenum"
+        android:singleLine="true"
+        android:gravity="center"
+        android:background="@drawable/login_input_background"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/bacthnum"
+        android:layout_marginTop="10dp"
+        android:inputType="text"
+        android:focusable="false"
+        android:maxLines="1"
+        android:textSize="20dp"
+        android:id="@+id/input_batchnum"
+        android:singleLine="true"
+        android:gravity="center"
+        android:background="@drawable/login_input_background"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/referencenum"
+        android:layout_marginTop="10dp"
+        android:inputType="text"
+        android:maxLines="1"
+        android:focusable="false"
+        android:textSize="20dp"
+        android:id="@+id/input_referencenum"
+        android:singleLine="true"
+        android:gravity="center"
+        android:background="@drawable/login_input_background"/>
+
+    <Button
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="bold"
+        android:textColor="@color/fontcolor"
+        android:layout_marginTop="40dp"
+        android:text="@string/scan"
+        android:textSize="25dp"
+        android:id="@+id/scan"
+        android:background="@drawable/button_press"/>
+
+    <Button
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="bold"
+        android:textColor="@color/fontcolor"
+        android:layout_marginTop="40dp"
+        android:text="@string/next"
+        android:textSize="25dp"
+        android:id="@+id/tradenum_next"
+        android:background="@drawable/button_press"/>
+
+</LinearLayout>

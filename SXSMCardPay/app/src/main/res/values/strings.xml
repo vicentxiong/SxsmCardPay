@@ -1,0 +1,97 @@
+<resources>
+    <string name="app_name">市民卡支付</string>
+    <string name="printing">正在打印中...</string>
+    <!-- Strings related to login -->
+    <string name="prompt_cropname">商户名</string>
+    <string name="prompt_password">密码</string>
+    <string name="action_sign_in">登 录</string>
+
+    <string name="save_passwd">记住密码</string>
+    <string name="actionbar_login">登录</string>
+    <string name="actoinbar_mainmenu">商机联机支付</string>
+    <string name="save_checkbox_status_key">checkboxKey</string>
+    <string name="save_cropname_key">cropNameKey</string>
+    <string name="save_passwd_key">passwdKey</string>
+    <string name="cardnum_text">卡号：</string>
+    <string name="confirm_cardpwd">确认密码</string>
+    <string name="key_one">1</string>
+    <string name="key_two">2</string>
+    <string name="key_three">3</string>
+    <string name="key_four">4</string>
+    <string name="key_five">5</string>
+    <string name="key_six">6</string>
+    <string name="key_seven">7</string>
+    <string name="key_eight">8</string>
+    <string name="key_nine">9</string>
+    <string name="key_zero">0</string>
+    <string name="readcard_prompt_title">请按以下方式读卡</string>
+    <string name="read_card">刷卡</string>
+    <string name="readcard_prompt">请在非接触指示处读卡</string>
+    <string name="query_success">查询成功</string>
+    <string name="Available_balance">可用余额：</string>
+    <string name="yuan">元</string>
+    <string name="back">返回</string>
+    <string name="query_balance">查询余额</string>
+    <string name="query_error">查询失败</string>
+    <string name="network_error">网络连接异常，请检查网络！</string>
+    <string name="mac_error">MAC校验错误</string>
+    <string name="business_error">业务异常</string>
+    <string name="merchants_num">商户号：</string>
+    <string name="confirm_amount">确认金额</string>
+    <string name="consumption_amount">消费金额：</string>
+    <string name="trade_num">交易号：</string>
+    <string name="trade_num_text">交易单号</string>
+    <string name="sign_print">签字并打印小票</string>
+    <string name="trade_success">交易成功</string>
+    <string name="clean">清空</string>
+    <string name="confirm">确认</string>
+    <string name="operator_num">操作员号</string>
+    <string name="next">下一步</string>
+    <string name="query">查询</string>
+    <string name="tradenum">交易单号：</string>
+    <string name="trade_time">交易时间：</string>
+    <string name="trade_cardnum">消费卡号：</string>
+    <string name="trade_cancel_success">撤销成功</string>
+    <string name="trade_cancel_error">撤销失败</string>
+    <string name="return_goods_success">退货成功</string>
+    <string name="return_goods_error">退货失败</string>
+    <string name="tradenum_query_success">交易号查询成功</string>
+
+    <string name="please_input_card_pw">请输入密码</string>
+    <string name="passwd_length_error">密码长度不足6位，请检查</string>
+
+    <string name="network_disconnected">网络断开连接</string>
+    <string name="network_connected">网络已连接</string>
+    <string name="please_input_amount">请输入消费金额</string>
+    <string name="error_mac">MAC校验失败，请重试</string>
+    <string name="data_error">数据错误</string>
+    <string name="cardnum_error">卡号异常，请重新读卡</string>
+    <string name="signatrue_title">请签字</string>
+    <string name="checkout_dialog_message">是否签退</string>
+    <string name="checkout_dialog_confirm">确定</string>
+    <string name="checkout_dialog_cancel">取消</string>
+    <string name="checkout_dialog_statement">正在结算中...</string>
+    <string name="pos_center_connect_fail">连接后台失败</string>
+    <string name="pos_center_respone_timeout">响应超时</string>
+    <string name="mac_auth_fail">MAC校验失败</string>
+    <string name="settlement_fail">结算不平,上送对账文件</string>
+    <string name="msg_camera_framework_bug">Sorry, the Android camera encountered a problem. You may need to restart the device.</string>
+    <string name="button_ok">OK</string>
+    <string name="viewfinderview_status_text1">将二维码/条码放入取景框内</string>
+    <string name="viewfinderview_status_text2">即可自动扫描</string>
+
+    <string name="please_input_return_amount">请输入退货金额</string>
+    <string name="length_error">长度超标</string>
+    <string name="precision_error">精度超标</string>
+    <string name="return_goods">退货</string>
+    <string name="trade_cancel">消费撤销</string>
+    <string name="length_error_please_input_6bit_num">长度错误，请输入6位数密码</string>
+    <string name="please_input">请输入</string>
+    <string name="retrurn_goods_amount">退货金额：</string>
+    <string name="impact_now">交易失败，正在冲正，请稍后......</string>
+    <string name="checkIn_again">pos中心MAC校验失败，请重新签到......</string>
+    <string name="impact_success">冲正成功！</string>
+    <string name="Mac_impact">pos机MAC校验失败，交易失败，正在冲正......</string>
+    <string name="ResponeTimeOut_impact">响应超时，交易失败，正在冲正......</string>
+
+</resources>

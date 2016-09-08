@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/sign_background1"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:id="@+id/sign_Line"
+        android:layout_alignParentBottom="true"
+
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="15dp"
+            android:id="@+id/sign_clean_button"
+            android:background="@drawable/sign_clean_press"
+            android:text="@string/clean"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/sign_ok_press"
+            android:textStyle="bold"
+            android:textColor="@color/fontcolor"
+            android:id="@+id/sign_confirm_button"
+            android:text="@string/confirm"/>
+
+    </LinearLayout>
+
+    <android.gesture.GestureOverlayView
+        android:id="@+id/gov"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/sign_Line"
+        android:fadeEnabled="false"
+        android:gestureColor="@color/signatruecolor"
+
+        android:gestureStrokeAngleThreshold="0.1"
+        android:gestureStrokeLengthThreshold="0.1"
+        android:gestureStrokeSquarenessThreshold="0.1"
+        android:gestureStrokeType="multiple" >
+
+
+    </android.gesture.GestureOverlayView>
+
+
+</RelativeLayout>
