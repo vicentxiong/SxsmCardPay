@@ -66,6 +66,10 @@ public class PosApplication extends TAApplication{
 
     }
 
+    public SocketClient getSocketClient(){
+        return mSocketClient;
+    }
+
     public void exitApplication(){
         PosLog.stopFileLoger();
         mExecutor.shutdownNow();
@@ -120,7 +124,7 @@ public class PosApplication extends TAApplication{
             super.onConnect(type);
             Toast.makeText(getApplicationContext(),
                     getResources().getString(R.string.network_connected), Toast.LENGTH_LONG).show();
-            mSocketClient.getFilter().postDBFlushesTask();
+
             if(l!=null)
                 l.onNetworkStatus(true);
         }
@@ -169,7 +173,8 @@ public class PosApplication extends TAApplication{
      * @return
      */
     public String getCropNum(){
-        return getConfig(PosApplication.PREFERENCECONFIG).getString("cropNameKey", "");
+        //return getConfig(PosApplication.PREFERENCECONFIG).getString("cropNameKey", "");
+        return "330600000000001";
     }
 
     public int getStringIdByCode(int r){

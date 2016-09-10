@@ -94,5 +94,7 @@
     <string name="Mac_impact">pos机MAC校验失败，交易失败，正在冲正......</string>
     <string name="ResponeTimeOut_impact">响应超时，交易失败，正在冲正......</string>
     <string name="checkin_fail">签到失败，请重试</string>
+    <string name="db_flushes">发现遗留冲正数据，正在冲正......</string>
+    <string name="flushes_respone_timeout">冲正响应超时</string>
 
 </resources>

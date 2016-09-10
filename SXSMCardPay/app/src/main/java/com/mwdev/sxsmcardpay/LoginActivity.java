@@ -133,7 +133,6 @@ public class LoginActivity extends SxRequestActivity{
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LoginActivity.this,"login",Toast.LENGTH_LONG).show();
                 setDiglogText(getResources().getString(R.string.checkin_now));
                 LoginActivity.this.showProgressDiglog();
                 sendRequest(myIso8583Mgr.checkIn(myPosApplication.getPsamID(),mCropName.getText().toString().trim()),"0800","000000");

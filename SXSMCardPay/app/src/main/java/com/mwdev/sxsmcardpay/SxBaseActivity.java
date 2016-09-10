@@ -3,6 +3,7 @@ package com.mwdev.sxsmcardpay;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,13 +17,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.basewin.aidl.OnPrinterListener;
+import com.basewin.services.ServiceManager;
 import com.mwdev.sxsmcardpay.util.PosLog;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by xiongxin on 16-8-18.
  * 作为所有Activity的基类
  */
-public abstract class SxBaseActivity extends Activity {
+public abstract class SxBaseActivity extends Activity implements PosApplication.PosNetworkStatusListener{
     private static final int SHOWPROGRESSBAR = 0;
     private static final int DISMISSPROGRESSBAR = 1;
     private static final int TOAST_KEY = 2;
@@ -31,10 +38,12 @@ public abstract class SxBaseActivity extends Activity {
     private TextView mTitle;
 
     private WindowManager mWinMgr;
+    private PosApplication mPosApp;
     WindowManager.LayoutParams mWindowLayoutParams;
     private View mProgress;
     private TextView mAttention;
     private boolean showProgress=false;
+    private boolean isPrinterList;
     private Handler mhandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -52,6 +61,25 @@ public abstract class SxBaseActivity extends Activity {
         }
     };
 
+    private OnPrinterListener mPrinterListener = new OnPrinterListener() {
+        @Override
+        public void onError(int i, String s) {
+            dismissProgressDiglog();
+            Toast.makeText(getApplicationContext(),s,Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onFinish() {
+            dismissProgressDiglog();
+        }
+
+        @Override
+        public void onStart() {
+            setDiglogText(getResources().getString(R.string.printing));
+            showProgressDiglog();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +87,9 @@ public abstract class SxBaseActivity extends Activity {
         mProgress = LayoutInflater.from(getApplication()).inflate(R.layout.diglog_progressbar_view, null, false);
         mAttention = (TextView) mProgress.findViewById(R.id.attention);
         initProgress();
+        mPosApp = (PosApplication) getApplication();
+        mPosApp.addNetworkStatusListener(this);
+        isPrinterList = getResources().getInteger(R.integer.pos_malfuntion_list)==1;
     }
 
     @Override
@@ -236,5 +267,103 @@ public abstract class SxBaseActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    public void onNetworkStatus(boolean connect) {
+        if(connect){
+            mPosApp.getSocketClient().getFilter().postDBFlushesTask(this);
+        }
+    }
 
+    public void DBFlushesStart(){
+        setAcitvityTitle(getResources().getString(R.string.db_flushes));
+        showProgressDiglog();
+    }
+
+    public void DBFlushesStop(int resId){
+        dismissProgressDiglog();
+        onHanderToast(resId);
+        if(resId==R.string.flushes_respone_timeout){
+            printerMalFuctoinList();
+        }
+    }
+
+    protected void printerMalFuctoinList(){
+        if(isPrinterList){
+            printer();
+        }
+    }
+
+    private void printer(){
+        try {
+            JSONObject printJson = new JSONObject();
+            //ServiceManager.getInstence().getPrinter().setPrintGray(2000);
+            ServiceManager.getInstence().getPrinter().setLineSpace(16);
+            try {
+                // 組打印json字符串
+                JSONArray printContext = new JSONArray();
+                //开头
+                JSONObject start = new JSONObject();
+                start.put("content-type", "txt");
+                start.put("content", "*********************");
+                start.put("size", "3");
+                start.put("position", "left");
+                start.put("offset", "0");
+                start.put("bold", "0");
+                start.put("italic", "0");
+                start.put("height", "-1");
+
+                // 小票
+                JSONObject ticket = new JSONObject();
+                ticket.put("content-type", "txt");
+                ticket.put("content", "故障报告单");
+                ticket.put("size", "3");
+                ticket.put("position", "center");
+                ticket.put("offset", "0");
+                ticket.put("bold", "0");
+                ticket.put("italic", "0");
+                ticket.put("height", "-1");
+                // 人工处理
+                JSONObject actoin = new JSONObject();
+                actoin.put("content-type", "txt");
+                actoin.put("content", "冲正不成功，请人工处理");
+                actoin.put("size", "2");
+                actoin.put("position", "left");
+                actoin.put("offset", "0");
+                actoin.put("bold", "0");
+                actoin.put("italic", "0");
+                actoin.put("height", "-1");
+
+                //结束
+                JSONObject end = new JSONObject();
+                end.put("content-type", "txt");
+                end.put("content", "*********************");
+                end.put("size", "3");
+                end.put("position", "left");
+                end.put("offset", "0");
+                end.put("bold", "0");
+                end.put("italic", "0");
+                end.put("height", "-1");
+
+
+
+                printContext.put(start);
+                printContext.put(ticket);
+                printContext.put(actoin);
+                printContext.put(end);
+                printJson.put("spos", printContext);
+                // 设置底部空3行
+                // Set at the bottom of the empty 3 rows
+                //ServiceManager.getInstence().getPrinter().printBottomFeedLine(3);
+
+                ServiceManager.getInstence().getPrinter().print(printJson.toString(), null, mPrinterListener);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
 }

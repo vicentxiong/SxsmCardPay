@@ -1,10 +1,13 @@
 package com.mwdev.sxsmcardpay.controler;
 
+import android.app.Activity;
 import android.widget.TextView;
 
 import com.basewin.services.PinpadBinder;
 import com.basewin.services.ServiceManager;
 import com.mwdev.sxsmcardpay.PosApplication;
+import com.mwdev.sxsmcardpay.R;
+import com.mwdev.sxsmcardpay.SxBaseActivity;
 import com.mwdev.sxsmcardpay.database.Flushes;
 import com.mwdev.sxsmcardpay.database.PosDataBaseFactory;
 import com.mwdev.sxsmcardpay.database.TranslationRecord;
@@ -48,6 +51,7 @@ public class MessageFilter {
     private HashMap<String,Flushes> allFlushes = new HashMap<String,Flushes>();
     private ArrayList<Flushes> tempTrade = new ArrayList<Flushes>();
     private PosApplication mPosApp;
+    private SxBaseActivity mActivity;
 
     public MessageFilter(PosApplication application){
         mPosApp = application;
@@ -203,13 +207,15 @@ public class MessageFilter {
                         new FlushesResponeTsk(util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("11")))
                 );
             }
-
+            handlerByActivity(R.string.impact_success);
             return IMPACT_FILTER;
         }else{
             /**
              * TODO
              */
-            return Integer.parseInt(responeCode,16);
+            int r = Integer.parseInt(responeCode,16);
+            handlerByActivity(mPosApp.getStringIdByCode(r));
+            return r;
         }
     }
 
@@ -245,13 +251,15 @@ public class MessageFilter {
                         new FlushesResponeTsk(util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("11")))
                 );
             }
-
+            handlerByActivity(R.string.impact_success);
             return IMPACT_FILTER;
         }else{
             /**
              * TODO
              */
-            return Integer.parseInt(responeCode,16);
+            int r = Integer.parseInt(responeCode,16);
+            handlerByActivity(mPosApp.getStringIdByCode(r));
+            return r;
         }
     }
 
@@ -284,12 +292,24 @@ public class MessageFilter {
             if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
                 return POS_MAC_ERROR_FILTER;
             }
-            mPosApp.startUpConnectAndSend(mPosApp.getmIso8583Mgr().checkOut(mPosApp.getPsamID(),mPosApp.getCropNum()),"0820","000000");
+            mPosApp.startUpConnectAndSend(mPosApp.getmIso8583Mgr().checkOut(mPosApp.getPsamID(), mPosApp.getCropNum()), "0820", "000000");
             return INTERCEPT_FILTER;
         }else{
             return Integer.parseInt(responeCode,16);
         }
 
+    }
+
+    /**
+     *
+     * 冲正响应结果输出到终端
+     * @param resource
+     */
+    public void handlerByActivity(int resource){
+        if(mActivity!=null){
+            mActivity.DBFlushesStop(resource);
+            mActivity = null;
+        }
     }
 
     /**
@@ -439,7 +459,8 @@ public class MessageFilter {
         mPosApp.getThreadPoolExecutor().execute(new FlushesRequestTask(reason));
     }
 
-    public void postDBFlushesTask(){
+    public void postDBFlushesTask(SxBaseActivity at){
+        mActivity = at;
         mPosApp.getThreadPoolExecutor().execute(new DBFlushesRequestTask());
     }
 
@@ -507,6 +528,9 @@ public class MessageFilter {
             allFlushes.put(list.get(i).getTradeNUm(),list.get(i));
         }
 
+        if(n>0 && mActivity!=null){
+            mActivity.DBFlushesStart();
+        }
     }
 
     public void clearFlushesMessage(String tradenumber){

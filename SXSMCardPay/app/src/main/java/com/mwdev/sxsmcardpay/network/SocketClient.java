@@ -114,7 +114,7 @@ public class SocketClient{
             if(count == retyrCount){
                 if(msgType.equals(mFilter.TRADE_IMPACT_REQUEST_TYPE) || msgType.equals(mFilter.TRADE_CANCEL_IMPACT_REQUEST_TYPE)){
                     messageCallback.onResponeTimeout(msgType);
-
+                    mFilter.handlerByActivity(R.string.flushes_respone_timeout);
                 }else if(msgType.equals(mFilter.TRADE_REQUEST_TYPE) || msgType.equals(mFilter.TRADE_CANCEL_REQUEST_TYPE)){
                     mFilter.postFlushesTask("98");
                     messageCallback.onResponeTimeout(msgType);
