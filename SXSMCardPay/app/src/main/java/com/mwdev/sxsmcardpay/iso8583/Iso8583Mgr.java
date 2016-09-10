@@ -76,7 +76,7 @@ public class Iso8583Mgr {
 		this.manager_unpackData = manager_unpackData;
 	}
 
-	/*
+	/**
 	 * 封包
 	 */
 	public byte[] packData(Map<String, String> sourceMap, boolean needMac)
@@ -146,7 +146,7 @@ public class Iso8583Mgr {
 
 	}
 
-	/*
+	/**
 	 * 封包添加报文长度、STX、ETX和校验码
 	 */
 	public byte[] addSTX_ETX(byte[] needunpack) {
@@ -198,7 +198,7 @@ public class Iso8583Mgr {
 
 	}
 
-	/*
+	/**
 	 * 解包前处理
 	 */
 	public byte[] before_unpackData(byte[] needunpack) {
@@ -232,7 +232,7 @@ public class Iso8583Mgr {
 
 	}
 
-	/*
+	/**
 	 * 解包
 	 */
 	public int unpackData(byte[] needunpack) {
@@ -400,7 +400,7 @@ public class Iso8583Mgr {
 	// 域42====>393131313131303030303030303031
 	// 域64-mac码====>0000000000000000
 
-	/*
+	/**
 	 * 签到报文 checkIn(String psamid, String merchantNum) String psamid 受卡机终端标识码
 	 * SAM卡ID为终端号 12位 S tring merchantNum 受卡方标识码 商户号 15位
 	 */
@@ -443,7 +443,7 @@ public class Iso8583Mgr {
 
 	}
 
-	/*
+	/**
 	 * 签退报文
 	 */
 	public byte[] checkOut(String psamid, String merchantNum) {
@@ -474,7 +474,7 @@ public class Iso8583Mgr {
 		return packdata;
 	}
 
-	/*
+	/**
 	 * 余额查询报文
 	 */
 	public byte[] balance_query(String psamId, String merchantNum,
@@ -516,7 +516,7 @@ public class Iso8583Mgr {
 		return packdata;
 	}
 
-	/*
+	/**
 	 * 消费报文
 	 */
 	public byte[] trade(String psamId, String merchantNum, String cardNum,
@@ -561,7 +561,7 @@ public class Iso8583Mgr {
 	// 06 其他情况引发的冲正
 	// original_tradeNum 原始交易流水号
 	// original_batchNum 原始批次号
-	/*
+	/**
 	 * 消费冲正
 	 */
 	public byte[] trade_impact(String impact_reason, String psamId,
@@ -614,7 +614,7 @@ public class Iso8583Mgr {
 	// original_batchNum 原始批次号
 	//
 
-	/*
+	/**
 	 * 消费撤销报文
 	 */
 	public byte[] trade_cancel(String psamId, String merchantNum,
@@ -663,7 +663,7 @@ public class Iso8583Mgr {
 
 	}
 
-	/*
+	/**
 	 * 消费撤销冲正
 	 */
 
@@ -707,7 +707,7 @@ public class Iso8583Mgr {
 	// operatorNum pos机操作员号
 	// operatorPassWord pos机操作员密码
 
-	/*
+	/**
 	 * 退货报文
 	 */
 	public byte[] Return_goods(String psamId, String merchantNum,
@@ -759,7 +759,7 @@ public class Iso8583Mgr {
 	// merchantNum 商户号
 	// operatorNum pos机操作员号
 
-	/*
+	/**
 	 * 批结算报文
 	 */
 	public byte[] batch_settlement(String total_consumption,
@@ -810,7 +810,7 @@ public class Iso8583Mgr {
 
 	}
 
-	/*
+	/**
 	 * 十进制数字符串转成非压缩BCD
 	 */
 
@@ -827,7 +827,7 @@ public class Iso8583Mgr {
 
 	}
 
-	/*
+	/**
 	 * 
 	 * 读取psam卡终端号
 	 */
@@ -909,7 +909,7 @@ public class Iso8583Mgr {
 
 	}
 
-	/*
+	/**
 	 * 读取ic卡主帐号
 	 */
 	public void readCardNum() {
@@ -948,11 +948,11 @@ public class Iso8583Mgr {
 										}
 
 										Log.i("qiuyi", "ic卡读二进制文件0015："
-												+ "00B0950C08");
+												+ "00B095001E");
 										try {
 											msm.getCard()
 													.transmitApduToCard(
-															util.HexStringToByteArray("00B0950C08"),
+															util.HexStringToByteArray("00B095001E"),
 															new OnApduCmdListener() {
 
 																@Override
@@ -970,7 +970,7 @@ public class Iso8583Mgr {
 																	String cardnum = util
 																			.byteArray2Hex(arg0.buffer);
 																	Log.i("qiuyi",
-																			"ic卡卡号===="
+																			"ox15文件数据===="
 																					+ cardnum);
 																	mycardnumif
 																			.onScuess(cardnum);
@@ -1023,7 +1023,128 @@ public class Iso8583Mgr {
 
 	}
 
+
+
 	/*
+	 * 读取0x05文件的数据
+	 */
+	public void readdata_05() {
+		final ServiceManager msm = ServiceManager.getInstence();
+		// TODO Auto-generated method stub
+		try {
+			msm.getCard().openCPUAndDetect(30000, new OnDetectListener() {
+
+				@Override
+				public void onSuccess(int arg0) {
+					// // TODO Auto-generated method stub
+					Log.i("qiuyi", "寻卡成功");
+					try {
+						msm.getCard().transmitApduToCard(
+								util.HexStringToByteArray("00A40000023F0000"),
+								new OnApduCmdListener() {
+
+									@Override
+									public void onSuccess(PosByteArray arg0,
+														  byte[] arg1) {
+										// TODO
+										// Auto-generated
+										// method stub
+										Log.i("qiuyi",
+												"选择3F00 success argo===="
+														+ arg0);
+										Log.i("qiuyi",
+												"选择3F00 success arg1===="
+														+ util.byteArray2Hex(arg1));
+
+										try {
+											Thread.sleep(100);
+										} catch (InterruptedException e1) {
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										}
+
+										Log.i("qiuyi", "ic卡读二进制文件0005："
+												+ "00B0850010");
+										try {
+											msm.getCard()
+													.transmitApduToCard(
+															util.HexStringToByteArray("00B0850010"),
+															new OnApduCmdListener() {
+
+																@Override
+																public void onSuccess(
+																		PosByteArray arg0,
+																		byte[] arg1) {
+																	// TODO
+																	// Auto-generated
+																	// method
+																	// stub
+																	Log.i("qiuyi",
+																			"ic卡读卡===="
+																					+ util.byteArray2Hex(arg1));
+
+																	String data_0x05 = util
+																			.byteArray2Hex(arg0.buffer);
+																	Log.i("qiuyi",
+																			"0x05文件里数据===="
+																					+ data_0x05);
+																	mycardnumif.ondata_05success(data_0x05);
+																	try {
+																		Thread.sleep(50);
+																	} catch (InterruptedException e) {
+																		e.printStackTrace();
+																	}
+																	readCardNum();
+
+																}
+
+																@Override
+																public void onError() {
+																	// TODO
+																	// Auto-generated
+																	// method
+																	// stub
+																	Log.i("qiuyi",
+																			"读二进制文件05失败");
+																}
+															});
+										} catch (Exception e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
+
+									}
+
+									@Override
+									public void onError() {
+										// TODO
+										// Auto-generated
+										// method stub
+										Log.i("qiuyi", "选择3F00文件失败");
+									}
+								});
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+
+				@Override
+				public void onError(int arg0, String arg1) {
+					// TODO Auto-generated method stub
+					Log.i("qiuyi", "IC卡寻卡失败      arg0===>" + arg0
+							+ "     arg1=======>" + arg1);
+				}
+			});
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
 	 * 二进制字符串转成十六进制的字符串
 	 */
 	public static String binaryString2hexString(String bString) {
@@ -1041,7 +1162,7 @@ public class Iso8583Mgr {
 		return tmp.toString();
 	}
 
-	/*
+	/**
 	 * 十六进制的字符串转成二进制字符串
 	 */
 

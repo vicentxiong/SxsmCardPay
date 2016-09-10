@@ -29,7 +29,8 @@ public class ReadCardActivity extends SxBaseActivity implements CardNumInterface
     //retrieve_referenceNum  检索参考号
     public final static String REFERENCENUM="retrieve_referenceNum";
     public final static String BATCH="batch";
-
+    public final static String CARDINFO="cardinfo";
+    String carddata;
 
 //    String input_amount;
     int type;
@@ -51,7 +52,8 @@ public class ReadCardActivity extends SxBaseActivity implements CardNumInterface
         @Override
         public void handleMessage(Message msg) {
             dismissProgressDiglog();
-            String cardnum= (String) msg.obj;
+            String data= (String) msg.obj;
+            String cardnum=data.substring(65,80);
             Log.i("qiuyi","type=======>"+type);
             switch (type){
                 case MainMenuActivity.BALANCE_QUERY:
@@ -126,14 +128,22 @@ public class ReadCardActivity extends SxBaseActivity implements CardNumInterface
 
     @Override
     public void onScuess(String cardnum) {
-        setDiglogText(getResources().getString(R.string.read_card_now));
-        showProgressDiglog();
+
         Log.i("qiuyi","cardnum=======>"+cardnum);
+        carddata+=cardnum;
+        Log.i("qiuyi","carddata=======>"+carddata);
         Message m=new Message();
-        m.obj=cardnum;
+        m.obj=carddata;
         handler.sendMessageDelayed(m,400);
 
 
+    }
+
+    @Override
+    public void ondata_05success(String data05) {
+        setDiglogText(getResources().getString(R.string.read_card_now));
+        showProgressDiglog();
+        carddata=data05;
     }
 
 }
