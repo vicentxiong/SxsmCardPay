@@ -18,6 +18,7 @@ import com.mwdev.sxsmcardpay.controler.FtpDataTranterCallBack;
 import com.mwdev.sxsmcardpay.controler.MessageFilter;
 import com.mwdev.sxsmcardpay.database.PosDataBaseFactory;
 import com.mwdev.sxsmcardpay.database.TranslationRecord;
+import com.mwdev.sxsmcardpay.util.PosLog;
 import com.ta.annotation.TAInjectResource;
 import com.ta.annotation.TAInjectView;
 import com.ta.util.config.TAIConfig;
@@ -54,7 +55,6 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
     public final static int TRADE_CANCEL=2;
     public final static int RETURN_GOODS=3;
     public final static String TYPE_KEY="type_key";
-    private PosApplication mPosApp;
 
     private Handler mH = new Handler(){
         @Override
@@ -67,7 +67,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainmenu_activity);
-        mPosApp = (PosApplication) getApplication();
+        myPosApplication = (PosApplication) getApplication();
         fileDialogroot = LayoutInflater.from(this).inflate(R.layout.fileupload_progressbar,null,false);
         mDataUploadBar = (ProgressBar) fileDialogroot.findViewById(R.id.progressBar);
     }
@@ -113,8 +113,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
         dismissProgressDiglog();
         switch (result){
             case -2:
-                Toast.makeText(getApplicationContext(),
-                        getResources().getString(R.string.mac_auth_fail),Toast.LENGTH_LONG).show();
+                onHanderToast(R.string.mac_auth_fail);
                 break;
             case 0x79:
                 startFtpFileUpload();
@@ -125,21 +124,19 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
     @Override
     protected void doConnectFail() {
         dismissProgressDiglog();
-        Toast.makeText(getApplicationContext(),
-                getResources().getString(R.string.pos_center_connect_fail),Toast.LENGTH_LONG).show();
+        onHanderToast(R.string.pos_center_connect_fail);
     }
 
     @Override
     protected void doResponeTimeOut(MessageFilter.MessageType type) {
         dismissProgressDiglog();
-        Toast.makeText(getApplicationContext(),
-                getResources().getString(R.string.pos_center_respone_timeout),Toast.LENGTH_LONG).show();
+        onHanderToast(R.string.pos_center_respone_timeout);
     }
 
     private void startFtpFileUpload(){
-        File file = mPosApp.restoreFtpFile();
+        File file = myPosApplication.restoreFtpFile();
         mDataUploadBar.setMax((int)file.length());
-        mPosApp.startFtpConnectAndUpload(file, this);
+        myPosApplication.startFtpConnectAndUpload(file, this);
     }
 
     private void showFileUploadProgressDialog(){
@@ -181,23 +178,26 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
     }
 
     private void loadDbDataAndSend(){
+        PosLog.d("xx","loadDbDataAndSend...");
         int sumTrade =0,sumAmount =0;
         PosDataBaseFactory.getIntance().openPosDatabase();
         List<TranslationRecord> list =
                 PosDataBaseFactory.getIntance().query(TranslationRecord.class, null, null, null, null, null);
         PosDataBaseFactory.getIntance().closePosDatabase();
         int N = list.size();
+        PosLog.d("xx","record size == "+ N);
         sumTrade = N;
         for (int i=0;i<N;i++){
             sumAmount+=Integer.parseInt(list.get(i).getDTLAMT());
         }
         String req_amount = String.format("%012d", sumAmount);
         String req_sum = String.format("%06d", sumTrade);
-        String req_tradeNo = mPosApp.createTradeSerialNumber();
-        String req_psamId = mPosApp.getPsamID();
-        String req_cropNo = mPosApp.getCropNum();
-        sendRequest(mPosApp.getmIso8583Mgr().batch_settlement(
-                req_amount,req_sum,req_tradeNo,req_psamId,req_cropNo,null), "0500", "000000");
+        String req_tradeNo = myPosApplication.createTradeSerialNumber();
+        String req_psamId = myPosApplication.getPsamID();
+        String req_cropNo = myPosApplication.getCropNum();
+        PosLog.d("xx","3333333333333");
+        sendRequest(myPosApplication.getmIso8583Mgr().batch_settlement(
+                req_amount,req_sum,req_tradeNo,req_psamId,req_cropNo,"111111"), "0500", "000000");
     }
 
 
@@ -211,7 +211,12 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
                 setDiglogText(getResources().getString(R.string.checkout_dialog_statement));
                 showProgressDiglog();
 
-                loadDbDataAndSend();
+                myPosApplication.getThreadPoolExecutor().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadDbDataAndSend();
+                    }
+                });
             }
         });
 

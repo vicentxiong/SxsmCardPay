@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="socket_timeout" >30000</integer>
-    <integer name="socket_port">55555</integer>
-    <string name="socket_address">192.168.1.122</string>
+    <integer name="socket_port">8882</integer>
+    <string name="socket_address">119.10.100.65</string>   <!--119.10.100.65  市民卡公司内网ip 端口 8882-->
     <string name="db_name">POS_DATABASE</string>
     <integer name="db_version">1</integer>
     <integer name="threadpool_count">5</integer>

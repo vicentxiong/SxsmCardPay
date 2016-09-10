@@ -98,7 +98,7 @@ public class LoginActivity extends SxRequestActivity{
             startActivity(i);
             finish();
         }else{
-            Toast.makeText(this,"签到失败，请重试",Toast.LENGTH_SHORT).show();
+            onHanderToast(R.string.checkin_fail);
         }
 
     }
@@ -110,7 +110,8 @@ public class LoginActivity extends SxRequestActivity{
 
     @Override
     protected void doMessageFilterResult(int result) {
-
+        dismissProgressDiglog();
+        onHanderToast(myPosApplication.getStringIdByCode(result));
     }
 
     @Override
@@ -135,8 +136,7 @@ public class LoginActivity extends SxRequestActivity{
                 Toast.makeText(LoginActivity.this,"login",Toast.LENGTH_LONG).show();
                 setDiglogText(getResources().getString(R.string.checkin_now));
                 LoginActivity.this.showProgressDiglog();
-//                sendRequest(new byte[]{0x41,0x42,0x43});
-                sendRequest(myIso8583Mgr.checkIn(myIso8583Mgr.getPsamId(),mCropName.getText().toString().trim()),"0800","000000");
+                sendRequest(myIso8583Mgr.checkIn(myPosApplication.getPsamID(),mCropName.getText().toString().trim()),"0800","000000");
             }
         });
 

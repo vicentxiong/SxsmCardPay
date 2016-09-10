@@ -468,8 +468,8 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                 switch (result){
 
                     case 0xA0:
-                        Log.i("qiuyi","doMessageFilterResult     result=====>"+result);
-                        Toast.makeText(InputCardPW.this,getResources().getString(R.string.checkIn_again),Toast.LENGTH_SHORT);
+                        Log.i("qiuyi", "doMessageFilterResult     result=====>" + result);
+                        onHanderToast(R.string.checkIn_again);
                         Intent intent1=new Intent(InputCardPW.this,LoginActivity.class);
                         startActivity(intent1);
                         finish();
@@ -509,7 +509,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
 
                     case -3:
                         dismissProgressDiglog();
-                        Toast.makeText(InputCardPW.this,getResources().getString(R.string.impact_success),Toast.LENGTH_SHORT);
+                        onHanderToast(R.string.impact_success);
                         if(!isResponeTimeOut){
                             Intent intent_3=new Intent(InputCardPW.this,Query_errorActivity.class);
                             String reson=getResources().getString(R.string.Mac_impact);
@@ -528,8 +528,8 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                         break;
 
                     case 0xA0:
-                        Log.i("qiuyi","doMessageFilterResult     result=====>"+result);
-                        Toast.makeText(InputCardPW.this,getResources().getString(R.string.checkIn_again),Toast.LENGTH_SHORT);
+                        Log.i("qiuyi", "doMessageFilterResult     result=====>" + result);
+                        onHanderToast(R.string.checkIn_again);
                         Intent intent1=new Intent(InputCardPW.this,LoginActivity.class);
                         startActivity(intent1);
                         finish();
@@ -563,7 +563,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                         break;
                     case -3:
                         dismissProgressDiglog();
-                        Toast.makeText(InputCardPW.this,getResources().getString(R.string.impact_success),Toast.LENGTH_SHORT);
+                        onHanderToast(R.string.impact_success);
                         if(!isResponeTimeOut){
                             Intent intent_3=new Intent(InputCardPW.this,Query_errorActivity.class);
                             String reson=getResources().getString(R.string.Mac_impact);
@@ -580,8 +580,8 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                         }
                         break;
                     case 0xA0:
-                        Log.i("qiuyi","doMessageFilterResult     result=====>"+result);
-                        Toast.makeText(InputCardPW.this,getResources().getString(R.string.checkIn_again),Toast.LENGTH_SHORT);
+                        Log.i("qiuyi", "doMessageFilterResult     result=====>" + result);
+                        onHanderToast(R.string.checkIn_again);
                         Intent intent1=new Intent(InputCardPW.this,LoginActivity.class);
                         startActivity(intent1);
                         finish();
@@ -598,7 +598,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                 switch (result){
                     case 0xA0:
                         Log.i("qiuyi","doMessageFilterResult     result=====>"+result);
-                        Toast.makeText(InputCardPW.this,getResources().getString(R.string.checkIn_again),Toast.LENGTH_SHORT);
+                        onHanderToast(R.string.checkIn_again);
                         Intent intent1=new Intent(InputCardPW.this,LoginActivity.class);
                         startActivity(intent1);
                         finish();
@@ -621,7 +621,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
 
     @Override
     protected void doConnectFail() {
-        Toast.makeText(InputCardPW.this,"",Toast.LENGTH_SHORT);
+
     }
 
     @Override

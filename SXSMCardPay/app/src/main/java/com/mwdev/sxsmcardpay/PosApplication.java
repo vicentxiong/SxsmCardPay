@@ -62,7 +62,7 @@ public class PosApplication extends TAApplication{
         //初始化8583管理器
         mIso8583Mgr = new Iso8583Mgr(this);
         //加载psamid
-        getmIso8583Mgr().readPsamId();
+        //getmIso8583Mgr().readPsamId();
 
     }
 
@@ -79,7 +79,8 @@ public class PosApplication extends TAApplication{
     }
 
     public String getPsamID(){
-        return getmIso8583Mgr().getPsamId();
+        //return getmIso8583Mgr().getPsamId();
+        return "312105012177"; //330600000000001
     }
 
     public ThreadPoolExecutor getThreadPoolExecutor(){
@@ -87,6 +88,7 @@ public class PosApplication extends TAApplication{
     }
 
     public void startUpConnectAndSend(byte[] message,String msgid,String tradeDealcode){
+        PosLog.d("xx","startUpConnectAndSend");
         if(mSocketClient!=null)
             mSocketClient.startConnectAndSend(message,msgid,tradeDealcode);
     }

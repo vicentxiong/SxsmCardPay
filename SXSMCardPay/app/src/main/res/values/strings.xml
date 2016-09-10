@@ -93,5 +93,6 @@
     <string name="impact_success">冲正成功！</string>
     <string name="Mac_impact">pos机MAC校验失败，交易失败，正在冲正......</string>
     <string name="ResponeTimeOut_impact">响应超时，交易失败，正在冲正......</string>
+    <string name="checkin_fail">签到失败，请重试</string>
 
 </resources>

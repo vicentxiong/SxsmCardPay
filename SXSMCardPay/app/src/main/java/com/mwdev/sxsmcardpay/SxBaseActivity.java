@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mwdev.sxsmcardpay.util.PosLog;
 
@@ -24,6 +25,7 @@ import com.mwdev.sxsmcardpay.util.PosLog;
 public abstract class SxBaseActivity extends Activity {
     private static final int SHOWPROGRESSBAR = 0;
     private static final int DISMISSPROGRESSBAR = 1;
+    private static final int TOAST_KEY = 2;
     private ImageView mActionBarLeft;
     private ImageView mActionBarRight;
     private TextView mTitle;
@@ -42,6 +44,9 @@ public abstract class SxBaseActivity extends Activity {
                     break;
                 case DISMISSPROGRESSBAR:
                     onHandlerProgressbarDismiss();
+                    break;
+                case TOAST_KEY:
+                    Toast.makeText(getApplicationContext(),getResources().getString(msg.arg1),Toast.LENGTH_LONG).show();
                     break;
             }
         }
@@ -84,6 +89,18 @@ public abstract class SxBaseActivity extends Activity {
      */
     public void setDiglogText(String text){
         mAttention.setText(text);
+    }
+
+    /**
+     *
+     * 在消息队列中处理 toast 提示
+     * @param resid
+     */
+    public void onHanderToast(int resid){
+        Message msg = mhandler.obtainMessage();
+        msg.what = TOAST_KEY;
+        msg.arg1 = resid;
+        msg.sendToTarget();
     }
 
     /**
