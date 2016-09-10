@@ -484,7 +484,7 @@ public class Iso8583Mgr {
 		sourcedata.put("tpdu", "6000000000");
 		sourcedata.put("header", "060101000000000000000000");
 		sourcedata.put("msgid", "00020000");
-		sourcedata.put("2", cardNum);
+		sourcedata.put("55", cardNum);
 		sourcedata.put("3", "030101000000");
 		// 查询时 消费额值0 可选
 		// sourcedata.put("4", "000000000000000000000000");
@@ -526,7 +526,7 @@ public class Iso8583Mgr {
 		sourcedata.put("tpdu", "6000000000");
 		sourcedata.put("header", "060101000000000000000000");
 		sourcedata.put("msgid", "00020000");
-		sourcedata.put("2", cardNum);
+		sourcedata.put("55", cardNum);
 		sourcedata.put("3", "000001000000");
 		sourcedata.put("4", getBCD(amount));
 		sourcedata.put("11", getBCD(tradeNum));
@@ -573,7 +573,7 @@ public class Iso8583Mgr {
 		sourcedata.put("tpdu", "6000000000");
 		sourcedata.put("header", "060101000000000000000000");
 		sourcedata.put("msgid", "00040000");
-		sourcedata.put("2", cardNum);
+		sourcedata.put("55", cardNum);
 		sourcedata.put("3", "000001000000");
 		sourcedata.put("4", getBCD(amount));
 		sourcedata.put("11", getBCD(tradeNum));
@@ -626,7 +626,7 @@ public class Iso8583Mgr {
 		sourcedata.put("tpdu", "6000000000");
 		sourcedata.put("header", "060101000000000000000000");
 		sourcedata.put("msgid", "00020000");
-		sourcedata.put("2", cardNum);
+		sourcedata.put("55", cardNum);
 		// 20 10 00
 		sourcedata.put("3", getBCD("201000"));
 		// 撤销时要不要传入金额，待定
@@ -676,7 +676,7 @@ public class Iso8583Mgr {
 		sourcedata.put("tpdu", "6000000000");
 		sourcedata.put("header", "060101000000000000000000");
 		sourcedata.put("msgid", "00040000");
-		sourcedata.put("2", cardNum);
+		sourcedata.put("55", cardNum);
 		sourcedata.put("3", getBCD("201000"));
 		sourcedata.put("4", getBCD(amount));
 		sourcedata.put("11", getBCD(tradeNum));
@@ -720,7 +720,7 @@ public class Iso8583Mgr {
 		sourcedata.put("tpdu", "6000000000");
 		sourcedata.put("header", "060101000000000000000000");
 		sourcedata.put("msgid", "00020200");
-		sourcedata.put("2", cardNum);
+		sourcedata.put("55", cardNum);
 		sourcedata.put("3", getBCD("201000"));
 		sourcedata.put("4", getBCD(amount));
 		sourcedata.put("11", getBCD(tradeNum));
@@ -1025,7 +1025,7 @@ public class Iso8583Mgr {
 
 
 
-	/*
+	/**
 	 * 读取0x05文件的数据
 	 */
 	public void readdata_05() {
@@ -1064,11 +1064,11 @@ public class Iso8583Mgr {
 										}
 
 										Log.i("qiuyi", "ic卡读二进制文件0005："
-												+ "00B0850010");
+												+ "00B0850016");
 										try {
 											msm.getCard()
 													.transmitApduToCard(
-															util.HexStringToByteArray("00B0850010"),
+															util.HexStringToByteArray("00B0850016"),
 															new OnApduCmdListener() {
 
 																@Override
@@ -1199,5 +1199,104 @@ public class Iso8583Mgr {
 		return result;
 	}
 
+	/**
+	 * 55域数据组织
+	 */
+public String make55data(String sourcedata){
+String data = null;
+	if(sourcedata.length()>=100){
+		//BCD
+		String data1=sourcedata.substring(0,8);
+		//BCD
+		String data2=sourcedata.substring(8,28);
+		//BCD
+		String data3=sourcedata.substring(28,30);
+		//BCD
+		String data4=sourcedata.substring(30,32);
+		//HEX
+		String data5=sourcedata.substring(32,34);
+		//HEX
+		String data6=sourcedata.substring(34,36);
+		//BCD
+		String data7=sourcedata.substring(36,44);
+		//BCD
+		String data8=sourcedata.substring(44,48);
+		//BCD
+		String data9=sourcedata.substring(48,52);
+		//BCD
+		String data10=sourcedata.substring(52,56);
+		//HEX
+		String data11=sourcedata.substring(56,60);
+		//BCD
+		String data12=sourcedata.substring(60,62);
+        //BCD
+		String data13=sourcedata.substring(62,64);
+		//HEX
+		String data14=sourcedata.substring(64,68);
+		//HEX
+		String data15=sourcedata.substring(68,84);
+		//BCD
+		String data16=sourcedata.substring(84,92);
+		//BCD
+		String data17=sourcedata.substring(92,100);
+		//HEX
+		String data18=sourcedata.substring(100,102);
+		//HEX
+		String data19=sourcedata.substring(102,104);
+		Log.i("qiuyi","data1=======>"+data1
+				     +"\ndata2======>"+data2
+				+"\ndata3======>"+data3
+				+"\ndata4======>"+data4
+				+"\ndata5======>"+data5
+				+"\ndata6======>"+data6
+				+"\ndata7======>"+data7
+				+"\ndata8======>"+data8
+				+"\ndata9======>"+data9
+				+"\ndata10======>"+data10
+				+"\ndata11======>"+data11
+				+"\ndata12======>"+data12
+				+"\ndata13======>"+data13
+				+"\ndata14======>"+data14
+				+"\ndata15======>"+data15
+				+"\ndata16======>"+data16
+				+"\ndata17======>"+data17
+				+"\ndata18======>"+data18
+				+"\ndata19======>"+data19);
+		//1 2  3  4  7 8  9  10 12 13 16 17
+//		data1=getBCD(data1);
+//		data2=getBCD(data2);
+//		data3=getBCD(data3);
+//		data4=getBCD(data4);
+//		data7=getBCD(data7);
+//		data8=getBCD(data8);
+//		data9=getBCD(data9);
+//		data10=getBCD(data10);
+//		data12=getBCD(data12);
+//		data13=getBCD(data13);
+//		data16=getBCD(data16);
+//		data17=getBCD(data17);
+//		Log.i("qiuyi","data1=======>"+data1
+//				+"\ndata2======>"+data2
+//				+"\ndata3======>"+data3
+//				+"\ndata4======>"+data4
+//				+"\ndata5======>"+data5
+//				+"\ndata6======>"+data6
+//				+"\ndata7======>"+data7
+//				+"\ndata8======>"+data8
+//				+"\ndata9======>"+data9
+//				+"\ndata10======>"+data10
+//				+"\ndata11======>"+data11
+//				+"\ndata12======>"+data12
+//				+"\ndata13======>"+data13
+//				+"\ndata14======>"+data14
+//				+"\ndata15======>"+data15
+//				+"\ndata16======>"+data16
+//				+"\ndata17======>"+data17
+//				+"\ndata18======>"+data18
+//				+"\ndata19======>"+data19);
+		data=data1+data2+data3+data4+data5+data6+data7+data8+data9+data10+data11+data12+data13+data14+data15+data16+data17+data18+data19;
+	}
 
+	return data;
+}
 }

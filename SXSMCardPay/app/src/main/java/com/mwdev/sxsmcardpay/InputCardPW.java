@@ -1,6 +1,8 @@
 package com.mwdev.sxsmcardpay;
 
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -79,16 +81,19 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
     String batchnum;
     String original_amount;
     String operatorNum;
+    private SoundPool sp;//声明一个SoundPool
     String operatorPassWord;
     @TAInjectResource(id = R.string.save_cropname_key)
     private String cropname_key;
     String merchantNum;
     String input_amount;
     String binaryString_pin;
+    String cardinfo;
     boolean isResponeTimeOut=false;
     public final static int IMPACT_MAC=0X1111;
     public final static int IMPACT_TIMEOUT=0X2222;
     PosDataBaseFactory myPosDataBaseFactory;
+    private int music;//定义一个整型用load（）；来设置suondID
     private Handler myHandler=new Handler(){
 
     @Override
@@ -125,6 +130,9 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
         CardNum=intent.getStringExtra(ReadCardActivity.CARDNUM_KEY);
         input_amount=intent.getStringExtra(ReadCardActivity.INPUT_AMOUNT);
         original_amount=intent.getStringExtra(ReadCardActivity.AMOUNT_KEY);
+        cardinfo=intent.getStringExtra(ReadCardActivity.CARDINFO_KEY);
+        sp= new SoundPool(10, AudioManager.STREAM_SYSTEM, 20);//第一个参数为同时播放数据流的最大个数，第二数据流类型，第三为声音质量
+        music = sp.load(this, R.raw.beep, 1); //把你的声音素材放到res/raw里，第2个参数即为资源文件，第3个为音乐的优先级
         Log.i("qiuyi","input_amount========>"+input_amount);
         if(type==MainMenuActivity.TRADE){
             Log.i("qiuyi","input_amount========>"+input_amount);
@@ -228,14 +236,14 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
 
                                 Log.i("qiuyi","psamid====>"+psamid+
                                         "\nmerchantNum=====>"+ merchantNum+
-                                        "\nCardNum=======>" +CardNum+
+                                        "\ncardinfo=======>" +cardinfo+
                                         "\nbinaryString_pin====>" +binaryString_pin +
                                         "\ntradeNum===>" +tradeNum);
                                 if(psamid!=null&&!merchantNum.equalsIgnoreCase("")&&binaryString_pin!=null&&tradeNum!=null){
                                     setDiglogText(getResources().getString(R.string.doqueryamount_now));
                                     showProgressDiglog();
                                     sendRequest(myIso8583Mgr.balance_query(psamid, merchantNum
-                                            , CardNum, binaryString_pin, tradeNum), "0200", "311000");
+                                            , cardinfo, binaryString_pin, tradeNum), "0200", "311000");
                                 }else {
                                     Toast.makeText(this, getResources().getString(R.string.data_error), Toast.LENGTH_SHORT).show();
                                 }
@@ -258,7 +266,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                             Log.i("xiongxin","batchnum===>"+batchnum);
                             Log.i("qiuyi","psamid====>"+psamid+
                                     "\nmerchantNum=====>"+ merchantNum+
-                                    "\nCardNum=======>" +CardNum+
+                                    "\ncardinfo=======>" +cardinfo+
                                     "\nbinaryString_pin====>" +binaryString_pin +
                                     "\ntradeNum====>" +tradeNum+
                                     "\nbatchnum====>" +batchnum+
@@ -268,7 +276,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                             if(psamid!=null&&!merchantNum.equalsIgnoreCase("")&&binaryString_pin!=null&&tradeNum!=null&&input_amount!=null){
                                 setDiglogText(getResources().getString(R.string.dotrade_now));
                                 showProgressDiglog();
-                                sendRequest(myIso8583Mgr.trade(psamid,merchantNum,CardNum,binaryString_pin,tradeNum,amount_need8583),"0200","001000");
+                                sendRequest(myIso8583Mgr.trade(psamid,merchantNum,cardinfo,binaryString_pin,tradeNum,amount_need8583),"0200","001000");
                             }else{
                                 Toast.makeText(this, getResources().getString(R.string.data_error), Toast.LENGTH_SHORT).show();
                             }
@@ -298,7 +306,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
 
                         Log.i("qiuyi","psamid====>"+psamid+
                                 "\nmerchantNum=====>"+ merchantNum+
-                                "\nCardNum=======>" +CardNum+
+                                "\ncardinfo=======>" +cardinfo+
                                 "\nbinaryString_pin====>" +binaryString_pin +
                                 "\ntradeNum====>" +tradeNum+
                                 "\nbatchnum====>" +batchnum+
@@ -309,7 +317,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                         if(psamid!=null&&!merchantNum.equalsIgnoreCase("")&&binaryString_pin!=null&&tradeNum!=null&&retrieve_referenceNum!=null&&original_tradeNum!=null&&original_batchNum!=null){
                             setDiglogText(getResources().getString(R.string.dotrade_cancel_now));
                             showProgressDiglog();
-                            sendRequest(myIso8583Mgr.trade_cancel(psamid,merchantNum,CardNum,binaryString_pin,tradeNum,retrieve_referenceNum,original_tradeNum,original_batchNum),"0200","201000");
+                            sendRequest(myIso8583Mgr.trade_cancel(psamid,merchantNum,cardinfo,binaryString_pin,tradeNum,retrieve_referenceNum,original_tradeNum,original_batchNum),"0200","201000");
                             }else Toast.makeText(this, getResources().getString(R.string.data_error), Toast.LENGTH_SHORT).show();
 
 
@@ -327,7 +335,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                         operatorPassWord=getIntent().getStringExtra(ReadCardActivity.OPERATORPW_KEY);
                         Log.i("qiuyi","psamid====>"+psamid+
                                 "\nmerchantNum=====>"+ merchantNum+
-                                "\nCardNum=======>" +CardNum+
+                                "\ncardinfo=======>" +cardinfo+
                                 "\nbinaryString_pin====>" +binaryString_pin +
                                 "\ntradeNum====>" +tradeNum+
                                 "\noperatorNum====>" +operatorNum+
@@ -339,7 +347,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                         if(psamid!=null&&!merchantNum.equalsIgnoreCase("")&&binaryString_pin!=null&&tradeNum!=null&&input_amount!=null&&retrieve_referenceNum!=null&&original_tradeNum!=null&&original_batchNum!=null&&operatorNum!=null&&operatorPassWord!=null){
                             setDiglogText(getResources().getString(R.string.doreturngood_now));
                             showProgressDiglog();
-                            sendRequest(myIso8583Mgr.Return_goods(psamid,merchantNum,CardNum,binaryString_pin,tradeNum,input_amount,retrieve_referenceNum,original_tradeNum,original_batchNum,operatorNum,operatorPassWord),"0220","201000");
+                            sendRequest(myIso8583Mgr.Return_goods(psamid,merchantNum,cardinfo,binaryString_pin,tradeNum,input_amount,retrieve_referenceNum,original_tradeNum,original_batchNum,operatorNum,operatorPassWord),"0220","201000");
                         }else Toast.makeText(this, getResources().getString(R.string.data_error), Toast.LENGTH_SHORT).show();
 
 
@@ -493,15 +501,12 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                         Flushes flushes = new Flushes();
                         flushes.setMsgID("0400");
                         flushes.setTradeDealCode("001000");
-                        flushes.setCardNum(CardNum);
+                        flushes.setCardNum(cardinfo);
                         flushes.setAmount(input_amount);
                         flushes.setTradeNUm(tradeNum);
                         flushes.setOriginal_batchNum(batchnum);
                         flushes.setOriginal_tradeNum(tradeNum);
-                        if(!isResponeTimeOut){
-                            flushes.setImpact_reason("A0");
-                        }else  flushes.setImpact_reason("98");
-
+                        flushes.setImpact_reason("A0");
                         myPosApplication.addFlushes(flushes);
                         setDiglogText(getResources().getString(R.string.impact_now));
                         showProgressDiglog();
@@ -551,12 +556,12 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                         Flushes flushes = new Flushes();
                         flushes.setMsgID("0400");
                         flushes.setTradeDealCode("201000");
-                        flushes.setCardNum(CardNum);
+                        flushes.setCardNum(cardinfo);
                         flushes.setAmount(original_amount);
                         flushes.setTradeNUm(tradeNum);
                         flushes.setOriginal_batchNum(batchnum);
                         flushes.setOriginal_tradeNum(tradeNum);
-                        flushes.setImpact_reason("");
+                        flushes.setImpact_reason("A0");
                         myPosApplication.addFlushes(flushes);
                         setDiglogText(getResources().getString(R.string.impact_now));
                         showProgressDiglog();
@@ -625,21 +630,49 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
     }
 
     @Override
-    protected void doResponeTimeOut(MessageFilter.MessageType type) {
-
-        Flushes flushes = new Flushes();
-        flushes.setMsgID("0400");
-        flushes.setTradeDealCode("001000");
-        flushes.setCardNum(CardNum);
-        flushes.setAmount(input_amount);
-        flushes.setTradeNUm(tradeNum);
-        flushes.setOriginal_batchNum(batchnum);
-        flushes.setOriginal_tradeNum(tradeNum);
-        flushes.setImpact_reason("98");
-        myPosApplication.addFlushes(flushes);
+    protected void doResponeTimeOut(MessageFilter.MessageType messagetype) {
         isResponeTimeOut=true;
-        setDiglogText(getResources().getString(R.string.impact_now));
-        showProgressDiglog();
+        switch (type){
+            case MainMenuActivity.BALANCE_QUERY:
+                Intent intent=new Intent(InputCardPW.this,Query_errorActivity.class);
+                intent.putExtra(ReadCardActivity.ERROR_KEY,0x98);
+                startActivity(intent);
+                finish();
+                break;
+            case MainMenuActivity.RETURN_GOODS:
+                Intent intent_trade=new Intent(InputCardPW.this,Query_errorActivity.class);
+                intent_trade.putExtra(ReadCardActivity.ERROR_KEY,0x98);
+                startActivity(intent_trade);
+                break;
+            case MainMenuActivity.TRADE:
+                setDiglogText(getResources().getString(R.string.impact_now));
+                showProgressDiglog();
+                Flushes flushes1 = new Flushes();
+                flushes1.setMsgID("0400");
+                flushes1.setTradeDealCode("001000");
+                flushes1.setCardNum(cardinfo);
+                flushes1.setAmount(input_amount);
+                flushes1.setTradeNUm(tradeNum);
+                flushes1.setOriginal_batchNum(batchnum);
+                flushes1.setOriginal_tradeNum(tradeNum);
+                flushes1.setImpact_reason("98");
+                myPosApplication.addFlushes(flushes1);
+                break;
+            case MainMenuActivity.TRADE_CANCEL:
+                setDiglogText(getResources().getString(R.string.impact_now));
+                showProgressDiglog();
+                Flushes flushes2 = new Flushes();
+                flushes2.setMsgID("0400");
+                flushes2.setTradeDealCode("201000");
+                flushes2.setCardNum(cardinfo);
+                flushes2.setAmount(input_amount);
+                flushes2.setTradeNUm(tradeNum);
+                flushes2.setOriginal_batchNum(batchnum);
+                flushes2.setOriginal_tradeNum(tradeNum);
+                flushes2.setImpact_reason("98");
+                myPosApplication.addFlushes(flushes2);
+                break;
+        }
     }
 
 
@@ -654,6 +687,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
     }
     public void keypress(int keynum,int length,Message m){
         if(length<6){
+            sp.play(music, 1, 1, 0, 0, 1);
             if(length>0){
                 String text="";
                 for(int i=1;i<=length;i++){

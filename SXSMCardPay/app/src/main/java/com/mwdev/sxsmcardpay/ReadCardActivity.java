@@ -1,6 +1,7 @@
 package com.mwdev.sxsmcardpay;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -29,7 +30,7 @@ public class ReadCardActivity extends SxBaseActivity implements CardNumInterface
     //retrieve_referenceNum  检索参考号
     public final static String REFERENCENUM="retrieve_referenceNum";
     public final static String BATCH="batch";
-    public final static String CARDINFO="cardinfo";
+    public final static String CARDINFO_KEY="cardinfo";
     String carddata;
 
 //    String input_amount;
@@ -43,7 +44,7 @@ public class ReadCardActivity extends SxBaseActivity implements CardNumInterface
         myPosApplication=(PosApplication)getApplication();
         myIso8583Mgr=myPosApplication.getmIso8583Mgr();
         myIso8583Mgr.addResigter(this);
-        myIso8583Mgr.readCardNum();
+        myIso8583Mgr.readdata_05();
         type=myPosApplication.getConfig(PosApplication.PREFERENCECONFIG).getInt(MainMenuActivity.TYPE_KEY,5);
 
 
@@ -51,15 +52,19 @@ public class ReadCardActivity extends SxBaseActivity implements CardNumInterface
     Handler handler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
+            MediaPlayer mediaPlayer = MediaPlayer.create(ReadCardActivity.this,R.raw.beep);
+            mediaPlayer.start();
             dismissProgressDiglog();
             String data= (String) msg.obj;
-            String cardnum=data.substring(65,80);
+            String cardnum=data.substring(12,28);
+            data=myIso8583Mgr.make55data(data);
             Log.i("qiuyi","type=======>"+type);
             switch (type){
                 case MainMenuActivity.BALANCE_QUERY:
 //                    if(cardnum!=null&&!cardnum.equalsIgnoreCase("")){
                         Intent i =new Intent(ReadCardActivity.this,InputCardPW.class);
                         i.putExtra(CARDNUM_KEY,cardnum);
+                        i.putExtra(CARDINFO_KEY,data);
                         startActivity(i);
                         finish();
 //                    }
@@ -69,6 +74,7 @@ public class ReadCardActivity extends SxBaseActivity implements CardNumInterface
 
                     Intent i1 =new Intent(ReadCardActivity.this,InputCardPW.class);
                     i1.putExtra(CARDNUM_KEY,cardnum);
+                    i1.putExtra(CARDINFO_KEY,data);
                     i1.putExtra(ReadCardActivity.INPUT_AMOUNT,getIntent().getStringExtra(ReadCardActivity.INPUT_AMOUNT));
                     startActivity(i1);
                     finish();
@@ -79,6 +85,7 @@ public class ReadCardActivity extends SxBaseActivity implements CardNumInterface
 
                     Intent i2 =new Intent(ReadCardActivity.this,InputCardPW.class);
                     i2.putExtra(CARDNUM_KEY,cardnum);
+                    i2.putExtra(CARDINFO_KEY,data);
                     i2.putExtra(ReadCardActivity.TRADENUM_KEY,getIntent().getStringExtra(ReadCardActivity.TRADENUM_KEY));
                     i2.putExtra(ReadCardActivity.OPERATORNUM_KEY,getIntent().getStringExtra(ReadCardActivity.OPERATORNUM_KEY));
                     i2.putExtra(ReadCardActivity.OPERATORPW_KEY,getIntent().getStringExtra(ReadCardActivity.OPERATORPW_KEY));
@@ -92,6 +99,7 @@ public class ReadCardActivity extends SxBaseActivity implements CardNumInterface
                 case MainMenuActivity.RETURN_GOODS:
                     Intent i3 =new Intent(ReadCardActivity.this,InputCardPW.class);
                     i3.putExtra(CARDNUM_KEY,cardnum);
+                    i3.putExtra(CARDINFO_KEY,data);
                     i3.putExtra(ReadCardActivity.TRADENUM_KEY,getIntent().getStringExtra(ReadCardActivity.TRADENUM_KEY));
                     i3.putExtra(ReadCardActivity.OPERATORNUM_KEY,getIntent().getStringExtra(ReadCardActivity.OPERATORNUM_KEY));
                     i3.putExtra(ReadCardActivity.OPERATORPW_KEY,getIntent().getStringExtra(ReadCardActivity.OPERATORPW_KEY));
@@ -134,7 +142,7 @@ public class ReadCardActivity extends SxBaseActivity implements CardNumInterface
         Log.i("qiuyi","carddata=======>"+carddata);
         Message m=new Message();
         m.obj=carddata;
-        handler.sendMessageDelayed(m,400);
+        handler.sendMessageDelayed(m,200);
 
 
     }
