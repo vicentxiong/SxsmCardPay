@@ -63,7 +63,8 @@
 
 
         <activity
-            android:name=".MainMenuActivity">
+            android:name=".MainMenuActivity"
+            android:launchMode="singleTask">
             <intent-filter>
 
 

@@ -2,6 +2,7 @@ package com.mwdev.sxsmcardpay;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,6 +21,8 @@ public class Query_errorActivity extends SxBaseActivity implements View.OnClickL
     private TextView error_tv;
     @TAInjectView(id=R.id.error_back_button)
     private Button back;
+    @TAInjectView(id =R.id.error_title)
+    TextView type_error;
     int type;
     PosApplication myPosApplication;
     TAIConfig mConfig;
@@ -29,6 +32,7 @@ public class Query_errorActivity extends SxBaseActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queryerror);
+        Log.i("xiongxin","setContentView(R.layout.activity_queryerror);");
     }
 
     @Override
@@ -43,16 +47,20 @@ public class Query_errorActivity extends SxBaseActivity implements View.OnClickL
 
         switch (type){
             case MainMenuActivity.BALANCE_QUERY:
+               type_error.setText(getResources().getString(R.string.query_error));
+                Log.i("xiongxin"," error=getResources().getString(myPosApplication.getStringIdByCode(result));    ");
                 error=getResources().getString(myPosApplication.getStringIdByCode(result));
                 break;
 
             case MainMenuActivity.RETURN_GOODS:
+                type_error.setText(getResources().getString(R.string.return_goods_error));
                 title=getString(R.string.return_goods);
                 error=getResources().getString(myPosApplication.getStringIdByCode(result));
 
                 break;
 
             case MainMenuActivity.TRADE:
+                type_error.setText(getResources().getString(R.string.tradeerror));
                 title=getString(R.string.do_trade);
                 switch (result){
                     case InputCardPW.IMPACT_MAC:
@@ -68,6 +76,7 @@ public class Query_errorActivity extends SxBaseActivity implements View.OnClickL
                 break;
 
             case MainMenuActivity.TRADE_CANCEL:
+                type_error.setText(getResources().getString(R.string.trade_cancel_error));
                 title=getString(R.string.trade_cancel);
                 switch (result){
                     case InputCardPW.IMPACT_MAC:
@@ -82,6 +91,7 @@ public class Query_errorActivity extends SxBaseActivity implements View.OnClickL
                 }
                 break;
         }
+        Log.d("xiongxin","stop..............");
         setAcitvityTitle(title);
         error_tv.setText(error);
     }

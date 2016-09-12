@@ -40,7 +40,7 @@
     <string name="confirm_amount">确认金额</string>
     <string name="consumption_amount">消费金额：</string>
     <string name="trade_num">交易号：</string>
-    <string name="trade_num_text">交易单号</string>
+    <string name="trade_num_text">交易单号：</string>
     <string name="sign_print">签字并打印小票</string>
     <string name="trade_success">交易成功</string>
     <string name="clean">清空</string>

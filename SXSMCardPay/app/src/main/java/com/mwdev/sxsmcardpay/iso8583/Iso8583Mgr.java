@@ -319,18 +319,19 @@ public class Iso8583Mgr {
 
 	public int makeMac(byte[] data){
 
+
 		byte[] sourceMacdata=new byte[data.length - 30];
 		System.arraycopy(data, 20, sourceMacdata, 0, sourceMacdata.length);
 		byte[] Macdata=new byte[8];
 		System.arraycopy(data, data.length-10, Macdata, 0,8);
 //							Log.i("qiuyi","util.byteArray2Hex(data)=====>"+util.byteArray2Hex(data));
-		Log.i("qiuyi","Macdata=====>"+util.byteArray2Hex(Macdata));
-							Log.i("qiuyi","util.byteArray2Hex(sourceMacdata)=====>"+util.byteArray2Hex(sourceMacdata));
+		Log.i("xxx", "Macdata=====>"+util.byteArray2Hex(Macdata));
+		Log.i("xxx", "util.byteArray2Hex(sourceMacdata)=====>"+util.byteArray2Hex(data));
 		String Mac = "";
 		try {
 			Mac = ServiceManager.getInstence().getPinpad()
 					.calcMAC(sourceMacdata, BwPinpadSource.MAC_MOD2);
-			Log.i("qiuyi", "Mac码==============》" + Mac);
+			Log.i("xxx", "Mac码==============》" + Mac);
 		} catch (RemoteException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -620,12 +621,13 @@ public class Iso8583Mgr {
 	public byte[] trade_cancel(String psamId, String merchantNum,
 			String cardNum, String passWord, String tradeNum, /*String amount,*/
 			String retrieve_referenceNum, String original_tradeNum,
-			String original_batchNum) {
+			String original_batchNum,String original_amount) {
 		byte[] packdata = null;
 		Map<String, String> sourcedata = new HashMap<String, String>();
 		sourcedata.put("tpdu", "6000000000");
 		sourcedata.put("header", "060101000000000000000000");
 		sourcedata.put("msgid", "00020000");
+		sourcedata.put("4", getBCD(original_amount));
 		sourcedata.put("55", cardNum);
 		// 20 10 00
 		sourcedata.put("3", getBCD("201000"));
@@ -721,7 +723,7 @@ public class Iso8583Mgr {
 		sourcedata.put("header", "060101000000000000000000");
 		sourcedata.put("msgid", "00020200");
 		sourcedata.put("55", cardNum);
-		sourcedata.put("3", getBCD("201000"));
+		sourcedata.put("3", getBCD("401000"));
 		sourcedata.put("4", getBCD(amount));
 		sourcedata.put("11", getBCD(tradeNum));
 		sourcedata.put("12", getBCD(getTime()));
@@ -985,11 +987,13 @@ public class Iso8583Mgr {
 																	// stub
 																	Log.i("qiuyi",
 																			"读二进制文件0015失败");
+																	mycardnumif.onerror(5);
 																}
 															});
 										} catch (Exception e) {
 											// TODO Auto-generated catch block
 											e.printStackTrace();
+											mycardnumif.onerror(4);
 										}
 
 									}
@@ -1000,11 +1004,13 @@ public class Iso8583Mgr {
 										// Auto-generated
 										// method stub
 										Log.i("qiuyi", "选择3F01文件失败");
+										mycardnumif.onerror(3);
 									}
 								});
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						mycardnumif.onerror(2);
 					}
 
 				}
@@ -1014,11 +1020,13 @@ public class Iso8583Mgr {
 					// TODO Auto-generated method stub
 					Log.i("qiuyi", "IC卡寻卡失败      arg0===>" + arg0
 							+ "     arg1=======>" + arg1);
+					mycardnumif.onerror(1);
 				}
 			});
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			mycardnumif.onerror(0);
 		}
 
 	}
@@ -1106,11 +1114,13 @@ public class Iso8583Mgr {
 																	// stub
 																	Log.i("qiuyi",
 																			"读二进制文件05失败");
+																	mycardnumif.onerror(5);
 																}
 															});
 										} catch (Exception e) {
 											// TODO Auto-generated catch block
 											e.printStackTrace();
+											mycardnumif.onerror(4);
 										}
 
 									}
@@ -1121,11 +1131,13 @@ public class Iso8583Mgr {
 										// Auto-generated
 										// method stub
 										Log.i("qiuyi", "选择3F00文件失败");
+										mycardnumif.onerror(3);
 									}
 								});
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						mycardnumif.onerror(2);
 					}
 
 				}
@@ -1135,11 +1147,13 @@ public class Iso8583Mgr {
 					// TODO Auto-generated method stub
 					Log.i("qiuyi", "IC卡寻卡失败      arg0===>" + arg0
 							+ "     arg1=======>" + arg1);
+					mycardnumif.onerror(1);
 				}
 			});
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			mycardnumif.onerror(0);
 		}
 
 	}

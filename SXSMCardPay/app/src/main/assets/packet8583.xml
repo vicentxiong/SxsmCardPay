@@ -48,7 +48,7 @@
 	<field id="53" type="NUMERIC" length="16" />
 	<field id="54" type="LLLVAR_NUMERIC" />
 	
-	<field id="55" type="LLLBINARY" />
+	<field id="55" type="LLLVAR_NUMERIC" />
 	<field id="58" type="LLLVAR" />
 	
 	<field id="60" type="LLLVAR_NUMERIC" />

@@ -4,8 +4,8 @@
     <string name="read_card_now">正在读卡，请稍后......</string>
     <string name="do_trade">消费</string>
     <string name="cancel_amount">撤销金额：</string>
-    <string name="bacthnum">批次号</string>
-    <string name="referencenum">参考索引号</string>
+    <string name="bacthnum">批次号：</string>
+    <string name="referencenum">参考索引号：</string>
     <string name="scan">请扫描二维码</string>
     <string name="scan_error">扫描失败，请重试！</string>
     <string name="timeout_reason">响应超时，已冲正，请重试!</string>
@@ -15,5 +15,8 @@
     <string name="dotrade_cancel_now">正在联网撤销，请稍候......</string>
     <string name="doqueryamount_now">正在联网查询余额，请稍候......</string>
     <string name="doreturngood_now">正在联网退货，请稍候......</string>
+    <string name="readcard_error">读卡失败，返回主菜单！</string>
+    <string name="readcard_timeout">读卡超时，返回主菜单</string>
+    <string name="tradeerror">交易失败</string>
 
 </resources>

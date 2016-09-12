@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.karics.library.zxing.android.CaptureActivity;
@@ -26,6 +27,8 @@ public class InputtradeNum extends SxBaseActivity{
     Button next_bt;
     @TAInjectView(id=R.id.scan)
     Button scan_bt;
+    @TAInjectView(id=R.id.input_amount_ed)
+    TextView tv_amount;
     int type;
     String original_amount;
     String original_batchNum;
@@ -59,9 +62,9 @@ public class InputtradeNum extends SxBaseActivity{
                     intent.putExtra(ReadCardActivity.OPERATORNUM_KEY,getIntent().getStringExtra(ReadCardActivity.OPERATORNUM_KEY));
                     intent.putExtra(ReadCardActivity.OPERATORPW_KEY,getIntent().getStringExtra(ReadCardActivity.OPERATORPW_KEY));
                     intent.putExtra(ReadCardActivity.TRADENUM_KEY,trademum_ed.getText().toString().trim());
-                    intent.putExtra(ReadCardActivity.AMOUNT_KEY,original_amount);
-                    intent.putExtra(ReadCardActivity.BATCH,original_batchNum);
-                    intent.putExtra(ReadCardActivity.REFERENCENUM,retrieve_referenceNum);
+                    intent.putExtra(ReadCardActivity.AMOUNT_KEY,tv_amount.getText().toString().trim());
+                    intent.putExtra(ReadCardActivity.BATCH,batchmum_ed.getText().toString().trim());
+                    intent.putExtra(ReadCardActivity.REFERENCENUM,referencenum_ed.getText().toString().trim());
                     startActivity(intent);
                     finish();
                 }else Toast.makeText(InputtradeNum.this,getResources().getString(R.string.length_error_please_input_6bit_num),Toast.LENGTH_SHORT).show();
@@ -73,8 +76,8 @@ public class InputtradeNum extends SxBaseActivity{
                     intent.putExtra(ReadCardActivity.OPERATORPW_KEY,getIntent().getStringExtra(ReadCardActivity.OPERATORPW_KEY));
                     intent.putExtra(ReadCardActivity.TRADENUM_KEY,trademum_ed.getText().toString().trim());
                     intent.putExtra(ReadCardActivity.AMOUNT_KEY,original_amount);
-                    intent.putExtra(ReadCardActivity.BATCH,original_batchNum);
-                    intent.putExtra(ReadCardActivity.REFERENCENUM,retrieve_referenceNum);
+                    intent.putExtra(ReadCardActivity.BATCH,batchmum_ed.getText().toString().trim());
+                    intent.putExtra(ReadCardActivity.REFERENCENUM,referencenum_ed.getText().toString().trim());
                     startActivity(intent);
                     finish();
                 }else Toast.makeText(InputtradeNum.this,getResources().getString(R.string.length_error_please_input_6bit_num),Toast.LENGTH_SHORT).show();
@@ -100,6 +103,7 @@ public class InputtradeNum extends SxBaseActivity{
                 String[] resultArray=result.split("-");
                 trademum_ed.setText(resultArray[0]);
                 original_amount=resultArray[3];
+                tv_amount.setText(original_amount);
                 batchmum_ed.setText(resultArray[1]);
                 referencenum_ed.setText(resultArray[2]);
                 original_batchNum=resultArray[1];
