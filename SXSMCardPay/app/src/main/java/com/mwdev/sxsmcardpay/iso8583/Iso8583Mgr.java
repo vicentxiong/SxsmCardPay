@@ -17,6 +17,7 @@ import com.basewin.interfaces.OnApduCmdListener;
 import com.basewin.interfaces.OnDetectListener;
 import com.basewin.packet8583.exception.Packet8583Exception;
 import com.basewin.services.ServiceManager;
+import com.mwdev.sxsmcardpay.PosApplication;
 import com.pos.sdk.utils.PosByteArray;
 
 /**
@@ -42,6 +43,7 @@ public class Iso8583Mgr {
 	public final static int LENGTH_ERROR=3;
 	public final static int EMPTY_MAC=5;
 	private CardNumInterface mycardnumif;
+	private PosApplication mPosApp;
 
 	public void addResigter(CardNumInterface cardnuminterface) {
 		mycardnumif = cardnuminterface;
@@ -50,6 +52,7 @@ public class Iso8583Mgr {
 	public Iso8583Mgr(Context context) {
 		manager_packData = new Iso8583Manager(context);
 		manager_unpackData = new Iso8583Manager(context);
+		mPosApp = (PosApplication) context;
 	}
 
 	public String getPsamId() {
@@ -806,8 +809,7 @@ public class Iso8583Mgr {
 
 	@SuppressLint("SimpleDateFormat")
 	public String getBatch() {
-		SimpleDateFormat df = new SimpleDateFormat("yyMMdd");
-		String DataAndTime = df.format(new Date());
+		String DataAndTime = mPosApp.getBattchNum();
 		return DataAndTime;
 
 	}
@@ -931,7 +933,7 @@ public class Iso8583Mgr {
 
 									@Override
 									public void onSuccess(PosByteArray arg0,
-											byte[] arg1) {
+														  byte[] arg1) {
 										// TODO
 										// Auto-generated
 										// method stub

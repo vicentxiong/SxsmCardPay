@@ -192,7 +192,7 @@ public class PosApplication extends TAApplication{
      * @return
      */
     public String getBattchNum(){
-        return getConfig(PosApplication.PREFERENCECONFIG).getString("battchNo_key", "");
+        return getConfig(PosApplication.PREFERENCECONFIG).getString("battchNo_key", "000000");
     }
 
     public int getStringIdByCode(int r){
