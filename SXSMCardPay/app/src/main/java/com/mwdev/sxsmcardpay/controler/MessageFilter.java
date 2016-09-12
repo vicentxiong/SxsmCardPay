@@ -131,10 +131,14 @@ public class MessageFilter {
             String _area62 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("62");
             String pik = _area62.substring(0, 32);
             String mak = _area62.substring(40,72);
+            String _area60 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("60");
+            String battch = util.Delete0(_area60.substring(4,16)).trim();
+
             try {
                 PinpadBinder pinpad = ServiceManager.getInstence().getPinpad();
                 pinpad.loadPinKey(pik,null);
-                pinpad.loadMacKey(mak,null);
+                pinpad.loadMacKey(mak, null);
+                mPosApp.setBattchNum(battch);
             } catch (Exception e) {
                 e.printStackTrace();
             }
