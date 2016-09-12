@@ -976,8 +976,11 @@ public class Iso8583Mgr {
 																	Log.i("qiuyi",
 																			"ox15文件数据===="
 																					+ cardnum);
-																	mycardnumif
-																			.onScuess(cardnum);
+																	if(cardnum!=null&&cardnum.length()>0){
+																		mycardnumif
+																				.onScuess(cardnum);
+																	}else mycardnumif.onerror(6);
+
 
 																}
 
