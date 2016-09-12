@@ -70,6 +70,7 @@ public class query_successActivity extends SxBaseActivity implements View.OnClic
         switch (v.getId()){
             case R.id.back_button:
                 Intent intent=new Intent(query_successActivity.this,MainMenuActivity.class);
+                intent.putExtra(MainMenuActivity.LAUNCHER_MODE,1);
                 startActivity(intent);
                 finish();
         }

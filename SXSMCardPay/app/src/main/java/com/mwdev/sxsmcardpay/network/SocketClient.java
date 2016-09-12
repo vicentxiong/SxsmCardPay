@@ -315,7 +315,6 @@ public class SocketClient{
             PosApplication posApp = (PosApplication) mContext;
             posApp.getThreadPoolExecutor().execute(mRetryTask);
 
-            mFilter.onSentFilter((byte[]) message);
             if(messageCallback != null)
                 messageCallback.onMessageSent();
         }

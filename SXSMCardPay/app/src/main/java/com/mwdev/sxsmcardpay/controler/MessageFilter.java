@@ -47,7 +47,6 @@ public class MessageFilter {
     public final MessageType BATCH_SETTLEMENT_REQUEST_TYPE = new MessageType("0500","000000");
     public final MessageType BATCH_SETTLEMENT_RESPONES_TYPE = new MessageType("0510","000000");
 
-    private byte[] currentSentMessage = null;
     private HashMap<String,Flushes> allFlushes = new HashMap<String,Flushes>();
     private ArrayList<Flushes> tempTrade = new ArrayList<Flushes>();
     private PosApplication mPosApp;
@@ -308,7 +307,9 @@ public class MessageFilter {
                 return POS_MAC_ERROR_FILTER;
             }
             */
+            clearTransctionRecords();
             mPosApp.startUpConnectAndSend(mPosApp.getmIso8583Mgr().checkOut(mPosApp.getPsamID(), mPosApp.getCropNum()), "0820", "000000");
+
             return INTERCEPT_FILTER;
         }else{
             return Integer.parseInt(responeCode,16);
@@ -381,14 +382,6 @@ public class MessageFilter {
         PosDataBaseFactory.getIntance().openPosDatabase();
         PosDataBaseFactory.getIntance().insert(record);
         PosDataBaseFactory.getIntance().closePosDatabase();
-    }
-
-    /**
-     * 过滤发送出去的报文消息
-     * @param message
-     */
-    public void onSentFilter(byte[] message){
-        currentSentMessage = message;
     }
 
     public void postFlushesMessage(byte[] message){}
@@ -554,6 +547,16 @@ public class MessageFilter {
 
         PosDataBaseFactory.getIntance().openPosDatabase();
         PosDataBaseFactory.getIntance().delete(Flushes.class, "tradeNUm = " + tradenumber);
+        PosDataBaseFactory.getIntance().closePosDatabase();
+    }
+
+    /**
+     *
+     * 结算对账成功后，清除数据库中当前批次的所有交易明细
+     */
+    public void clearTransctionRecords(){
+        PosDataBaseFactory.getIntance().openPosDatabase();
+        PosDataBaseFactory.getIntance().delete(TranslationRecord.class);
         PosDataBaseFactory.getIntance().closePosDatabase();
     }
 

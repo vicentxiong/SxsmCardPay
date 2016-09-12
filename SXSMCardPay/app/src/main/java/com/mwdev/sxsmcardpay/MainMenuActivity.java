@@ -54,6 +54,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
     public final static int TRADE=1;
     public final static int TRADE_CANCEL=2;
     public final static int RETURN_GOODS=3;
+    public final static String LAUNCHER_MODE = "launcer_mode_key";
     public final static String TYPE_KEY="type_key";
 
     private Handler mH = new Handler(){
@@ -100,6 +101,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
     @Override
     protected void doMessageReceivered(Object message) {
         dismissProgressDiglog();
+        myPosApplication.exitApplication();
         finish();
     }
 
@@ -114,6 +116,9 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
         switch (result){
             case 0x79:
                 startFtpFileUpload();
+                break;
+            default:
+
                 break;
         }
     }
@@ -132,7 +137,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
 
     private void startFtpFileUpload(){
         File file = myPosApplication.restoreFtpFile();
-        mDataUploadBar.setMax((int)file.length());
+        mDataUploadBar.setMax((int) file.length());
         myPosApplication.startFtpConnectAndUpload(file, this);
     }
 
@@ -142,6 +147,15 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
         mDialog = ab.create();
         mDialog.setCanceledOnTouchOutside(false);
         mDialog.show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        boolean first = getIntent().getIntExtra(LAUNCHER_MODE,0)==0;
+        if(!first){
+            myPosApplication.resigterMessageCallBack(this);
+        }
     }
 
     /**

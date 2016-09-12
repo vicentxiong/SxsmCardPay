@@ -129,11 +129,13 @@ public class TradeSuccessActivity extends SxBaseActivity{
                 break;
             case MainMenuActivity.TRADE_CANCEL:
                  Intent intent_tradecancel=new Intent(TradeSuccessActivity.this,MainMenuActivity.class);
+                intent_tradecancel.putExtra(MainMenuActivity.LAUNCHER_MODE,1);
                 startActivity(intent_tradecancel);
                 finish();
                 break;
             case MainMenuActivity.RETURN_GOODS:
                 Intent intent_returngoods=new Intent(TradeSuccessActivity.this,MainMenuActivity.class);
+                intent_returngoods.putExtra(MainMenuActivity.LAUNCHER_MODE,1);
                 startActivity(intent_returngoods);
                 finish();
                 break;
