@@ -94,7 +94,7 @@ public class PosApplication extends TAApplication{
     public void startUpConnectAndSend(byte[] message,String msgid,String tradeDealcode){
         PosLog.d("xx","startUpConnectAndSend");
         if(mSocketClient!=null)
-            mSocketClient.startConnectAndSend(message,msgid,tradeDealcode);
+            mSocketClient.startConnectAndSend(message, msgid, tradeDealcode);
     }
 
     public void startFtpConnectAndUpload(File file,FtpDataTranterCallBack callBack){
@@ -157,7 +157,7 @@ public class PosApplication extends TAApplication{
         }
 
         try {
-            FileOutputStream fous = new FileOutputStream(file);
+            FileOutputStream fous = new FileOutputStream(file,true);
             fous.write(new byte[]{0x00});
             fous.close();
         } catch (FileNotFoundException e) {
@@ -175,6 +175,24 @@ public class PosApplication extends TAApplication{
     public String getCropNum(){
         //return getConfig(PosApplication.PREFERENCECONFIG).getString("cropNameKey", "");
         return "330600000000001";
+    }
+
+
+    /**
+     * 保存pos中心下发的批次号
+     * @param battchNo
+     */
+    public void setBattchNum(String battchNo){
+        getConfig(PosApplication.PREFERENCECONFIG).setString("battchNo_key",battchNo);
+    }
+
+    /**
+     *
+     * 获取pos中心下发的批次号
+     * @return
+     */
+    public String getBattchNum(){
+        return getConfig(PosApplication.PREFERENCECONFIG).getString("battchNo_key", "");
     }
 
     public int getStringIdByCode(int r){

@@ -112,9 +112,6 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
     protected void doMessageFilterResult(int result) {
         dismissProgressDiglog();
         switch (result){
-            case -2:
-                onHanderToast(R.string.mac_auth_fail);
-                break;
             case 0x79:
                 startFtpFileUpload();
                 break;
@@ -223,7 +220,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
         ab.setNegativeButton(R.string.checkout_dialog_cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                sendRequest(myPosApplication.getmIso8583Mgr().checkOut(myPosApplication.getPsamID(), myPosApplication.getCropNum()), "0820", "000000");
             }
         });
         Dialog dialog = ab.create();

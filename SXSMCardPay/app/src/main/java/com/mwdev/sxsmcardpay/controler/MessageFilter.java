@@ -42,8 +42,8 @@ public class MessageFilter {
     public final MessageType TRADE_CANCEL_RESPONES_TYPE = new MessageType("0210","201000");
     public final MessageType TRADE_CANCEL_IMPACT_REQUEST_TYPE = new MessageType("0400","201000");
     public final MessageType TRADE_CANCEL_IMPACT_RESPONES_TYPE = new MessageType("0410","201000");
-    public final MessageType RETURN_GOODS_REQUEST_TYPE = new MessageType("0220","201000");
-    public final MessageType RETURN_GOODS_RESPONES_TYPE = new MessageType("0230","201000");
+    public final MessageType RETURN_GOODS_REQUEST_TYPE = new MessageType("0220","401000");
+    public final MessageType RETURN_GOODS_RESPONES_TYPE = new MessageType("0230","401000");
     public final MessageType BATCH_SETTLEMENT_REQUEST_TYPE = new MessageType("0500","000000");
     public final MessageType BATCH_SETTLEMENT_RESPONES_TYPE = new MessageType("0510","000000");
 
@@ -165,9 +165,11 @@ public class MessageFilter {
      */
     public int onHandleBalanceQueryMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
+            /*
             if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
                 return POS_MAC_ERROR_FILTER;
             }
+            */
             return SUCCESSED_FILTER;
         }else{
             return Integer.parseInt(responeCode,16);
@@ -182,11 +184,12 @@ public class MessageFilter {
      */
     public int onHandlerTradeMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
+            /*
             if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
                 //MAC校验错误 发送冲正
                 postFlushesTask("A0");
                 return POS_MAC_ERROR_FILTER;
-            }
+            }*/
             persistToDatabase();
             return SUCCESSED_FILTER;
         }else{
@@ -202,11 +205,12 @@ public class MessageFilter {
      */
     public int onHandlerTradeImpactMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
+            /*
             if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
                 mPosApp.getThreadPoolExecutor().execute(
                         new FlushesResponeTsk(util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("11")))
                 );
-            }
+            }*/
             handlerByActivity(R.string.impact_success);
             return IMPACT_FILTER;
         }else{
@@ -227,11 +231,13 @@ public class MessageFilter {
      */
     public int onHandlerTradeCalcelMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
+            /*
             if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
                 //MAC校验错误 发送冲正
                 postFlushesTask("A0");
                 return POS_MAC_ERROR_FILTER;
             }
+            */
             return SUCCESSED_FILTER;
         }else{
             return  Integer.parseInt(responeCode,16);
@@ -246,11 +252,13 @@ public class MessageFilter {
      */
     public int onHandlerTradeCancelImpactMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
+            /*
             if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
                 mPosApp.getThreadPoolExecutor().execute(
                         new FlushesResponeTsk(util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("11")))
                 );
             }
+            */
             handlerByActivity(R.string.impact_success);
             return IMPACT_FILTER;
         }else{
@@ -271,9 +279,11 @@ public class MessageFilter {
      */
     public int onHandlerReturnGoodsMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
+            /*
             if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
                 return POS_MAC_ERROR_FILTER;
             }
+            */
             persistToDatabase();
             return SUCCESSED_FILTER;
         }else{
@@ -289,9 +299,11 @@ public class MessageFilter {
      */
     public int onHandlerBatchSettlementMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
+            /*
             if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
                 return POS_MAC_ERROR_FILTER;
             }
+            */
             mPosApp.startUpConnectAndSend(mPosApp.getmIso8583Mgr().checkOut(mPosApp.getPsamID(), mPosApp.getCropNum()), "0820", "000000");
             return INTERCEPT_FILTER;
         }else{
