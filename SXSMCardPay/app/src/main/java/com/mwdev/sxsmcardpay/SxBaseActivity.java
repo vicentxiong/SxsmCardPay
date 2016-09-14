@@ -33,6 +33,10 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
     private static final int SHOWPROGRESSBAR = 0;
     private static final int DISMISSPROGRESSBAR = 1;
     private static final int TOAST_KEY = 2;
+    public static final int PROGRESSBAR_UPDATE = 3;
+    public static final int OPENPROGRESSBAR_DIALOG = 4;
+    public static final int DIALOG_TEXT_UPDATE = 5;
+    public static final int SETPROGRESSBAR_SIZE = 6;
     private ImageView mActionBarLeft;
     private ImageView mActionBarRight;
     private TextView mTitle;

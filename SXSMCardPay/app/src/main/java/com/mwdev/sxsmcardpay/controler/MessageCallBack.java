@@ -45,7 +45,7 @@ public interface MessageCallBack {
      *发送远程消息成功回调
      *
      */
-    public void onMessageSent();
+    public void onMessageSent(MessageFilter.MessageType type);
 
     /**
      * response消息过滤结果

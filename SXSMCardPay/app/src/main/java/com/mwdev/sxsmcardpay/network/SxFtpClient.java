@@ -73,39 +73,40 @@ public class SxFtpClient {
         StringBuffer fileName = new StringBuffer();
         fileName.append("PD").append(list.get(0).getDTLDATE().substring(2)).
                  append(list.get(0).getDTLUNITID()).append(list.get(0).getDTLPOSID()).
-                 append(list.get(0).getDTLBATCHNO()).append("H");
+                 append(list.get(0).getDTLBATCHNO()).append("H").append("00").append(".txt");
         //文件描述域
         StringBuffer fileDescriptionArea = new StringBuffer();
         fileDescriptionArea.append("10").append("\r\n");
         //交易头
         StringBuffer transctionHeader = new StringBuffer();
-        transctionHeader.append(list.get(0).getDTLUNITID()).append("000000").append("000000");
-        transctionHeader.append(String.format("%05d", list.size())).append(String.format("%010d", list.size()));
+        transctionHeader.append(list.get(0).getDTLUNITID()).append(",").append("000000").append(",").append("000000").append(",");
+        transctionHeader.append(String.format("%05d", list.size())).append(",").append(String.format("%010d", list.size())).append(",");
         int sum =0;
         for (int i=0;i<list.size();i++){
             sum+=Integer.parseInt(list.get(i).getDTLAMT());
         }
 
-        transctionHeader.append(String.format("%010d",sum));
-        transctionHeader.append("0000000000");
-        transctionHeader.append("0000000000");
+        transctionHeader.append(String.format("%010d",sum)).append(",");
+        transctionHeader.append("0000000000").append(",");
+        transctionHeader.append("0000000000").append(",");
         transctionHeader.append("            ");
         transctionHeader.append("\r\n");
 
         //交易明细
         StringBuffer fileRecord = new StringBuffer();
         for (int i=0;i<list.size();i++){
-            fileRecord.append(list.get(i).getDTLCARDNO()).append(list.get(i).getDTLCDCNT()).
-                       append(list.get(i).getDTLPRCODE()).append(list.get(i).getDTLTRANSTYPE()).
-                       append(list.get(i).getDTLPOSID()).append(list.get(i).getDTLSAMID()).
-                       append(list.get(i).getDTLPOSSEQ()).append(list.get(i).getDTLBATCHNO()).
-                       append(list.get(i).getDTLTERMID()).append(list.get(i).getDTLTERMSEQ()).
-                       append(list.get(i).getDTLDATE()).append(list.get(i).getDTLTIME()).
-                       append(list.get(i).getDTLSETTDATE()).append(list.get(i).getDTLCENSEQ()).
-                       append(list.get(i).getDTLSLAMT()).append(list.get(i).getDTLBEFBAL()).
-                       append(list.get(i).getDTLAFTBAL()).append(list.get(i).getDTLAMT()).
-                       append(list.get(i).getDTLUNITID()).append(list.get(i).getDTLNETID()).
-                       append(list.get(i).getDTLTAC());
+            fileRecord.append(list.get(i).getDTLCARDNO()).append(",").append("000000").append(",").
+                       append(list.get(i).getDTLPRCODE()).append(",").append(list.get(i).getDTLTRANSTYPE()).append(",").
+                       append(list.get(i).getDTLPOSID()).append(",").append("                ").append(",").
+                       append(list.get(i).getDTLPOSSEQ()).append(",").append(list.get(i).getDTLBATCHNO()).append(",").
+                       append("            ").append(",").append("0000000000").append(",").
+                       append(list.get(i).getDTLDATE()).append(",").append(list.get(i).getDTLTIME()).append(",").
+                       append(list.get(i).getDTLSETTDATE()).append(",").append(list.get(i).getDTLCENSEQ()).append(",").
+                       append("000000000").append(",").append("000000000").append(",").
+                       append("000000000").append(",").append(list.get(i).getDTLAMT()).append(",").
+                       append(list.get(i).getDTLUNITID()).append(",").append("            ").append(",").
+                       append("        ");
+            fileRecord.append("\r\n");
         }
 
         File file = new File(mContext.getExternalCacheDir(),fileName.toString());
@@ -126,14 +127,14 @@ public class SxFtpClient {
     private void ftpConnectAndUpload(File uploadFile,FtpDataTranterCallBack callBack){
         try {
             PosLog.e("xiong","ftpConnectAndUpload start");
-            mCropID = String.format("%015s",mContext.getCropNum());
+            mCropID = mContext.getCropNum();
             PosLog.e("xiong","ftpConnectAndUpload start222222");
             userAndpasswd=REPART+mCropID;
 
-            PosLog.e("xiong","userAndpasswd ==" + "batch_POS_330600000000001");
+            PosLog.e("xiong","userAndpasswd ==" + userAndpasswd);
 
             mFtp.connect(r.getString(R.string.ftp_addresss), r.getInteger(R.integer.ftp_port));
-            mFtp.login("batch_POS_330600000000001", "batch_POS_330600000000001");
+            mFtp.login(userAndpasswd, userAndpasswd);
             mFtp.changeDirectory(ABS_PATH);
             PosLog.e("xiong", "changeDirectory" );
             addFtpTranterCallBack(callBack);

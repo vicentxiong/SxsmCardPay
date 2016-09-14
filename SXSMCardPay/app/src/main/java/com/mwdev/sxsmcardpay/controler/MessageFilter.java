@@ -347,7 +347,7 @@ public class MessageFilter {
      *
      */
     private void persistToDatabase(){
-        String _area2 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("2");
+        String _area5515 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("55").substring(64,80);
         String _area3 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("3");
         String _msgid = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("msgid");
         String _area41 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("41");
@@ -361,7 +361,7 @@ public class MessageFilter {
         String _area42 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("42");
 
         TranslationRecord record = new TranslationRecord();
-        record.setDTLCARDNO(_area2);
+        record.setDTLCARDNO(_area5515);
         record.setDTLCDCNT("000000");
         record.setDTLPRCODE(util.Delete0(_area3));
         record.setDTLTRANSTYPE(util.Delete0(_msgid));
@@ -414,6 +414,7 @@ public class MessageFilter {
             flushes.setOriginal_tradeNum(_area612);
             flushes.setImpact_reason(impactReason);
         }else if("98".equals(impactReason)){
+            PosLog.d("xx","98  flushes");
             flushes = tempTrade.get(0);
             tempTrade.remove(flushes);
         }
@@ -423,7 +424,7 @@ public class MessageFilter {
         PosDataBaseFactory.getIntance().openPosDatabase();
         PosDataBaseFactory.getIntance().insert(flushes);
         PosDataBaseFactory.getIntance().closePosDatabase();
-
+        PosLog.d("xx", "create flushes finsh ");
     }
 
     /**

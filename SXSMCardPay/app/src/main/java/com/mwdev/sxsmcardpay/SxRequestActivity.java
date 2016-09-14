@@ -96,8 +96,8 @@ public abstract class SxRequestActivity extends SxBaseActivity implements Messag
      * 发送远程消息成功回调
      */
     @Override
-    public void onMessageSent() {
-        doonMessageSent();
+    public void onMessageSent(MessageFilter.MessageType type) {
+        doonMessageSent(type);
     }
 
     /**
@@ -132,7 +132,7 @@ public abstract class SxRequestActivity extends SxBaseActivity implements Messag
     protected abstract void doCommunictionIdle(String idle);
     protected abstract void doExceptionCaught(Throwable throwable);
     protected abstract void doMessageReceivered(Object message);
-    protected abstract void doonMessageSent();
+    protected abstract void doonMessageSent(MessageFilter.MessageType type);
     protected abstract void doMessageFilterResult(int result);
     protected abstract void doConnectFail();
     protected abstract void doResponeTimeOut(MessageFilter.MessageType type);

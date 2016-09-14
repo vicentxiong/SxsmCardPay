@@ -104,7 +104,7 @@ public class LoginActivity extends SxRequestActivity{
     }
 
     @Override
-    protected void doonMessageSent() {
+    protected void doonMessageSent(MessageFilter.MessageType type) {
 
     }
 

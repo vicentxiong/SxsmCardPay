@@ -8,12 +8,12 @@
     <integer name="threadpool_count">5</integer>
     <string name="ftp_addresss">119.10.100.3</string>      <!-- 市民卡内网ftp ip 119.10.100.3-->
     <integer name="ftp_port">21</integer>
-    <integer name="request_retry">2</integer>
+    <integer name="request_retry">1</integer>
     <string-array name="db_tables">
         <item>com.mwdev.sxsmcardpay.database.TranslationRecord</item>
         <item>com.mwdev.sxsmcardpay.database.Flushes</item>
     </string-array>
     <integer name="welcome_timeout">1000</integer>
-    <integer name="respone_timeout">30000</integer>
+    <integer name="respone_timeout">10000</integer>
     <integer name="pos_malfuntion_list">1</integer>
 </resources>

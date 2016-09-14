@@ -72,6 +72,9 @@ public class SocketClient{
         PosApplication posApp = (PosApplication) mContext;
         posApp.getThreadPoolExecutor().execute(new Request(whenMessage));
 
+        mRetryTask = new RetryTask();
+        mRetryTask.setTimeout(r.getInteger(R.integer.respone_timeout));
+        posApp.getThreadPoolExecutor().execute(mRetryTask);
 
     }
 
@@ -93,11 +96,13 @@ public class SocketClient{
         @Override
         public void run() {
             try {
+
                 Thread.sleep(mTimeOut);
                 mIoSession.closeNow();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            PosLog.d("xxx","retyr start ");
             while(mRequest && count < retyrCount){
                 if(whenMessage==null){
                     break;
@@ -112,6 +117,7 @@ public class SocketClient{
                 }
             }
             if(count == retyrCount){
+                PosLog.d("xx","dddddddddd");
                 if(msgType.equals(mFilter.TRADE_IMPACT_REQUEST_TYPE) || msgType.equals(mFilter.TRADE_CANCEL_IMPACT_REQUEST_TYPE)){
                     messageCallback.onResponeTimeout(msgType);
                     mFilter.handlerByActivity(R.string.flushes_respone_timeout);
@@ -119,7 +125,7 @@ public class SocketClient{
                     mFilter.postFlushesTask("98");
                     messageCallback.onResponeTimeout(msgType);
                 }else{
-                    messageCallback.onResponeTimeout(msgType);
+                   // messageCallback.onResponeTimeout(msgType);
                 }
             }
 
@@ -282,8 +288,8 @@ public class SocketClient{
         @Override
         public void messageReceived(IoSession session, Object message) throws Exception {
             PosLog.d("xx","messageReceived");
-            if(mRetryTask!=null)
-                mRetryTask.setmRequest(false);
+            //if(mRetryTask!=null)
+               // mRetryTask.setmRequest(false);
             int result = 0;
             byte[] bytes = PosUtil.HexStringToByteArray((String) message);
             //单次请求响应后关闭连接
@@ -315,14 +321,10 @@ public class SocketClient{
          */
         @Override
         public void messageSent(IoSession session, Object message) throws Exception {
-            PosLog.d("xx","messageSent");
-            mRetryTask = new RetryTask();
-            mRetryTask.setTimeout(r.getInteger(R.integer.respone_timeout));
-            PosApplication posApp = (PosApplication) mContext;
-            posApp.getThreadPoolExecutor().execute(mRetryTask);
+            PosLog.d("xx", "messageSent");
 
             if(messageCallback != null)
-                messageCallback.onMessageSent();
+                messageCallback.onMessageSent(msgType);
         }
 
         /**
@@ -333,7 +335,7 @@ public class SocketClient{
          */
         @Override
         public void inputClosed(IoSession session) throws Exception {
-            PosLog.d("xx","inputClosed");
+            //PosLog.d("xx","inputClosed");
 
         }
     }
