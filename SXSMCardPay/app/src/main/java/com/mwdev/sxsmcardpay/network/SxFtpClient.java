@@ -30,13 +30,18 @@ import it.sauronsoftware.ftp4j.FTPIllegalReplyException;
 public class SxFtpClient {
     private static final String TAG = SxFtpClient.class.getName();
     private FTPClient mFtp;
-    private Context mContext;
+    private PosApplication mContext;
     private Resources r;
+    private String mCropID;
+    private static final String REPART = "batch_POS_";
+    private static final String ABS_PATH = "/upload/";
+    private String userAndpasswd ;
+
 
     private FtpDataTranterCallBack mFtpTranterCallback;
 
     public SxFtpClient(Context cx){
-        mContext = cx;
+        mContext = (PosApplication) cx;
         r = mContext.getResources();
         mFtp = new FTPClient();
 
@@ -59,29 +64,32 @@ public class SxFtpClient {
     }
 
     public File restoreRecord(){
+        PosLog.e("xiong","restoreRecord");
         PosDataBaseFactory.getIntance().openPosDatabase();
         List<TranslationRecord> list = PosDataBaseFactory.getIntance().
                 query(TranslationRecord.class, null, null, null, null, null);
         PosDataBaseFactory.getIntance().closePosDatabase();
         //文件名
         StringBuffer fileName = new StringBuffer();
-        fileName.append("PD").append(util.Delete0(list.get(0).getDTLBATCHNO())).
+        fileName.append("PD").append(list.get(0).getDTLDATE().substring(2)).
                  append(list.get(0).getDTLUNITID()).append(list.get(0).getDTLPOSID()).
-                 append(list.get(0).getDTLBATCHNO()).append("A");
+                 append(list.get(0).getDTLBATCHNO()).append("H");
         //文件描述域
         StringBuffer fileDescriptionArea = new StringBuffer();
         fileDescriptionArea.append("10").append("\r\n");
         //交易头
         StringBuffer transctionHeader = new StringBuffer();
+        transctionHeader.append(list.get(0).getDTLUNITID()).append("000000").append("000000");
         transctionHeader.append(String.format("%05d", list.size())).append(String.format("%010d", list.size()));
         int sum =0;
         for (int i=0;i<list.size();i++){
             sum+=Integer.parseInt(list.get(i).getDTLAMT());
         }
-        transctionHeader.append(String.format("%10d",sum));
+
+        transctionHeader.append(String.format("%010d",sum));
         transctionHeader.append("0000000000");
         transctionHeader.append("0000000000");
-        transctionHeader.append("000000000000");
+        transctionHeader.append("            ");
         transctionHeader.append("\r\n");
 
         //交易明细
@@ -110,15 +118,24 @@ public class SxFtpClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        PosLog.e("xiong","build file ok " + file.getAbsolutePath()+" file size = " + file.length());
         return file;
 
     }
 
     private void ftpConnectAndUpload(File uploadFile,FtpDataTranterCallBack callBack){
         try {
-            mFtp.connect(r.getString(R.string.ftp_addresss),r.getInteger(R.integer.ftp_port));
-            mFtp.login(r.getString(R.string.ftp_user), r.getString(R.string.ftp_passwd));
+            PosLog.e("xiong","ftpConnectAndUpload start");
+            mCropID = String.format("%015s",mContext.getCropNum());
+            PosLog.e("xiong","ftpConnectAndUpload start222222");
+            userAndpasswd=REPART+mCropID;
+
+            PosLog.e("xiong","userAndpasswd ==" + "batch_POS_330600000000001");
+
+            mFtp.connect(r.getString(R.string.ftp_addresss), r.getInteger(R.integer.ftp_port));
+            mFtp.login("batch_POS_330600000000001", "batch_POS_330600000000001");
+            mFtp.changeDirectory(ABS_PATH);
+            PosLog.e("xiong", "changeDirectory" );
             addFtpTranterCallBack(callBack);
             mFtp.upload(uploadFile,new SxFtpTransterListener());
         } catch (IOException e) {
@@ -161,6 +178,17 @@ public class SxFtpClient {
     }
 
 
+    public void exitFtp(){
+        try {
+            mFtp.disconnect(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (FTPIllegalReplyException e) {
+            e.printStackTrace();
+        } catch (FTPException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * FTP数据传输监听器
      */
@@ -182,45 +210,21 @@ public class SxFtpClient {
         public void completed() {
             if(mFtpTranterCallback!=null)
                 mFtpTranterCallback.ftpCompleted();
-            try {
-                mFtp.disconnect(true);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (FTPIllegalReplyException e) {
-                e.printStackTrace();
-            } catch (FTPException e) {
-                e.printStackTrace();
-            }
+            exitFtp();
         }
         // 传输放弃时触发
         @Override
         public void aborted() {
             if(mFtpTranterCallback!=null)
                 mFtpTranterCallback.ftpAborted();
-            try {
-                mFtp.disconnect(true);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (FTPIllegalReplyException e) {
-                e.printStackTrace();
-            } catch (FTPException e) {
-                e.printStackTrace();
-            }
+            exitFtp();
         }
         // 传输失败时触发
         @Override
         public void failed() {
             if(mFtpTranterCallback!=null)
                 mFtpTranterCallback.ftpFailed();
-            try {
-                mFtp.disconnect(true);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (FTPIllegalReplyException e) {
-                e.printStackTrace();
-            } catch (FTPException e) {
-                e.printStackTrace();
-            }
+            exitFtp();
         }
     }
 }

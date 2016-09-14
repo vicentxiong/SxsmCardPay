@@ -34,7 +34,7 @@ public class SocketClient{
     private IoSession mIoSession;
     private MessageFilter mFilter;
     private MessageFilter.MessageType msgType;
-    private Context mContext;
+    private PosApplication mContext;
     private Resources r;
     private int retyrCount ;
     private Object whenMessage;
@@ -43,7 +43,7 @@ public class SocketClient{
 
     private MessageCallBack messageCallback ;
     public SocketClient(Context cx){
-        mContext = cx;
+        mContext = (PosApplication) cx;
         mFilter = new MessageFilter((PosApplication) mContext);
         init();
     }
@@ -206,6 +206,7 @@ public class SocketClient{
          */
         @Override
         public void sessionCreated(IoSession session) throws Exception {
+            PosLog.d("xx","sessionCreated");
             if(messageCallback != null)
                 messageCallback.onConnectCreated();
         }
@@ -221,6 +222,7 @@ public class SocketClient{
          */
         @Override
         public void sessionOpened(IoSession session) throws Exception {
+            PosLog.d("xx","sessionOpened");
             if(messageCallback!=null)
                 messageCallback.onConnected();
         }
@@ -233,7 +235,7 @@ public class SocketClient{
          */
         @Override
         public void sessionClosed(IoSession session) throws Exception {
-            PosLog.d(TAG,"sessionClosed");
+            PosLog.d("xx","sessionClosed");
             if(messageCallback != null)
                 messageCallback.onDisconnected();
 
@@ -250,7 +252,7 @@ public class SocketClient{
          */
         @Override
         public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
-            PosLog.d(TAG,"sessionIdle");
+            PosLog.d("xx","sessionIdle");
             if(messageCallback != null)
                 messageCallback.onCommunictionIdle(status.toString());
         }
@@ -265,7 +267,7 @@ public class SocketClient{
          */
         @Override
         public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
-            PosLog.d(TAG,"exceptionCaught  " + cause.getMessage());
+            PosLog.d("xx","exceptionCaught  " + cause.getMessage());
             if(messageCallback != null)
                 messageCallback.onExceptionCaught(cause);
         }
@@ -279,23 +281,27 @@ public class SocketClient{
          */
         @Override
         public void messageReceived(IoSession session, Object message) throws Exception {
-            PosLog.d(TAG,"messageReceived");
+            PosLog.d("xx","messageReceived");
             if(mRetryTask!=null)
                 mRetryTask.setmRequest(false);
             int result = 0;
             byte[] bytes = PosUtil.HexStringToByteArray((String) message);
+            //单次请求响应后关闭连接
+            mIoSession.closeNow();
             if(messageCallback != null){
                 if((result=mFilter.onReceiveredFilter(bytes))==MessageFilter.SUCCESSED_FILTER){
                     messageCallback.onMessageReceivered(bytes);
                 }else if(result==MessageFilter.INTERCEPT_FILTER){
-                    PosLog.d(TAG,"message receivered intercept");
+                    PosLog.d("xx", "message receivered intercept");
+                    startConnectAndSend(mContext.getmIso8583Mgr().checkOut(mContext.getPsamID(),
+                                                            mContext.getCropNum()), "0820", "000000");
+                    return;
                 }else{
                     messageCallback.onMessageFilterResult(result);
                 }
             }
 
-            //单次请求响应后关闭连接
-            mIoSession.closeNow();
+
 
         }
 
@@ -309,7 +315,7 @@ public class SocketClient{
          */
         @Override
         public void messageSent(IoSession session, Object message) throws Exception {
-            PosLog.d(TAG,"messageSent");
+            PosLog.d("xx","messageSent");
             mRetryTask = new RetryTask();
             mRetryTask.setTimeout(r.getInteger(R.integer.respone_timeout));
             PosApplication posApp = (PosApplication) mContext;
@@ -327,7 +333,7 @@ public class SocketClient{
          */
         @Override
         public void inputClosed(IoSession session) throws Exception {
-            PosLog.d(TAG,"inputClosed");
+            PosLog.d("xx","inputClosed");
 
         }
     }

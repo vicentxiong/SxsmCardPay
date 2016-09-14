@@ -1,6 +1,7 @@
 package com.mwdev.sxsmcardpay.controler;
 
 import android.app.Activity;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.basewin.services.PinpadBinder;
@@ -65,30 +66,30 @@ public class MessageFilter {
         int resultCode=-1;
 
         mPosApp.getmIso8583Mgr().unpackData(message);
-
+        PosLog.d("xx", "start onReceiveredFilter");
         String _msgid = util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("msgid"));
         String _area3 = util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("3"));
         String _area39 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("39");
         MessageType target = new MessageType(_msgid,_area3);
-        PosLog.d("xxxxx","result code : " + _area39);
+        PosLog.d("xx", "result code : " + _area39);
         do {
             if(target.equals(CHEKCIN_RESPONES_TYPE)){
-                PosLog.d("xxxxx","CHEKCIN_RESPONES_TYPE");
+                PosLog.d("xx","CHEKCIN_RESPONES_TYPE");
                 resultCode = onHandleCheckInMessage(_area39);
                 break;
             }
             if(target.equals(CHEKCOUT_RESPONES_TYPE)){
-                PosLog.d("xxxxx","CHEKCOUT_RESPONES_TYPE");
+                PosLog.d("xx","CHEKCOUT_RESPONES_TYPE");
                 resultCode = onHandleCheckOutMessage(_area39);
                 break;
             }
             if(target.equals(BALANCE_RESPONES_TYPE)){
-                PosLog.d("xxxxx","BALANCE_RESPONES_TYPE");
+                PosLog.d("xx","BALANCE_RESPONES_TYPE");
                 resultCode = onHandleBalanceQueryMessage(message,_area39);
                 break;
             }
             if(target.equals(TRADE_RESPONES_TYPE)){
-                PosLog.d("xxxxx","TRADE_RESPONES_TYPE");
+                PosLog.d("xx","TRADE_RESPONES_TYPE");
                 resultCode = onHandlerTradeMessage(message,_area39);
                 break;
             }
@@ -96,7 +97,7 @@ public class MessageFilter {
                 break;
             }
             if(target.equals(TRADE_CANCEL_RESPONES_TYPE)){
-                PosLog.d("xxxxx","TRADE_CANCEL_RESPONES_TYPE");
+                PosLog.d("xx","TRADE_CANCEL_RESPONES_TYPE");
                 resultCode = onHandlerTradeCalcelMessage(message,_area39);
                 break;
             }
@@ -105,12 +106,12 @@ public class MessageFilter {
                 break;
             }
             if(target.equals(RETURN_GOODS_RESPONES_TYPE)){
-                PosLog.d("xxxxx","RETURN_GOODS_RESPONES_TYPE");
+                PosLog.d("xx","RETURN_GOODS_RESPONES_TYPE");
                 resultCode = onHandlerReturnGoodsMessage(message,_area39);
                 break;
             }
             if(target.equals(BATCH_SETTLEMENT_RESPONES_TYPE)){
-                PosLog.d("xxxxx","BATCH_SETTLEMENT_RESPONES_TYPE");
+                PosLog.d("xx","BATCH_SETTLEMENT_RESPONES_TYPE");
                 resultCode = onHandlerBatchSettlementMessage(message,_area39);
                 break;
             }
@@ -301,16 +302,19 @@ public class MessageFilter {
      * @return
      */
     public int onHandlerBatchSettlementMessage(byte[] message,String responeCode){
-        if("00".equals(responeCode)){
+        int res = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("48").charAt(30);
+        PosLog.e("xin", "res ==> " + res + "  responeCode ==>" + responeCode);
+        if("00".equals(responeCode)&&res=='1'){  //返回 1 对账平
             /*
             if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
                 return POS_MAC_ERROR_FILTER;
             }
             */
             clearTransctionRecords();
-            mPosApp.startUpConnectAndSend(mPosApp.getmIso8583Mgr().checkOut(mPosApp.getPsamID(), mPosApp.getCropNum()), "0820", "000000");
 
             return INTERCEPT_FILTER;
+        }else if("00".equals(responeCode)&&res=='2'){ //返回 2 对账不平
+            return 0xF0;
         }else{
             return Integer.parseInt(responeCode,16);
         }
@@ -348,7 +352,7 @@ public class MessageFilter {
         String _msgid = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("msgid");
         String _area41 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("41");
         String _area11 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("11");
-        String _area602 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("60");
+        String _area602 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("60").substring(4,16);
         String _area13 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("13");
         String _area12 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("12");
         String _area15 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("15");
@@ -358,26 +362,26 @@ public class MessageFilter {
 
         TranslationRecord record = new TranslationRecord();
         record.setDTLCARDNO(_area2);
-        record.setDTLCDCNT("000000000000");
-        record.setDTLPRCODE(_area3);
-        record.setDTLTRANSTYPE(_msgid);
+        record.setDTLCDCNT("000000");
+        record.setDTLPRCODE(util.Delete0(_area3));
+        record.setDTLTRANSTYPE(util.Delete0(_msgid));
         record.setDTLPOSID(_area41);
-        record.setDTLSAMID("0000000000000000");
-        record.setDTLPOSSEQ(_area11);
-        record.setDTLBATCHNO(_area602);
-        record.setDTLTERMID("000000000000");
+        record.setDTLSAMID("                ");
+        record.setDTLPOSSEQ(util.Delete0(_area11));
+        record.setDTLBATCHNO(util.Delete0(_area602));
+        record.setDTLTERMID("            ");
         record.setDTLTERMSEQ("0000000000");
-        record.setDTLDATE(_area13);
-        record.setDTLTIME(_area12);
-        record.setDTLSETTDATE(_area15);
+        record.setDTLDATE(util.Delete0(_area13));
+        record.setDTLTIME(util.Delete0(_area12));
+        record.setDTLSETTDATE(util.Delete0(_area15));
         record.setDTLCENSEQ(_area37);
         record.setDTLSLAMT("000000000");
         record.setDTLBEFBAL("000000000");
         record.setDTLAFTBAL("000000000");
-        record.setDTLAMT(_area4);
+        record.setDTLAMT(util.Delete0(_area4));
         record.setDTLUNITID(_area42);
-        record.setDTLNETID("000000000000");
-        record.setDTLTAC("00000000");
+        record.setDTLNETID("            ");
+        record.setDTLTAC("        ");
 
         PosDataBaseFactory.getIntance().openPosDatabase();
         PosDataBaseFactory.getIntance().insert(record);
@@ -556,7 +560,7 @@ public class MessageFilter {
      */
     public void clearTransctionRecords(){
         PosDataBaseFactory.getIntance().openPosDatabase();
-        PosDataBaseFactory.getIntance().delete(TranslationRecord.class);
+        PosDataBaseFactory.getIntance().delete(TranslationRecord.class,null);
         PosDataBaseFactory.getIntance().closePosDatabase();
     }
 
