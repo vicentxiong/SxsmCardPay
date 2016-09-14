@@ -28,7 +28,7 @@ public class InputtradeNum extends SxBaseActivity{
     @TAInjectView(id=R.id.scan)
     Button scan_bt;
     @TAInjectView(id=R.id.input_amount_ed)
-    TextView tv_amount;
+    EditText tv_amount;
     int type;
     String original_amount;
     String original_batchNum;
@@ -51,38 +51,42 @@ public class InputtradeNum extends SxBaseActivity{
             title=getResources().getString(R.string.return_goods);
             setAcitvityTitle(title);
         }
-        next_bt.setEnabled(false);
         next_bt.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
-        switch (type){
-            case MainMenuActivity.TRADE_CANCEL:
-                if(trademum_ed.getText().toString().trim().length()==6){
-                    Intent intent=new Intent(InputtradeNum.this,ReadCardActivity.class);
-                    intent.putExtra(ReadCardActivity.OPERATORNUM_KEY,getIntent().getStringExtra(ReadCardActivity.OPERATORNUM_KEY));
-                    intent.putExtra(ReadCardActivity.OPERATORPW_KEY,getIntent().getStringExtra(ReadCardActivity.OPERATORPW_KEY));
-                    intent.putExtra(ReadCardActivity.TRADENUM_KEY,trademum_ed.getText().toString().trim());
-                    intent.putExtra(ReadCardActivity.AMOUNT_KEY,tv_amount.getText().toString().trim());
-                    intent.putExtra(ReadCardActivity.BATCH,batchmum_ed.getText().toString().trim());
-                    intent.putExtra(ReadCardActivity.REFERENCENUM,referencenum_ed.getText().toString().trim());
-                    startActivity(intent);
-                    finish();
-                }else Toast.makeText(InputtradeNum.this,getResources().getString(R.string.length_error_please_input_6bit_num),Toast.LENGTH_SHORT).show();
-                break;
-            case MainMenuActivity.RETURN_GOODS:
-                if(trademum_ed.getText().toString().trim().length()==6){
-                    Intent intent=new Intent(InputtradeNum.this,InputAmountNumActivity.class);
-                    intent.putExtra(ReadCardActivity.OPERATORNUM_KEY,getIntent().getStringExtra(ReadCardActivity.OPERATORNUM_KEY));
-                    intent.putExtra(ReadCardActivity.OPERATORPW_KEY,getIntent().getStringExtra(ReadCardActivity.OPERATORPW_KEY));
-                    intent.putExtra(ReadCardActivity.TRADENUM_KEY,trademum_ed.getText().toString().trim());
-                    intent.putExtra(ReadCardActivity.AMOUNT_KEY,original_amount);
-                    intent.putExtra(ReadCardActivity.BATCH,batchmum_ed.getText().toString().trim());
-                    intent.putExtra(ReadCardActivity.REFERENCENUM,referencenum_ed.getText().toString().trim());
-                    startActivity(intent);
-                    finish();
-                }else Toast.makeText(InputtradeNum.this,getResources().getString(R.string.length_error_please_input_6bit_num),Toast.LENGTH_SHORT).show();
-                break;
+        if(!tv_amount.getText().toString().trim().equalsIgnoreCase("")&&!referencenum_ed.getText().toString().trim().equalsIgnoreCase("")&&!batchmum_ed.getText().toString().trim().equalsIgnoreCase("")&&!trademum_ed.getText().toString().trim().equalsIgnoreCase("")){
+            switch (type){
+                case MainMenuActivity.TRADE_CANCEL:
+                    if(trademum_ed.getText().toString().trim().length()==6){
+                        Intent intent=new Intent(InputtradeNum.this,ReadCardActivity.class);
+                        intent.putExtra(ReadCardActivity.OPERATORNUM_KEY,getIntent().getStringExtra(ReadCardActivity.OPERATORNUM_KEY));
+                        intent.putExtra(ReadCardActivity.OPERATORPW_KEY,getIntent().getStringExtra(ReadCardActivity.OPERATORPW_KEY));
+                        intent.putExtra(ReadCardActivity.TRADENUM_KEY,trademum_ed.getText().toString().trim());
+                        intent.putExtra(ReadCardActivity.AMOUNT_KEY,tv_amount.getText().toString().trim());
+                        intent.putExtra(ReadCardActivity.BATCH,batchmum_ed.getText().toString().trim());
+                        intent.putExtra(ReadCardActivity.REFERENCENUM,referencenum_ed.getText().toString().trim());
+                        startActivity(intent);
+                        finish();
+                    }else Toast.makeText(InputtradeNum.this,getResources().getString(R.string.length_error_input_6bit_num),Toast.LENGTH_SHORT).show();
+                    break;
+                case MainMenuActivity.RETURN_GOODS:
+                    if(trademum_ed.getText().toString().trim().length()==6){
+                        Intent intent=new Intent(InputtradeNum.this,InputAmountNumActivity.class);
+                        intent.putExtra(ReadCardActivity.OPERATORNUM_KEY,getIntent().getStringExtra(ReadCardActivity.OPERATORNUM_KEY));
+                        intent.putExtra(ReadCardActivity.OPERATORPW_KEY,getIntent().getStringExtra(ReadCardActivity.OPERATORPW_KEY));
+                        intent.putExtra(ReadCardActivity.TRADENUM_KEY,trademum_ed.getText().toString().trim());
+                        intent.putExtra(ReadCardActivity.AMOUNT_KEY,original_amount);
+                        intent.putExtra(ReadCardActivity.BATCH,batchmum_ed.getText().toString().trim());
+                        intent.putExtra(ReadCardActivity.REFERENCENUM,referencenum_ed.getText().toString().trim());
+                        startActivity(intent);
+                        finish();
+                    }else Toast.makeText(InputtradeNum.this,getResources().getString(R.string.length_error_input_6bit_num),Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }else {
+            Toast.makeText(InputtradeNum.this,getResources().getString(R.string.please_inputorscan),Toast.LENGTH_SHORT).show();
         }
+
 
     }
 });
@@ -108,7 +112,6 @@ public class InputtradeNum extends SxBaseActivity{
                 referencenum_ed.setText(resultArray[2]);
                 original_batchNum=resultArray[1];
                 retrieve_referenceNum=resultArray[2];
-                next_bt.setEnabled(true);
             }
         }else Toast.makeText(InputtradeNum.this,getResources().getString(R.string.scan_error),Toast.LENGTH_LONG).show();
     }

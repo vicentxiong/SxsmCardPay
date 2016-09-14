@@ -86,6 +86,7 @@
     <string name="return_goods">退货</string>
     <string name="trade_cancel">消费撤销</string>
     <string name="length_error_please_input_6bit_num">长度错误，请输入6位数密码</string>
+    <string name="length_error_input_6bit_num">长度错误，请输入6位数</string>
     <string name="please_input">请输入</string>
     <string name="retrurn_goods_amount">退货金额：</string>
     <string name="impact_now">交易失败，正在冲正，请稍后......</string>

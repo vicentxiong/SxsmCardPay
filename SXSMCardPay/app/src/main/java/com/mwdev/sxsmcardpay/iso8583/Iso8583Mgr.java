@@ -718,8 +718,7 @@ public class Iso8583Mgr {
 	public byte[] Return_goods(String psamId, String merchantNum,
 			String cardNum, String passWord, String tradeNum, String amount,
 			String retrieve_referenceNum, String original_tradeNum,
-			String original_batchNum, String operatorNum,
-			String operatorPassWord) {
+			String original_batchNum) {
 		byte[] packdata = null;
 		Map<String, String> sourcedata = new HashMap<String, String>();
 		sourcedata.put("tpdu", "6000000000");
@@ -743,7 +742,7 @@ public class Iso8583Mgr {
 		sourcedata.put("60", getBCD("25" + getBatch() + "000" + "5"));
 		sourcedata.put("61", getBCD(original_batchNum + original_tradeNum));
 		// 63域 暂定
-		sourcedata.put("63", operatorNum + operatorPassWord);
+//		sourcedata.put("63", operatorNum + operatorPassWord);
 		sourcedata.put("64", "");
 		try {
 			packdata = packData(sourcedata, true);

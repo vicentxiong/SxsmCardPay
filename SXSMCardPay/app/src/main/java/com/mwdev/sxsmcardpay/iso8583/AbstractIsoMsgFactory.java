@@ -17,6 +17,7 @@ import com.basewin.packet8583.model.IsoPackage;
 import com.basewin.utils.BCDHelper;
 import com.basewin.utils.EncodeUtil;
 import com.basewin.utils.SimpleUtil;
+import com.mwdev.sxsmcardpay.util.PosLog;
 
 public abstract class AbstractIsoMsgFactory {
 	public byte[] pack(Map<String, String> dataMap, IsoPackage pack)
@@ -59,7 +60,7 @@ public abstract class AbstractIsoMsgFactory {
 		System.arraycopy(bitMapByte, 0, bitMapByteNew, 0, bitMapByte.length);
 		System.arraycopy(bitMapByteMore, 0, bitMapByteNew, bitMapByte.length,
 				bitMapByteMore.length);
-		Log.i("qiuyi", "bitmap========>" + util.byteArray2Hex(bitMapByteNew));
+		PosLog.i("qiuyi", "bitmap========>" + util.byteArray2Hex(bitMapByteNew));
 		packClone.getIsoField("bitmap").setByteValue(bitMapByteNew);
 
 		return merge(packClone);
@@ -67,7 +68,7 @@ public abstract class AbstractIsoMsgFactory {
 
 	public Map<String, String> unpack(byte[] bts, IsoPackage pack)
 			throws Exception {
-		Log.i("qiuyi", "Map<String, String> unpack开始");
+		PosLog.i("qiuyi", "Map<String, String> unpack开始");
 		if ((pack == null) || (pack.size() == 0))
 			throw new IllegalArgumentException("配置为空，请检查IsoPackage是否为空");
 
@@ -82,28 +83,28 @@ public abstract class AbstractIsoMsgFactory {
 		for (Iterator<IsoField> localIterator = target.iterator(); localIterator
 				.hasNext();) {
 			IsoField field = (IsoField) localIterator.next();
-			System.out.println(field.getId() + "解包数据为:" + field.toString()
-					+ "\n");
-			Log.i("qiuyi", field.getId() + "解包数据为:" + field.toString() + "\n");
+//			System.out.println(field.getId() + "解包数据为:" + field.toString()
+//					+ "\n");
+//			Log.i("qiuyi", field.getId() + "解包数据为:" + field.toString() + "\n");
 			if (field.isAppData()) {
-				Log.i("qiuyi", "if (field.isAppData())");
+//				PosLog.i("qiuyi", "if (field.isAppData())");
 				if (!(hasBitMap))
 					continue;
 				int index = Integer.valueOf(field.getId()).intValue();
-				Log.i("qiuyi", "index=====>" + index);
+				PosLog.i("qiuyi", "index=====>" + index);
 				if (index == 1)
 					continue;
 
 				if (bitMap.getBit(index - 1) != 1)
 					continue;
 				offset += subByte(bts, offset, field);
-				Log.i("qiuyi", "offset==============================>" + offset);
+//				PosLog.i("qiuyi", "offset==============================>" + offset);
 				returnMap.put(field.getId(), field.getValue());
 
 				continue;
 			}
 			offset += subByte(bts, offset, field);
-			Log.i("qiuyi", "offset=====>" + offset);
+			PosLog.i("qiuyi", "offset=====>" + offset);
 			returnMap.put(field.getId(), field.getValue());
 			if (!(field.getId().equalsIgnoreCase("bitmap")))
 				continue;
@@ -111,7 +112,7 @@ public abstract class AbstractIsoMsgFactory {
 			hasBitMap = true;
 			bitMap = BitMap.addBits(field.getByteValue());
 		}
-		Log.i("qiuyi", "Map<String, String> unpack结束");
+		PosLog.i("qiuyi", "Map<String, String> unpack结束");
 		return returnMap;
 	}
 
@@ -119,10 +120,10 @@ public abstract class AbstractIsoMsgFactory {
 	// LLBINARY, LLLBINARY, LLTRACK, LLLTRACK;
 	private int subByte(byte[] bts, int offset, IsoField field)
 			throws UnsupportedEncodingException {
-		Log.i("qiuyi", "subByte开始");
+		PosLog.i("qiuyi", "subByte开始");
 		byte[] val = null;
 		int length = field.getLength();
-		Log.i("qiuyi", "field.getType()===>" + field.getType());
+		PosLog.i("qiuyi", "field.getType()===>" + field.getType());
 		switch (field.getIsoType()) {
 			case BINARY:
 				Log.i("qiuyi", "case 1");
@@ -135,7 +136,7 @@ public abstract class AbstractIsoMsgFactory {
 				System.arraycopy(bts, offset, val, 0, length);
 				break;
 			case LLVAR_NUMERIC:
-				Log.i("qiuyi", "case 6");
+				PosLog.i("qiuyi", "case 6");
 				byte[] lllnumerLen = new byte[2];
 				lllnumerLen[0] = bts[offset];
 				lllnumerLen[1] = bts[(offset + 1)];
@@ -154,7 +155,7 @@ public abstract class AbstractIsoMsgFactory {
 				length = 2 + first3Len;
 				break;
 			case LLVAR:
-				Log.i("qiuyi", "case 4");
+				PosLog.i("qiuyi", "case 4");
 			case LLBINARY:
 				byte[] llvarLen = new byte[2];
 
@@ -173,9 +174,9 @@ public abstract class AbstractIsoMsgFactory {
 				break;
 
 			case LLLVAR:
-				Log.i("qiuyi", "case 5");
+				PosLog.i("qiuyi", "case 5");
 			case LLLBINARY:
-				Log.i("qiuyi", "case 9");
+				PosLog.i("qiuyi", "case 9");
 				byte[] lllvarLen = new byte[3];
 				lllvarLen[0] = bts[offset];
 				lllvarLen[1] = bts[(offset + 1)];
@@ -187,17 +188,17 @@ public abstract class AbstractIsoMsgFactory {
 				else first2Len = Integer.valueOf(lllvarLen[0]) * 100
 						+ Integer.valueOf(lllvarLen[1]) * 10
 						+ Integer.valueOf(lllvarLen[2]);
-				Log.i("qiuyi", "位置2    第一位 Integer.valueOf(lllvarLen[0])==>"+Integer.valueOf(lllvarLen[0]));
-				Log.i("qiuyi", "位置2    第二位 Integer.valueOf(lllvarLen[1])==>"+Integer.valueOf(lllvarLen[1]));
-				Log.i("qiuyi", "位置2    第三位 Integer.valueOf(lllvarLen[2])==>"+Integer.valueOf(lllvarLen[2]));
-				Log.i("qiuyi", "位置2    first2Len=====》"+first2Len);
+				PosLog.i("qiuyi", "位置2    第一位 Integer.valueOf(lllvarLen[0])==>"+Integer.valueOf(lllvarLen[0]));
+				PosLog.i("qiuyi", "位置2    第二位 Integer.valueOf(lllvarLen[1])==>"+Integer.valueOf(lllvarLen[1]));
+				PosLog.i("qiuyi", "位置2    第三位 Integer.valueOf(lllvarLen[2])==>"+Integer.valueOf(lllvarLen[2]));
+				PosLog.i("qiuyi", "位置2    first2Len=====》"+first2Len);
 				val = new byte[first2Len];
 				System.arraycopy(bts, offset + 3, val, 0, first2Len);
-				Log.i("qiuyi", "位置3");
+				PosLog.i("qiuyi", "位置3");
 				length = 3 + first2Len;
 				break;
 			case LLLVAR_NUMERIC:
-				Log.i("qiuyi", "case 7");
+				PosLog.i("qiuyi", "case 7");
 				byte[] lllnumerLen_1 = new byte[3];
 				lllnumerLen_1[0] = bts[offset];
 				lllnumerLen_1[1] = bts[(offset + 1)];
@@ -210,20 +211,20 @@ public abstract class AbstractIsoMsgFactory {
 					first3Len_1 = Integer.valueOf(lllnumerLen_1[0]) * 100
 							+ Integer.valueOf(lllnumerLen_1[1]) * 10
 							+ Integer.valueOf(lllnumerLen_1[2]);
-					Log.i("qiuyi", "Integer.valueOf(lllnumerLen_1[0])======>"
+					PosLog.i("qiuyi", "Integer.valueOf(lllnumerLen_1[0])======>"
 							+ Integer.valueOf(lllnumerLen_1[0]));
-					Log.i("qiuyi", "Integer.valueOf(lllnumerLen_1[1]))======>"
+					PosLog.i("qiuyi", "Integer.valueOf(lllnumerLen_1[1]))======>"
 							+ Integer.valueOf(lllnumerLen_1[1]));
-					Log.i("qiuyi", "Integer.valueOf(lllnumerLen_1[2])======>"
+					PosLog.i("qiuyi", "Integer.valueOf(lllnumerLen_1[2])======>"
 							+ Integer.valueOf(lllnumerLen_1[2]));
-					Log.i("qiuyi", "first3Len_1======>" + first3Len_1);
+					PosLog.i("qiuyi", "first3Len_1======>" + first3Len_1);
 				}
 				val = new byte[first3Len_1];
 				System.arraycopy(bts, offset + 3, val, 0, first3Len_1);
 				length = 3 + first3Len_1;
 				break;
 			case LLTRACK:
-				Log.i("qiuyi", "case 10");
+				PosLog.i("qiuyi", "case 10");
 				byte[] lltrackLen = new byte[1];
 				lltrackLen[0] = bts[offset];
 
@@ -239,7 +240,7 @@ public abstract class AbstractIsoMsgFactory {
 				length = 1 + first4Len;
 				break;
 			case LLLTRACK:
-				Log.i("qiuyi", "case 11");
+				PosLog.i("qiuyi", "case 11");
 				byte[] llltrackLen = new byte[2];
 				llltrackLen[0] = bts[offset];
 				llltrackLen[1] = bts[(offset + 1)];
@@ -259,10 +260,10 @@ public abstract class AbstractIsoMsgFactory {
 				+ BCDHelper.hex2DebugHexString(val, val.length) + "\n"
 				+ field.toString() + "\n");
 		field.setByteValue(val);
-		Log.i("qiuyi",
-				"subByte:" + BCDHelper.hex2DebugHexString(val, val.length)
-						+ "\n" + field.toString() + "length====>" + length
-						+ "\n");
+//		Log.i("qiuyi",
+//				"subByte:" + BCDHelper.hex2DebugHexString(val, val.length)
+//						+ "\n" + field.toString() + "length====>" + length
+//						+ "\n");
 		return length;
 	}
 
@@ -277,17 +278,17 @@ public abstract class AbstractIsoMsgFactory {
 			if (!(field.isChecked()))
 				continue;
 			System.out.print("组包：" + field.toString() + "\n");
-			Log.i("qiuyi", "组包：" + field.toString() + "\n");
+			PosLog.i("qiuyi", "组包：" + field.toString() + "\n");
 			switch (field.getIsoType()) {
 				case LLVAR_NUMERIC:
-					Log.i("qiuyi",
+					PosLog.i("qiuyi",
 							field.getId() + "==============>" + field.getLength());
 					byte[] lengthByte_LLVAR_NUMERIC = new byte[2];
 					if (field.getLengthType().trim().equals("hex"))
 						lengthByte_LLVAR_NUMERIC[0] = (byte) field.getLength();
 					else {
 						// lengthByte0 = EncodeUtil.bcd(field.getLength(), 1);
-						Log.i("qiuyi", field.getLength() + "<=============="
+						PosLog.i("qiuyi", field.getLength() + "<=============="
 								+ field.getLength());
 						int lllength = field.getLength()/2;
 						int llfristnum = lllength / 10;
@@ -300,19 +301,19 @@ public abstract class AbstractIsoMsgFactory {
 					byteOutPut.write(lengthByte_LLVAR_NUMERIC);
 					System.out.println("LL设置包长度:" + EncodeUtil.hex(lengthByte_LLVAR_NUMERIC)
 							+ "\n");
-					Log.i("qiuyi", "LL设置包长度:" + EncodeUtil.hex(lengthByte_LLVAR_NUMERIC) + "\n");
+					PosLog.i("qiuyi", "LL设置包长度:" + EncodeUtil.hex(lengthByte_LLVAR_NUMERIC) + "\n");
 					break;
 				case LLVAR:
-					Log.i("qiuyi", field.getId());
+					PosLog.i("qiuyi", field.getId());
 				case LLBINARY:
-					Log.i("qiuyi",
+					PosLog.i("qiuyi",
 							field.getId() + "==============>" + field.getLength());
 					byte[] lengthByte_LLVAR = new byte[2];
 					if (field.getLengthType().trim().equals("hex"))
 						lengthByte_LLVAR[0] = (byte) field.getLength();
 					else {
 						// lengthByte0 = EncodeUtil.bcd(field.getLength(), 1);
-						Log.i("qiuyi", field.getLength() + "<=============="
+						PosLog.i("qiuyi", field.getLength() + "<=============="
 								+ field.getLength());
 						int lllength = field.getLength();
 						int llfristnum = lllength / 10;
@@ -325,10 +326,10 @@ public abstract class AbstractIsoMsgFactory {
 					byteOutPut.write(lengthByte_LLVAR);
 					System.out.println("LL设置包长度:" + EncodeUtil.hex(lengthByte_LLVAR)
 							+ "\n");
-					Log.i("qiuyi", "LL设置包长度:" + EncodeUtil.hex(lengthByte_LLVAR) + "\n");
+					PosLog.i("qiuyi", "LL设置包长度:" + EncodeUtil.hex(lengthByte_LLVAR) + "\n");
 					break;
 				case LLLVAR_NUMERIC:
-					Log.i("qiuyi", field.getId());
+					PosLog.i("qiuyi", field.getId());
 					byte[] lengthByte_LLLVAR_NUMERIC = new byte[3];
 					if (field.getLengthType().trim().equals("hex")) {
 						lengthByte_LLLVAR_NUMERIC[0] = (byte) (field.getLength() / 255);
@@ -348,16 +349,16 @@ public abstract class AbstractIsoMsgFactory {
 						lengthByte_LLLVAR_NUMERIC[2] = thirdnum[0];
 					}
 					byteOutPut.write(lengthByte_LLLVAR_NUMERIC);
-					Log.i("qiuyi", "LLL设置包长度:" + EncodeUtil.hex(lengthByte_LLLVAR_NUMERIC) + "\n");
+					PosLog.i("qiuyi", "LLL设置包长度:" + EncodeUtil.hex(lengthByte_LLLVAR_NUMERIC) + "\n");
 					System.out.println("LLL设置包长度:" + EncodeUtil.hex(lengthByte_LLLVAR_NUMERIC)
 							+ "\n");
 					break;
 
 
 				case LLLVAR:
-					Log.i("qiuyi", field.getId());
+					PosLog.i("qiuyi", field.getId());
 				case LLLBINARY:
-					Log.i("qiuyi", field.getId());
+					PosLog.i("qiuyi", field.getId());
 					byte[] lengthByte_LLLVAR = new byte[3];
 					if (field.getLengthType().trim().equals("hex")) {
 						lengthByte_LLLVAR[0] = (byte) (field.getLength() / 255);
@@ -377,12 +378,12 @@ public abstract class AbstractIsoMsgFactory {
 						lengthByte_LLLVAR[2] = thirdnum[0];
 					}
 					byteOutPut.write(lengthByte_LLLVAR);
-					Log.i("qiuyi", "LLL设置包长度:" + EncodeUtil.hex(lengthByte_LLLVAR) + "\n");
+					PosLog.i("qiuyi", "LLL设置包长度:" + EncodeUtil.hex(lengthByte_LLLVAR) + "\n");
 					System.out.println("LLL设置包长度:" + EncodeUtil.hex(lengthByte_LLLVAR)
 							+ "\n");
 					break;
 				case LLTRACK:
-					Log.i("qiuyi", field.getId());
+					PosLog.i("qiuyi", field.getId());
 					byte[] lengthTrack2 = new byte[1];
 					if (field.getLengthType().trim().equals("hex"))
 						lengthTrack2[0] = (byte) (field.getLength() / 2);
@@ -394,7 +395,7 @@ public abstract class AbstractIsoMsgFactory {
 							+ "\n");
 					break;
 				case LLLTRACK:
-					Log.i("qiuyi", field.getId());
+					PosLog.i("qiuyi", field.getId());
 					byte[] lengthByte3_LLLTRACK = new byte[2];
 					if (field.getLengthType().trim().equals("hex")) {
 						lengthByte3_LLLTRACK[0] = (byte) (field.getLength() / 2 / 255);
@@ -406,13 +407,13 @@ public abstract class AbstractIsoMsgFactory {
 					System.out.println("3磁道打包设置包长度:" + EncodeUtil.hex(lengthByte3_LLLTRACK)
 							+ "\n");
 				case BINARY:
-					Log.i("qiuyi", field.getId());
+					PosLog.i("qiuyi", field.getId());
 					break;
 				case CHAR:
-					Log.i("qiuyi", field.getId());
+					PosLog.i("qiuyi", field.getId());
 					break;
 				case NUMERIC:
-					Log.i("qiuyi", field.getId());
+					PosLog.i("qiuyi", field.getId());
 					break;
 				default:
 					break;
@@ -420,10 +421,10 @@ public abstract class AbstractIsoMsgFactory {
 
 			System.out.println("设置数据:========>"
 					+ EncodeUtil.hex(field.getByteValue()) + "\n");
-			Log.i("qiuyi",
+			PosLog.i("qiuyi",
 					"getByteValue()设置数据:=======>" + EncodeUtil.hex(field.getByteValue())
 							+ "\n");
-			Log.i("qiuyi", "getValue设置数据:=======>" + field.getValue() + "\n");
+			PosLog.i("qiuyi", "getValue设置数据:=======>" + field.getValue() + "\n");
 
 			// if (field.getId().equalsIgnoreCase("bitmap")) {
 			// byte[] bitmapByte = field.getByteValue();
@@ -444,16 +445,16 @@ public abstract class AbstractIsoMsgFactory {
 		byte[] beforeSend = byteOutPut.toByteArray();
 		byte[] bts = new byte[beforeSend.length];
 		System.arraycopy(beforeSend, 0, bts, 0, beforeSend.length);
-		Log.i("qiuyi", "bts=======>:" + EncodeUtil.hex(bts) + "\n");
+		PosLog.i("qiuyi", "bts=======>:" + EncodeUtil.hex(bts) + "\n");
 		return bts;
 	}
 
 	public byte[] merge(IsoPackage isoPackage, String start, String end)
 			throws IOException {
 		ByteArrayOutputStream byteOutPut = new ByteArrayOutputStream(100);
-		System.out
-				.println("merge(IsoPackage isoPackage, String start, String end)\n");
-		System.out.println("start = " + start + " end = " + end + "\n");
+//		System.out
+//				.println("merge(IsoPackage isoPackage, String start, String end)\n");
+//		System.out.println("start = " + start + " end = " + end + "\n");
 
 		List<String> keys = getMacList(isoPackage, start, end);
 		for (int i = 0; i < keys.size(); ++i) {
@@ -465,7 +466,7 @@ public abstract class AbstractIsoMsgFactory {
 				.hasNext();) {
 			IsoField field = (IsoField) localIterator.next();
 			if ((field.isChecked()) && (keys.contains(field.getId()))) {
-				System.out.println("是需要打包的key:" + field.getId() + "\n");
+//				System.out.println("是需要打包的key:" + field.getId() + "\n");
 				switch (field.getIsoType().ordinal()) {
 					case 4:
 					case 6:
@@ -515,13 +516,13 @@ public abstract class AbstractIsoMsgFactory {
 								+ EncodeUtil.hex(lengthByte2) + "\n");
 				}
 
-				System.out.println(field.getId() + ":"
-						+ EncodeUtil.hex(field.getByteValue()));
+//				System.out.println(field.getId() + ":"
+//						+ EncodeUtil.hex(field.getByteValue()));
 
 				byteOutPut.write(field.getByteValue());
 				break;
 			}
-			System.out.println("不是需要打包的key:" + field.getId() + "\n");
+//			System.out.println("不是需要打包的key:" + field.getId() + "\n");
 		}
 
 		byte[] beforeSend = byteOutPut.toByteArray();

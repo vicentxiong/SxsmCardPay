@@ -22,6 +22,7 @@ import com.mwdev.sxsmcardpay.database.Flushes;
 import com.mwdev.sxsmcardpay.database.PosDataBaseFactory;
 import com.mwdev.sxsmcardpay.iso8583.Iso8583Mgr;
 import com.mwdev.sxsmcardpay.iso8583.util;
+import com.mwdev.sxsmcardpay.util.PosLog;
 import com.mwdev.sxsmcardpay.util.PosUtil;
 import com.ta.annotation.TAInjectResource;
 import com.ta.annotation.TAInjectView;
@@ -152,6 +153,15 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
 
     }
 
+    @Override
+    public void onNetworkStatus(boolean connect) {
+        super.onNetworkStatus(connect);
+        Log.i("qiuyi11","connect=======>"+connect);
+        if(!connect){
+            finish();
+        }
+
+    }
 
     @Override
     protected void onAfterOnCerate() {
@@ -228,29 +238,49 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                         Log.i("qiuyi", "type=======>" + type);
 
                             Log.i("qiuyi", "pw========>" + pw);
-                            if (CardNum.length() > 12) {
+                            if (CardNum!=null&&CardNum.length() > 12) {
                                 tradeNum = myPosApplication.createTradeSerialNumber();
                                 binaryString_pin =getpinbinaryString(CardNum,pw);
                                 psamid = myPosApplication.getPsamID();
-                                merchantNum = mConfig.getString(cropname_key, "");
+                                merchantNum = myPosApplication.getCropNum();
 
                                 Log.i("qiuyi","psamid====>"+psamid+
                                         "\nmerchantNum=====>"+ merchantNum+
                                         "\ncardinfo=======>" +cardinfo+
                                         "\nbinaryString_pin====>" +binaryString_pin +
                                         "\ntradeNum===>" +tradeNum);
-                                if(psamid!=null&&!merchantNum.equalsIgnoreCase("")&&binaryString_pin!=null&&tradeNum!=null){
-                                    setDiglogText(getResources().getString(R.string.doqueryamount_now));
-                                    showProgressDiglog();
-                                    sendRequest(myIso8583Mgr.balance_query(psamid, merchantNum
-                                            , cardinfo, binaryString_pin, tradeNum), "0200", "311000");
+                                if(psamid!=null&&!"".equalsIgnoreCase(psamid)){
+                                    if(merchantNum!=null&&!"".equalsIgnoreCase(merchantNum)){
+                                        if(binaryString_pin!=null&&!"".equalsIgnoreCase(binaryString_pin)){
+                                            if(tradeNum!=null&&!"".equalsIgnoreCase(tradeNum)){
+                                                if(cardinfo!=null&&!"".equalsIgnoreCase(cardinfo)){
+                                                    setDiglogText(getResources().getString(R.string.doqueryamount_now));
+                                                    showProgressDiglog();
+                                                    sendRequest(myIso8583Mgr.balance_query(psamid, merchantNum
+                                                            , cardinfo, binaryString_pin, tradeNum), "0200", "311000");
+                                                }else{
+                                                    Toast.makeText(this, getResources().getString(R.string.cardinfo_error), Toast.LENGTH_SHORT).show();
+                                                    finish();
+                                                }
+
+                                            }
+                                        }else{
+                                            Toast.makeText(this, getResources().getString(R.string.password_error), Toast.LENGTH_SHORT).show();
+                                            pw="";
+                                            cardpw.setText("");
+
+                                        }
+                                    }else{
+                                        Toast.makeText(this, getResources().getString(R.string.merchantNum_error), Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
                                 }else {
-                                    Toast.makeText(this, getResources().getString(R.string.data_error), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(this, getResources().getString(R.string.psam_error), Toast.LENGTH_LONG).show();
+                                    finish();
                                 }
-
-
                             }else {
                                 Toast.makeText(this, getResources().getString(R.string.cardnum_error), Toast.LENGTH_SHORT).show();
+                                finish();
                             }
 
 
@@ -261,7 +291,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                             tradeNum = myPosApplication.createTradeSerialNumber();
                             binaryString_pin =getpinbinaryString(CardNum,pw);
                             psamid = myPosApplication.getPsamID();
-                            merchantNum = mConfig.getString(cropname_key, "");
+                            merchantNum = myPosApplication.getCropNum();
                             batchnum=myIso8583Mgr.getBatch();
 //                            String password=Iso8583Mgr.hexString2binaryString("90D892CF608EA288");
                             Log.i("xiongxin","batchnum===>"+batchnum);
@@ -274,86 +304,165 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                                     "\ninput_amount=====>"+input_amount);
                             String amount_need8583=Iso8583Mgr.inputamount2amount(input_amount);
                             Log.i("qiuyi","amount_need8583====>"+amount_need8583);
-                            if(psamid!=null&&!merchantNum.equalsIgnoreCase("")&&binaryString_pin!=null&&tradeNum!=null&&input_amount!=null){
-                                setDiglogText(getResources().getString(R.string.dotrade_now));
-                                showProgressDiglog();
-                                sendRequest(myIso8583Mgr.trade(psamid,merchantNum,cardinfo,binaryString_pin,tradeNum,amount_need8583),"0200","001000");
-                            }else{
-                                Toast.makeText(this, getResources().getString(R.string.data_error), Toast.LENGTH_SHORT).show();
+                            if(psamid!=null&&!"".equalsIgnoreCase(psamid)){
+                                if(merchantNum!=null&&!"".equalsIgnoreCase(merchantNum)){
+                                    if(binaryString_pin!=null&&!"".equalsIgnoreCase(binaryString_pin)){
+                                        if(amount_need8583!=null&&!"".equalsIgnoreCase(amount_need8583)){
+                                            if(cardinfo!=null&&!"".equalsIgnoreCase(cardinfo)){
+                                                setDiglogText(getResources().getString(R.string.dotrade_now));
+                                                showProgressDiglog();
+                                                sendRequest(myIso8583Mgr.trade(psamid,merchantNum,cardinfo,binaryString_pin,tradeNum,amount_need8583),"0200","001000");
+                                            }else {
+                                                Toast.makeText(this, getResources().getString(R.string.cardinfo_error), Toast.LENGTH_SHORT).show();
+                                                finish();
+                                            }
+
+                                        }else {
+                                            Toast.makeText(this, getResources().getString(R.string.input_error), Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        }
+                                    }else {
+                                        Toast.makeText(this, getResources().getString(R.string.password_error), Toast.LENGTH_SHORT).show();
+                                        pw="";
+                                        cardpw.setText("");
+                                    }
+                                }else {
+                                    Toast.makeText(this, getResources().getString(R.string.merchantNum_error), Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+                            }else {
+                                Toast.makeText(this, getResources().getString(R.string.psam_error), Toast.LENGTH_LONG).show();
+                                finish();
                             }
 
                         }else{
                             Toast.makeText(this, getResources().getString(R.string.cardnum_error), Toast.LENGTH_SHORT).show();
                         }
-
-
-
                         break;
                     case MainMenuActivity.TRADE_CANCEL:
                         Log.i("qiuyi", "type=======>" + MainMenuActivity.TRADE_CANCEL);
-                        merchantNum = myPosApplication.getCropNum();
-                        psamid = myPosApplication.getPsamID();
-                        tradeNum = myPosApplication.createTradeSerialNumber();
-                        original_tradeNum=getIntent().getStringExtra(ReadCardActivity.TRADENUM_KEY);
-                        original_batchNum=getIntent().getStringExtra(ReadCardActivity.BATCH);
-                        retrieve_referenceNum=getIntent().getStringExtra(ReadCardActivity.REFERENCENUM);
-                        binaryString_pin =getpinbinaryString(CardNum,pw);
+                        if(CardNum.length()>12) {
+                            merchantNum = myPosApplication.getCropNum();
+                            psamid = myPosApplication.getPsamID();
+                            tradeNum = myPosApplication.createTradeSerialNumber();
+                            original_tradeNum = getIntent().getStringExtra(ReadCardActivity.TRADENUM_KEY);
+                            original_batchNum = getIntent().getStringExtra(ReadCardActivity.BATCH);
+                            retrieve_referenceNum = getIntent().getStringExtra(ReadCardActivity.REFERENCENUM);
+                            binaryString_pin = getpinbinaryString(CardNum, pw);
+                            Log.i("qiuyi", "type=======>" + MainMenuActivity.TRADE_CANCEL);
 //                        myPosDataBaseFactory.openPosDatabase();
 //                        List<TranslationRecord> list= PosDataBaseFactory.getIntance().query(TranslationRecord.class,"DTLPOSSEQ="+original_tradeNum,null,null,null,null);
 //                        myPosDataBaseFactory.closePosDatabase();
 //                        TranslationRecord t=list.get(0);
 //                            original_batchNum= t.getDTLBATCHNO();
 //                            retrieve_referenceNum=t.getDTLCENSEQ();
-                       String amount_need8583=Iso8583Mgr.inputamount2amount(original_amount);
-                        Log.i("qiuyi","psamid====>"+psamid+
-                                "\nmerchantNum=====>"+ merchantNum+
-                                "\ncardinfo=======>" +cardinfo+
-                                "\nbinaryString_pin====>" +binaryString_pin +
-                                "\ntradeNum====>" +tradeNum+
-                                "\nbatchnum====>" +batchnum+
-                                "\nretrieve_referenceNum====>" +retrieve_referenceNum+
-                                "\noriginal_tradeNum====>" +original_tradeNum+
-                                "\noriginal_batchNum====>" +original_batchNum+
-                                "\namount_need8583=====>"+amount_need8583);
-                        if(psamid!=null&&!merchantNum.equalsIgnoreCase("")&&binaryString_pin!=null&&tradeNum!=null&&retrieve_referenceNum!=null&&original_tradeNum!=null&&original_batchNum!=null&&amount_need8583!=null){
-                            setDiglogText(getResources().getString(R.string.dotrade_cancel_now));
-                            showProgressDiglog();
-                            sendRequest(myIso8583Mgr.trade_cancel(psamid,merchantNum,cardinfo,binaryString_pin,tradeNum,retrieve_referenceNum,original_tradeNum,original_batchNum,amount_need8583),"0200","201000");
-                            }else Toast.makeText(this, getResources().getString(R.string.data_error), Toast.LENGTH_SHORT).show();
+                            String amount_need8583 = Iso8583Mgr.inputamount2amount(original_amount);
+                            Log.i("qiuyi", "psamid====>" + psamid +
+                                    "\nmerchantNum=====>" + merchantNum +
+                                    "\ncardinfo=======>" + cardinfo +
+                                    "\nbinaryString_pin====>" + binaryString_pin +
+                                    "\ntradeNum====>" + tradeNum +
+                                    "\nretrieve_referenceNum====>" + retrieve_referenceNum +
+                                    "\noriginal_tradeNum====>" + original_tradeNum +
+                                    "\noriginal_batchNum====>" + original_batchNum +
+                                    "\namount_need8583=====>" + amount_need8583);
+                            if (psamid != null && !"".equalsIgnoreCase(psamid)) {
+                                if (merchantNum != null && !"".equalsIgnoreCase(merchantNum)) {
+                                    if (binaryString_pin != null && !"".equalsIgnoreCase(binaryString_pin)) {
 
+                                            if (cardinfo != null && !"".equalsIgnoreCase(cardinfo)) {
+                                                if (retrieve_referenceNum != null && !"".equalsIgnoreCase(retrieve_referenceNum)&&original_tradeNum != null && !"".equalsIgnoreCase(original_tradeNum) && original_batchNum != null && !"".equalsIgnoreCase(original_batchNum) && amount_need8583 != null && !"".equalsIgnoreCase(amount_need8583)) {
+                                                    setDiglogText(getResources().getString(R.string.dotrade_cancel_now));
+                                                    showProgressDiglog();
+                                                    sendRequest(myIso8583Mgr.trade_cancel(psamid, merchantNum, cardinfo, binaryString_pin, tradeNum, retrieve_referenceNum, original_tradeNum, original_batchNum, amount_need8583), "0200", "201000");
+                                                }else{
+                                                    Toast.makeText(this, getResources().getString(R.string.original_data_error), Toast.LENGTH_SHORT).show();
+                                                    finish();
+                                                }
+                                            }else{
+                                                Toast.makeText(this, getResources().getString(R.string.cardinfo_error), Toast.LENGTH_SHORT).show();
+                                                finish();
+                                            }
+
+                                    }else{
+                                        Toast.makeText(this, getResources().getString(R.string.password_error), Toast.LENGTH_SHORT).show();
+                                        pw="";
+                                        cardpw.setText("");
+                                    }
+                                }else{
+                                    Toast.makeText(this, getResources().getString(R.string.merchantNum_error), Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+                            }else{
+                                Toast.makeText(this, getResources().getString(R.string.psam_error), Toast.LENGTH_LONG).show();
+                                finish();
+                            }
+                        }else {
+                            Toast.makeText(this, getResources().getString(R.string.cardnum_error), Toast.LENGTH_SHORT).show();
+                        }
 
                         break;
                     case MainMenuActivity.RETURN_GOODS:
                         Log.i("qiuyi", "type=======>" + MainMenuActivity.RETURN_GOODS);
-                        merchantNum = myPosApplication.getCropNum();
-                        psamid = myPosApplication.getPsamID();
-                        tradeNum = myPosApplication.createTradeSerialNumber();
-                        original_tradeNum=getIntent().getStringExtra(ReadCardActivity.TRADENUM_KEY);
-                        original_batchNum=getIntent().getStringExtra(ReadCardActivity.BATCH);
-                        retrieve_referenceNum=getIntent().getStringExtra(ReadCardActivity.REFERENCENUM);
-                        binaryString_pin =getpinbinaryString(CardNum,pw);
-                        operatorNum=getIntent().getStringExtra(ReadCardActivity.OPERATORNUM_KEY);
-                        operatorPassWord=getIntent().getStringExtra(ReadCardActivity.OPERATORPW_KEY);
-                        String input_amount_need8583=Iso8583Mgr.inputamount2amount(input_amount);
-                        Log.i("qiuyi","psamid====>"+psamid+
-                                "\nmerchantNum=====>"+ merchantNum+
-                                "\ncardinfo=======>" +cardinfo+
-                                "\nbinaryString_pin====>" +binaryString_pin +
-                                "\ntradeNum====>" +tradeNum+
-                                "\noperatorNum====>" +operatorNum+
-                                "\noperatorPassWord====>" +operatorPassWord+
-                                "\nretrieve_referenceNum====>" +retrieve_referenceNum+
-                                "\noriginal_tradeNum====>" +original_tradeNum+
-                                "\noriginal_batchNum====>" +original_batchNum+
-                                "\ninput_amount_need8583=====>"+input_amount_need8583);
-                        if(psamid!=null&&!merchantNum.equalsIgnoreCase("")&&binaryString_pin!=null&&tradeNum!=null&&input_amount_need8583!=null&&retrieve_referenceNum!=null&&original_tradeNum!=null&&original_batchNum!=null&&operatorNum!=null&&operatorPassWord!=null){
-                            setDiglogText(getResources().getString(R.string.doreturngood_now));
-                            showProgressDiglog();
-                            sendRequest(myIso8583Mgr.Return_goods(psamid,merchantNum,cardinfo,binaryString_pin,tradeNum,input_amount_need8583,retrieve_referenceNum,original_tradeNum,original_batchNum,operatorNum,operatorPassWord),"0220","401000");
-                        }else Toast.makeText(this, getResources().getString(R.string.data_error), Toast.LENGTH_SHORT).show();
-
-
-
+                        if(CardNum.length()>12) {
+                            merchantNum = myPosApplication.getCropNum();
+                            psamid = myPosApplication.getPsamID();
+                            tradeNum = myPosApplication.createTradeSerialNumber();
+                            original_tradeNum = getIntent().getStringExtra(ReadCardActivity.TRADENUM_KEY);
+                            original_batchNum = getIntent().getStringExtra(ReadCardActivity.BATCH);
+                            retrieve_referenceNum = getIntent().getStringExtra(ReadCardActivity.REFERENCENUM);
+                            binaryString_pin = getpinbinaryString(CardNum, pw);
+                            operatorNum = getIntent().getStringExtra(ReadCardActivity.OPERATORNUM_KEY);
+                            operatorPassWord = getIntent().getStringExtra(ReadCardActivity.OPERATORPW_KEY);
+                            String input_amount_need8583 = Iso8583Mgr.inputamount2amount(input_amount);
+                            Log.i("qiuyi", "psamid====>" + psamid +
+                                    "\nmerchantNum=====>" + merchantNum +
+                                    "\ncardinfo=======>" + cardinfo +
+                                    "\nbinaryString_pin====>" + binaryString_pin +
+                                    "\ntradeNum====>" + tradeNum +
+                                    /**"\noperatorNum====>" + operatorNum +
+                                    "\noperatorPassWord====>" + operatorPassWord +*/
+                                    "\nretrieve_referenceNum====>" + retrieve_referenceNum +
+                                    "\noriginal_tradeNum====>" + original_tradeNum +
+                                    "\noriginal_batchNum====>" + original_batchNum +
+                                    "\ninput_amount_need8583=====>" + input_amount_need8583);
+                            if(psamid != null && !"".equalsIgnoreCase(psamid)){
+                                if(merchantNum != null && !"".equalsIgnoreCase(merchantNum)){
+                                    if(binaryString_pin != null && !"".equalsIgnoreCase(binaryString_pin)) {
+                                        if (cardinfo != null && !"".equalsIgnoreCase(cardinfo)){
+                                            if (input_amount_need8583 != null && !"".equalsIgnoreCase(input_amount_need8583)) {
+                                                if (retrieve_referenceNum != null && !"".equalsIgnoreCase(retrieve_referenceNum) && original_tradeNum != null && !"".equalsIgnoreCase(original_tradeNum) && original_batchNum != null && !"".equalsIgnoreCase(original_batchNum)) {
+                                                    setDiglogText(getResources().getString(R.string.doreturngood_now));
+                                                    showProgressDiglog();
+                                                    sendRequest(myIso8583Mgr.Return_goods(psamid, merchantNum, cardinfo, binaryString_pin, tradeNum, input_amount_need8583, retrieve_referenceNum, original_tradeNum, original_batchNum), "0220", "401000");
+                                                } else {
+                                                    Toast.makeText(this, getResources().getString(R.string.original_data_error), Toast.LENGTH_SHORT).show();
+                                                    finish();
+                                                }
+                                            } else {
+                                                Toast.makeText(this, getResources().getString(R.string.returngoods_amount_error), Toast.LENGTH_SHORT).show();
+                                                finish();
+                                            }
+                                    }else {
+                                            Toast.makeText(this, getResources().getString(R.string.cardinfo_error), Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        }
+                                    }else{
+                                        Toast.makeText(this, getResources().getString(R.string.password_error), Toast.LENGTH_SHORT).show();
+                                        pw="";
+                                        cardpw.setText("");
+                                    }
+                                }else {
+                                    Toast.makeText(this, getResources().getString(R.string.merchantNum_error), Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+                            }else {
+                                Toast.makeText(this, getResources().getString(R.string.psam_error), Toast.LENGTH_LONG).show();
+                                finish();
+                            }
+                        }else{
+                            Toast.makeText(this, getResources().getString(R.string.cardnum_error), Toast.LENGTH_SHORT).show();
+                        }
                         break;
 
                     default:
@@ -633,12 +742,18 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
 
     @Override
     protected void doConnectFail() {
+//        dismissProgressDiglog();
+     Log.i("qiuyi11","doConnectFail()");
+        onHanderToast(R.string.network_error);
+        finish();
+
 
     }
 
     @Override
     protected void doResponeTimeOut(MessageFilter.MessageType messagetype) {
         isResponeTimeOut=true;
+        PosLog.i("qiuyi11","===doResponeTimeOut===");
         switch (type){
             case MainMenuActivity.BALANCE_QUERY:
                 Intent intent=new Intent(InputCardPW.this,Query_errorActivity.class);
@@ -710,6 +825,8 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
             pw=pw+keynum;
             Log.i("qiuyi1","pw=======>"+pw);
             cardpw.setText(cardpw.getText().toString().trim()+keynum);
+        }else{
+//            Toast.makeText(this, getResources().getString(R.string.password_length_overstep), Toast.LENGTH_SHORT).show();
         }
 
     }

@@ -18,5 +18,17 @@
     <string name="readcard_error">读卡失败，返回主菜单！</string>
     <string name="readcard_timeout">读卡超时，返回主菜单</string>
     <string name="tradeerror">交易失败</string>
+    <string name="trade_bacthnum">交易批次号：</string>
+    <string name="trade_serialnum">交易流水号：</string>
+    <string name="original_amount">原消费金额：</string>
+    <string name="psam_error">终端号异常，请检查PSAM卡</string>
+    <string name="password_error">密码输入异常，请重新输入6位数密码！</string>
+    <string name="merchantNum_error">商户号异常，请检查!</string>
+    <string name="cardinfo_error">读卡信息异常，请重试！</string>
+    <string name="input_error">消费金额异常，请重试！</string>
+    <string name="original_data_error">原交易数据异常，请重试！</string>
+    <string name="returngoods_amount_error">退货金额异常，请重试！</string>
+    <string name="password_length_overstep">密码长度超出，请输入6位数密码！</string>
+    <string name="please_inputorscan">请扫描二维码或输入原交易流水号、批次号、索引号和金额！</string>
 
 </resources>
