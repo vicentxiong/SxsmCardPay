@@ -97,5 +97,5 @@
     <string name="checkin_fail">签到失败，请重试</string>
     <string name="db_flushes">发现遗留冲正数据，正在冲正......</string>
     <string name="flushes_respone_timeout">冲正响应超时</string>
-
+    <string name="check_out">正在签退,请稍等...</string>
 </resources>
