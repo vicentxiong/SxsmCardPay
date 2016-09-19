@@ -2,7 +2,6 @@ package com.mwdev.sxsmcardpay;
 
 import android.content.Intent;
 import android.media.AudioManager;
-import android.media.SoundPool;
 import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,8 +13,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import com.basewin.define.KeyType;
 import com.basewin.services.ServiceManager;
 import com.mwdev.sxsmcardpay.controler.MessageFilter;
@@ -28,8 +25,6 @@ import com.mwdev.sxsmcardpay.util.PosUtil;
 import com.ta.annotation.TAInjectResource;
 import com.ta.annotation.TAInjectView;
 import com.ta.util.config.TAIConfig;
-
-import java.util.List;
 
 /**
  * Created by qiuyi on 16-8-27.
@@ -827,14 +822,20 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                 startActivity(intent_trade);
                 break;
             case MainMenuActivity.TRADE:
-//                setDiglogText(getResources().getString(R.string.ResponeTimeOut_impact));
-//                showProgressDiglog();
-
+                if(messagetype==myPosApplication.getSocketClient().getFilter().TRADE_IMPACT_REQUEST_TYPE){
+                    printerMalFuctoinList();
+                }else {
+                    onHandlerDialogText(R.string.ResponeTimeOut_impact);
+                    showProgressDiglog();
+                }
                 break;
             case MainMenuActivity.TRADE_CANCEL:
-//                setDiglogText(getResources().getString(R.string.ResponeTimeOut_impact));
-//                showProgressDiglog();
-
+                if(messagetype==myPosApplication.getSocketClient().getFilter().TRADE_CANCEL_IMPACT_REQUEST_TYPE){
+                    printerMalFuctoinList();
+                }else {
+                    onHandlerDialogText(R.string.ResponeTimeOut_impact);
+                    showProgressDiglog();
+                }
                 break;
         }
     }

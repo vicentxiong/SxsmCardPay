@@ -260,6 +260,8 @@ public class Iso8583Mgr {
 					// TODO Auto-generated catch block
 					Log.i("qiuyi", "manager2.unpack出错" + e.toString());
 					e.printStackTrace();
+					return UNPACKDATA_ERROR;
+
 				}
 				// Log.d("8583", "解包数据为 = " +
 				// BCDHelper.hex2DebugHexString(manager2.pack(),
@@ -767,7 +769,7 @@ public class Iso8583Mgr {
 	 * 批结算报文
 	 */
 	public byte[] batch_settlement(String total_consumption,
-			String total_penNum, String tradeNum, String psamId,
+			String total_penNum,String Dtotal_consumption,String Dtotal_penNum, String tradeNum, String psamId,
 			String merchantNum, String operatorNum) {
 		byte[] packdata = null;
 		Map<String, String> sourcedata = new HashMap<String, String>();
@@ -780,7 +782,7 @@ public class Iso8583Mgr {
 		sourcedata.put("13", getBCD(getDate()));
 		sourcedata.put("41", psamId);
 		sourcedata.put("42", merchantNum);
-		sourcedata.put("48", getBCD(total_consumption + total_penNum + "0"));
+		sourcedata.put("48", getBCD(total_consumption + total_penNum +Dtotal_consumption+Dtotal_penNum+"0"));
 		sourcedata.put("49", "156");
 		sourcedata.put("60", getBCD("00" + getBatch() + "201"));
 		sourcedata.put("63", operatorNum);
