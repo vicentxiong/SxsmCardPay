@@ -40,7 +40,7 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
     private ImageView mActionBarLeft;
     private ImageView mActionBarRight;
     private TextView mTitle;
-
+    private TextView mTitle_top;
     private WindowManager mWinMgr;
     private PosApplication mPosApp;
     WindowManager.LayoutParams mWindowLayoutParams;
@@ -117,6 +117,7 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
         mActionBarLeft = (ImageView) bar.getCustomView().findViewById(R.id.actionbar_left);
         mActionBarRight = (ImageView) bar.getCustomView().findViewById(R.id.actionbar_right);
         mTitle = (TextView) bar.getCustomView().findViewById(R.id.title);
+        mTitle_top= (TextView) bar.getCustomView().findViewById(R.id.title_top);
         ActionBarClickListener l = new ActionBarClickListener();
         mActionBarLeft.setOnClickListener(l);
         mActionBarRight.setOnClickListener(l);
@@ -159,6 +160,21 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
         mTitle.setText(title);
     }
 
+    /**
+     * 设置界面title_top
+     * @param title
+     */
+    public void setAcitvityTitle_top(String title){
+        mTitle_top.setText(title);
+    }
+
+    /**
+     * 设置界面title_top
+     * @param
+     */
+    public void setAcitvityTitle_top_able(){
+        mTitle_top.setVisibility(View.VISIBLE);
+    }
     /**
      * 设置actionbar left button 是否可见
      * @param visitity
