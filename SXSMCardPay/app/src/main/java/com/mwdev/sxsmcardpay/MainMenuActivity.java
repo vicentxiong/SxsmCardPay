@@ -312,12 +312,12 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
                 break;
             case R.id.scalerevoke:
                 mConfig.setInt(TYPE_KEY,TRADE_CANCEL);
-                Intent intent1=new Intent(MainMenuActivity.this,InputOperatorNum.class);
+                Intent intent1=new Intent(MainMenuActivity.this,InputtradeNum.class);
                 startActivity(intent1);
                 break;
             case R.id.returngoods:
                 mConfig.setInt(TYPE_KEY,RETURN_GOODS);
-                Intent intent2=new Intent(MainMenuActivity.this,InputOperatorNum.class);
+                Intent intent2=new Intent(MainMenuActivity.this,InputtradeNum.class);
                 startActivity(intent2);
                 break;
         }
