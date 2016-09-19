@@ -80,7 +80,7 @@ public static String CONFIRM_AMOUNT;
 
         }
         mConfig = myPosApplication.getConfig(PosApplication.PREFERENCECONFIG);
-        merchantsnum_tv.setText(getResources().getString(R.string.merchants_num)+mConfig.getString(cropname_key, ""));
+        merchantsnum_tv.setText(getResources().getString(R.string.merchants_num)+myPosApplication.getCropNum());
         key_one.setOnClickListener(this);
         key_two.setOnClickListener(this);
         key_three.setOnClickListener(this);

@@ -30,5 +30,7 @@
     <string name="returngoods_amount_error">退货金额异常，请重试！</string>
     <string name="password_length_overstep">密码长度超出，请输入6位数密码！</string>
     <string name="please_inputorscan">请扫描二维码或输入原交易流水号、批次号、索引号和金额！</string>
-
+    <string name="confirm_return_goods">确认退货</string>
+    <string name="confirm_query_amount">请查询</string>
+    <string name="confirm_cancel_trade">确认撤销</string>
 </resources>

@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mwdev.sxsmcardpay.iso8583.CardNumInterface;
 import com.mwdev.sxsmcardpay.iso8583.Iso8583Mgr;
 import com.ta.annotation.TAInjectResource;
+import com.ta.annotation.TAInjectView;
 
 /**
  * Created by qiuyi on 16-8-25.
@@ -37,10 +39,14 @@ public class ReadCardActivity extends SxBaseActivity implements CardNumInterface
     public final static int READCARD_ERROR=1;
     public final static int READCARD_TIMEOUT=2;
 //    String input_amount;
+    @TAInjectView(id=R.id.title_top)
+    TextView tv_top;
     int type;
     @Override
     protected void onAfterOnCerate() {
         setAcitvityTitle(title);
+        setAcitvityTitle_top_able();
+
         Intent intent=getIntent();
 //       input_amount=intent.getStringExtra(INPUT_AMOUNT);
 //        Log.i("qiuyi","input_amount=======>"+input_amount);
@@ -49,9 +55,24 @@ public class ReadCardActivity extends SxBaseActivity implements CardNumInterface
         myIso8583Mgr.addResigter(this);
         myIso8583Mgr.readCardNum();
         type=myPosApplication.getConfig(PosApplication.PREFERENCECONFIG).getInt(MainMenuActivity.TYPE_KEY,5);
+        switch (type){
+            case MainMenuActivity.BALANCE_QUERY:
+                setAcitvityTitle_top(getResources().getString(R.string.query_balance));
+                break;
+            case MainMenuActivity.RETURN_GOODS:
+                setAcitvityTitle_top(getResources().getString(R.string.return_goods));
+                break;
+            case MainMenuActivity.TRADE:
+                setAcitvityTitle_top(getResources().getString(R.string.do_trade));
+                break;
+            case  MainMenuActivity.TRADE_CANCEL:
+                setAcitvityTitle_top(getResources().getString(R.string.trade_cancel));
+                break;
+        }
         Message message_timeout=new Message();
         message_timeout.what=READCARD_TIMEOUT;
         handler.sendMessageDelayed(message_timeout,31000);
+
 
     }
     Handler handler=new Handler(){
@@ -63,7 +84,7 @@ public class ReadCardActivity extends SxBaseActivity implements CardNumInterface
                     MediaPlayer mediaPlayer = MediaPlayer.create(ReadCardActivity.this,R.raw.beep);
                     mediaPlayer.start();
                     dismissProgressDiglog();
-                    String data= (String) msg.obj;
+                    String data=(String) msg.obj;
                     String cardnum=data.substring(24,40);
 //                    data=myIso8583Mgr.make55data(data);
                     data="0000000000000000000000000000000000000000"+data;

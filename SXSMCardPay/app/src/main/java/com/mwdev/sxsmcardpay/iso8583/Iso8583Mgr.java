@@ -503,7 +503,7 @@ public class Iso8583Mgr {
 		sourcedata.put("49", "156");
 		sourcedata.put("41", psamId);
 		sourcedata.put("42", merchantNum);
-		sourcedata.put("52", passWord);
+//		sourcedata.put("52", passWord);
 		sourcedata.put("53", getBCD("2600000000000000"));
 		// 54 附加金额 an…020 LLLVAR ASCII M
 		sourcedata.put("60", getBCD("01" + getBatch() + "000" + "5"));
@@ -647,7 +647,7 @@ public class Iso8583Mgr {
 		sourcedata.put("41", psamId);
 		sourcedata.put("42", merchantNum);
 		sourcedata.put("49", "156");
-		sourcedata.put("52", passWord);
+//		sourcedata.put("52", passWord);
 		sourcedata.put("53", getBCD("2600000000000000"));
 		sourcedata.put("60", getBCD("23" + getBatch() + "000" + "5"));
 
@@ -737,7 +737,7 @@ public class Iso8583Mgr {
 		sourcedata.put("41", psamId);
 		sourcedata.put("42", merchantNum);
 		sourcedata.put("49", "156");
-		sourcedata.put("52", passWord);
+//		sourcedata.put("52", passWord);
 		sourcedata.put("53", getBCD("2600000000000000"));
 		sourcedata.put("60", getBCD("25" + getBatch() + "000" + "5"));
 		sourcedata.put("61", getBCD(original_batchNum + original_tradeNum));

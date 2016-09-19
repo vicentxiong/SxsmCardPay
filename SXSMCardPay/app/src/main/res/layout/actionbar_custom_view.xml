@@ -30,6 +30,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="20dp"
+            android:visibility="gone"
+            android:textColor="@color/fontcolor"
+            android:id="@+id/title_top" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="New Text"
             android:textColor="@color/fontcolor"
             android:id="@+id/title" />

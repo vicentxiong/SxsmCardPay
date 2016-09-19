@@ -8,17 +8,41 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_marginTop="15dp"
+        android:layout_marginLeft="20dp"
+        android:textSize="25dp"
+        android:visibility="gone"
+        android:text=""
+        android:id="@+id/fill1" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginTop="15dp"
         android:layout_marginLeft="30dp"
         android:textSize="25dp"
+        android:textColor="#708090"
         android:text="@string/cardnum_text"
         android:id="@+id/cardnum" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="15dp"
         android:layout_marginLeft="30dp"
         android:textSize="25dp"
+        android:textColor="#708090"
+        android:visibility="gone"
+        android:text="@string/merchants_num"
+        android:id="@+id/mernum" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="30dp"
+        android:textSize="25dp"
+        android:textColor="#708090"
         android:visibility="invisible"
         android:text="@string/consumption_amount"
         android:id="@+id/consumption_amount_textView" />
@@ -30,29 +54,44 @@
         android:imeOptions="actionUnspecified"
         android:maxLines="1"
         android:singleLine="true"
+        android:visibility="gone"
         android:focusable="false"
         android:textSize="20dp"
         android:layout_marginTop="25dp"
         android:gravity="center"
         android:background="@drawable/editbackground"/>
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="30dp"
+        android:textSize="25dp"
+        android:text=""
+        android:visibility="gone"
+        android:id="@+id/fill2" />
     <Button
         android:layout_width="320dp"
         android:layout_height="60dp"
         android:text="@string/confirm_cardpwd"
         android:id="@+id/confirm_cardpwd"
         android:layout_gravity="center_horizontal"
+
         android:textSize="25dp"
-        android:layout_marginTop="27dp"
+        android:layout_marginTop="20dp"
         android:textStyle="bold"
         android:textColor="@color/fontcolor"
         android:background="@drawable/button_press"/>
-  <include
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="12dp"
-      layout="@layout/input_num"
-      />
+    <include
+        android:id="@+id/password_key"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:visibility="gone"
+        layout="@layout/input_num"
+        />
+
+
 
 
 
