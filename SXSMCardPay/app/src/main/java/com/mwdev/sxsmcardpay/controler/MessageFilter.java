@@ -48,6 +48,9 @@ public class MessageFilter {
     public final MessageType BATCH_SETTLEMENT_REQUEST_TYPE = new MessageType("0500","000000");
     public final MessageType BATCH_SETTLEMENT_RESPONES_TYPE = new MessageType("0510","000000");
 
+    public static final String DEBIT_TYPE = "1";
+    public static final String CREDIT_TYPE = "2";
+
     private HashMap<String,Flushes> allFlushes = new HashMap<String,Flushes>();
     private ArrayList<Flushes> tempTrade = new ArrayList<Flushes>();
     private PosApplication mPosApp;
@@ -194,7 +197,7 @@ public class MessageFilter {
                 postFlushesTask("A0");
                 return POS_MAC_ERROR_FILTER;
             }*/
-            persistToDatabase();
+            persistToDatabase(DEBIT_TYPE);
             return SUCCESSED_FILTER;
         }else{
             return  Integer.parseInt(responeCode,16);
@@ -242,6 +245,7 @@ public class MessageFilter {
                 return POS_MAC_ERROR_FILTER;
             }
             */
+            persistToDatabase(CREDIT_TYPE);
             return SUCCESSED_FILTER;
         }else{
             return  Integer.parseInt(responeCode,16);
@@ -288,7 +292,7 @@ public class MessageFilter {
                 return POS_MAC_ERROR_FILTER;
             }
             */
-            persistToDatabase();
+            persistToDatabase(CREDIT_TYPE);
             return SUCCESSED_FILTER;
         }else{
             return  Integer.parseInt(responeCode,16);
@@ -346,7 +350,7 @@ public class MessageFilter {
      * 消费 退货的成功交易保存到数据库
      *
      */
-    private void persistToDatabase(){
+    private void persistToDatabase(String type){
         String _area5515 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("55").substring(64,80);
         String _area3 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("3");
         String _msgid = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("msgid");
@@ -382,6 +386,8 @@ public class MessageFilter {
         record.setDTLUNITID(_area42);
         record.setDTLNETID("            ");
         record.setDTLTAC("        ");
+        record.setDTLTYPE(type);
+
 
         PosDataBaseFactory.getIntance().openPosDatabase();
         PosDataBaseFactory.getIntance().insert(record);

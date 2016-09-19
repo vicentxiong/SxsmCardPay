@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import com.mwdev.sxsmcardpay.controler.FtpDataTranterCallBack;
 import com.mwdev.sxsmcardpay.PosApplication;
 import com.mwdev.sxsmcardpay.R;
+import com.mwdev.sxsmcardpay.controler.MessageFilter;
 import com.mwdev.sxsmcardpay.database.PosDataBaseFactory;
 import com.mwdev.sxsmcardpay.database.TranslationRecord;
 import com.mwdev.sxsmcardpay.iso8583.util;
@@ -80,15 +81,23 @@ public class SxFtpClient {
         //交易头
         StringBuffer transctionHeader = new StringBuffer();
         transctionHeader.append(list.get(0).getDTLUNITID()).append(",").append("000000").append(",").append("000000").append(",");
-        transctionHeader.append(String.format("%05d", list.size())).append(",").append(String.format("%010d", list.size())).append(",");
-        int sum =0;
+        transctionHeader.append(String.format("%05d", list.size())).append(",");
+        int debit_sum =0,debit_amount=0;
+        int crebit_sum=0,crebit_amount=0;
         for (int i=0;i<list.size();i++){
-            sum+=Integer.parseInt(list.get(i).getDTLAMT());
+            String type = list.get(i).getDTLTYPE();
+            if(type.equals(MessageFilter.DEBIT_TYPE)){
+                debit_sum++;
+                debit_amount+=Integer.parseInt(list.get(i).getDTLAMT());
+            }else if(type.equals(MessageFilter.CREDIT_TYPE)){
+                crebit_sum++;
+                crebit_amount+=Integer.parseInt(list.get(i).getDTLAMT());
+            }
         }
-
-        transctionHeader.append(String.format("%010d",sum)).append(",");
-        transctionHeader.append("0000000000").append(",");
-        transctionHeader.append("0000000000").append(",");
+        transctionHeader.append(String.format("%010d",debit_sum)).append(",");
+        transctionHeader.append(String.format("%010d",debit_amount)).append(",");
+        transctionHeader.append(String.format("%010d",crebit_sum)).append(",");
+        transctionHeader.append(String.format("%010d",crebit_amount)).append(",");
         transctionHeader.append("            ");
         transctionHeader.append("\r\n");
 

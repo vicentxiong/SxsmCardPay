@@ -61,6 +61,9 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
                 case TOAST_KEY:
                     Toast.makeText(getApplicationContext(),getResources().getString(msg.arg1),Toast.LENGTH_LONG).show();
                     break;
+                case SxBaseActivity.DIALOG_TEXT_UPDATE:
+                    setDiglogText(getResources().getString(msg.arg1));
+                    break;
             }
         }
     };
@@ -135,6 +138,16 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
         Message msg = mhandler.obtainMessage();
         msg.what = TOAST_KEY;
         msg.arg1 = resid;
+        msg.sendToTarget();
+    }
+
+    /**
+     * 在消息队列中处理dialog text
+     * @param resid
+     */
+    public void onHandlerDialogText(int resid){
+        Message msg = mhandler.obtainMessage(DIALOG_TEXT_UPDATE);
+        msg.arg1=resid;
         msg.sendToTarget();
     }
 

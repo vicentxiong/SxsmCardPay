@@ -25,6 +25,7 @@ public class TranslationRecord {
     private String DTLUNITID;                     //营运公司代码  (42)
     private String DTLNETID;                      //网点代码
     private String DTLTAC;                        //交易验证码
+    private String DTLTYPE;                       //明细类型
 
     public String getDTLCARDNO() {
         return DTLCARDNO;
@@ -192,5 +193,13 @@ public class TranslationRecord {
 
     public void setDTLTAC(String DTLTAC) {
         this.DTLTAC = DTLTAC;
+    }
+
+    public String getDTLTYPE() {
+        return DTLTYPE;
+    }
+
+    public void setDTLTYPE(String DTLTYPE) {
+        this.DTLTYPE = DTLTYPE;
     }
 }

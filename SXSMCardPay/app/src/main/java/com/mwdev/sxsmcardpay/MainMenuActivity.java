@@ -67,9 +67,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
                 case SxBaseActivity.OPENPROGRESSBAR_DIALOG:
                     showFileUploadProgressDialog();
                     break;
-                case SxBaseActivity.DIALOG_TEXT_UPDATE:
-                    setDiglogText(getResources().getString(R.string.check_out));
-                    break;
+
                 case SxBaseActivity.SETPROGRESSBAR_SIZE:
                     PosLog.d("xxx","SETPROGRESSBAR_SIZE start");
                     mDataUploadBar.setMax(msg.arg1);
@@ -124,8 +122,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
     @Override
     protected void doonMessageSent(MessageFilter.MessageType type) {
         if(type.equals(myPosApplication.getSocketClient().getFilter().CHEKCOUT_REQUEST_TYPE)){
-            Message msg = mH.obtainMessage(SxBaseActivity.DIALOG_TEXT_UPDATE);
-            msg.sendToTarget();
+            onHandlerDialogText(R.string.check_out);
             showProgressDiglog();
         }
     }
@@ -233,20 +230,31 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
 
     private void loadDbDataAndSend() {
         PosLog.d("xx", "loadDbDataAndSend...");
-        int sumTrade =0,sumAmount =0;
+        int debit_sumTrade =0,debit_sumAmount =0;
+        int crebit_sumTrade = 0,crebit_sumAmount=0;
         PosDataBaseFactory.getIntance().openPosDatabase();
         List<TranslationRecord> list =
                 PosDataBaseFactory.getIntance().query(TranslationRecord.class, null, null, null, null, null);
         PosDataBaseFactory.getIntance().closePosDatabase();
         int N = list.size();
         PosLog.d("xx","record size == "+ N);
-        sumTrade = N;
+
         for (int i=0;i<N;i++){
-            sumAmount+=Integer.parseInt(list.get(i).getDTLAMT());
+            String type = list.get(i).getDTLTYPE();
+            if(type.equals(MessageFilter.DEBIT_TYPE)){
+                debit_sumTrade++;
+                debit_sumAmount+=Integer.parseInt(list.get(i).getDTLAMT());
+            }else if(type.equals(MessageFilter.CREDIT_TYPE)){
+                crebit_sumTrade++;
+                crebit_sumAmount+=Integer.parseInt(list.get(i).getDTLAMT());
+            }
+
         }
        // sumAmount-=1;
-        String req_amount = String.format("%012d", sumAmount);
-        String req_sum = String.format("%03d", sumTrade);
+        String req_debit_amount = String.format("%012d", debit_sumAmount);
+        String req_debit_sum = String.format("%03d", debit_sumTrade);
+        String req_crebit_amount = String.format("%012d", crebit_sumAmount);
+        String req_crebit_sum = String.format("%03d", crebit_sumTrade);
         String req_tradeNo = myPosApplication.createTradeSerialNumber();
         String req_psamId = myPosApplication.getPsamID();
         String req_cropNo = myPosApplication.getCropNum();
