@@ -130,15 +130,13 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
     @Override
     protected void doMessageFilterResult(int result) {
 
-        PosLog.e("xiong","result == " + result);
+        PosLog.e("xx","result == " + result);
         switch (result){
-            case 0x79:
-                startFtpFileUpload();
-                break;
             case 0xF0:
                 startFtpFileUpload();
                 break;
             default:
+                onHanderToast(myPosApplication.getStringIdByCode(result));
                 dismissProgressDiglog();
                 break;
         }
@@ -346,8 +344,14 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
         if(mDialog!=null)
             mDialog.dismiss();
         mDialog=null;
+        myPosApplication.getThreadPoolExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                myPosApplication.getSocketClient().getFilter().clearTransctionRecords();
+            }
+        });
         sendRequest(myPosApplication.getmIso8583Mgr().checkOut(myPosApplication.getPsamID(),
-                    myPosApplication.getCropNum()), "0820", "000000");
+                myPosApplication.getCropNum()), "0820", "000000");
     }
 
     @Override

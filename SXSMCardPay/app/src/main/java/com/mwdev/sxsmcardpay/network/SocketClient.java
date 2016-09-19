@@ -102,7 +102,7 @@ public class SocketClient{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            PosLog.d("xxx","retyr start ");
+            PosLog.d("xx","retyr start ");
             while(mRequest && count < retyrCount){
                 if(whenMessage==null){
                     break;
@@ -125,7 +125,7 @@ public class SocketClient{
                     mFilter.postFlushesTask("98");
                     messageCallback.onResponeTimeout(msgType);
                 }else{
-                   // messageCallback.onResponeTimeout(msgType);
+                    messageCallback.onResponeTimeout(msgType);
                 }
             }
 
@@ -288,8 +288,8 @@ public class SocketClient{
         @Override
         public void messageReceived(IoSession session, Object message) throws Exception {
             PosLog.d("xx","messageReceived");
-            //if(mRetryTask!=null)
-               // mRetryTask.setmRequest(false);
+            if(mRetryTask!=null)
+                mRetryTask.setmRequest(false);
             int result = 0;
             byte[] bytes = PosUtil.HexStringToByteArray((String) message);
             //单次请求响应后关闭连接

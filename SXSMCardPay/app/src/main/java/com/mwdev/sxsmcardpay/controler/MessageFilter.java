@@ -212,12 +212,9 @@ public class MessageFilter {
      */
     public int onHandlerTradeImpactMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
-            /*
-            if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
-                mPosApp.getThreadPoolExecutor().execute(
-                        new FlushesResponeTsk(util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("11")))
-                );
-            }*/
+            mPosApp.getThreadPoolExecutor().execute(
+                    new FlushesResponeTsk(util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("11")))
+            );
             handlerByActivity(R.string.impact_success);
             return IMPACT_FILTER;
         }else{
@@ -238,13 +235,11 @@ public class MessageFilter {
      */
     public int onHandlerTradeCalcelMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
-            /*
             if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
                 //MAC校验错误 发送冲正
                 postFlushesTask("A0");
                 return POS_MAC_ERROR_FILTER;
             }
-            */
             persistToDatabase(CREDIT_TYPE);
             return SUCCESSED_FILTER;
         }else{
@@ -260,13 +255,9 @@ public class MessageFilter {
      */
     public int onHandlerTradeCancelImpactMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
-            /*
-            if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
-                mPosApp.getThreadPoolExecutor().execute(
-                        new FlushesResponeTsk(util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("11")))
-                );
-            }
-            */
+            mPosApp.getThreadPoolExecutor().execute(
+                    new FlushesResponeTsk(util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("11")))
+            );
             handlerByActivity(R.string.impact_success);
             return IMPACT_FILTER;
         }else{
