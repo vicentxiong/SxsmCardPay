@@ -223,7 +223,9 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
      */
     protected abstract void doActionBarRightClick();
 
-    protected abstract void printerFinish();
+    protected  void printerFinish(){
+        //TODO
+    }
 
     private class ActionBarClickListener implements View.OnClickListener{
         @Override
