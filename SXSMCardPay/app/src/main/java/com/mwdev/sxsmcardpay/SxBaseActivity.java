@@ -80,6 +80,7 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
         @Override
         public void onFinish() {
             dismissProgressDiglog();
+            printerFinish();
         }
 
         @Override
@@ -221,6 +222,8 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
      * actionbar right by onclick
      */
     protected abstract void doActionBarRightClick();
+
+    protected abstract void printerFinish();
 
     private class ActionBarClickListener implements View.OnClickListener{
         @Override

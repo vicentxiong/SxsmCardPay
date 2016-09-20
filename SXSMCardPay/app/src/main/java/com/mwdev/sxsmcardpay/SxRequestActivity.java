@@ -126,6 +126,11 @@ public abstract class SxRequestActivity extends SxBaseActivity implements Messag
         doResponeTimeOut(type);
     }
 
+    @Override
+    protected void printerFinish() {
+        //TODO
+    }
+
     protected abstract void doConnectCreated();
     protected abstract void doConnected();
     protected abstract void doDisconnected();
