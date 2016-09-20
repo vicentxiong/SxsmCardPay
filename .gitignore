@@ -1,3 +1,4 @@
 /SXSMCardPay/.idea/*.xml
 /SXSMCardPay/gradle/wrapper/gradle-wrapper.properties
 /SXSMCardPay/build.gradle
+/SXSMCardPay/.idea/inspectionProfiles/*.xml
