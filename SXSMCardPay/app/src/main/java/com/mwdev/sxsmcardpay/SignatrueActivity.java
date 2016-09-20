@@ -407,7 +407,7 @@ public class SignatrueActivity extends SxBaseActivity{
     }
 
     private String formatDateAndTime(){
-        SimpleDateFormat spm = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat spm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return spm.format(new Date());
     }
 
