@@ -257,8 +257,8 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
         String req_psamId = myPosApplication.getPsamID();
         String req_cropNo = myPosApplication.getCropNum();
 
-        //sendRequest(myPosApplication.getmIso8583Mgr().batch_settlement(
-                //req_amount,req_sum,req_tradeNo,req_psamId,req_cropNo,"111111"), "0500", "000000");
+        sendRequest(myPosApplication.getmIso8583Mgr().batch_settlement(
+                req_debit_amount,req_debit_sum,req_crebit_amount,req_crebit_sum,req_tradeNo,req_psamId,req_cropNo,"111111"), "0500", "000000");
     }
 
 
