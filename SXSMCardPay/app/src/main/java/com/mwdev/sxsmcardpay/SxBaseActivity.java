@@ -37,6 +37,8 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
     public static final int OPENPROGRESSBAR_DIALOG = 4;
     public static final int DIALOG_TEXT_UPDATE = 5;
     public static final int SETPROGRESSBAR_SIZE = 6;
+    public static final int SETPRINTERTIMERDIALOG = 7;
+    public static final int UPDATE_PRINTER_TIMER = 8;
     private ImageView mActionBarLeft;
     private ImageView mActionBarRight;
     private TextView mTitle;
@@ -299,6 +301,8 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
         }
         return super.onKeyDown(keyCode, event);
     }
+
+
 
     @Override
     public void onNetworkStatus(boolean connect) {

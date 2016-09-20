@@ -1,12 +1,20 @@
 package com.mwdev.sxsmcardpay;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.gesture.GestureOverlayView;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaTimestamp;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.basewin.aidl.OnPrinterListener;
@@ -46,6 +54,12 @@ public class SignatrueActivity extends SxBaseActivity{
     private String mAmt;
     private String mBattch;
     private String mReferenceNum;
+    private TextView mTtimer;
+    private PosApplication mPosApp;
+    private boolean first = true;
+    private boolean printerCancel = false;
+    private static final int delay = 5;
+    private Dialog mDialog;
 
     private OnPrinterListener mPrinterListener = new OnPrinterListener() {
         @Override
@@ -57,7 +71,14 @@ public class SignatrueActivity extends SxBaseActivity{
         @Override
         public void onFinish() {
             dismissProgressDiglog();
-            finish();
+            if(first){
+                h.sendEmptyMessage(SETPRINTERTIMERDIALOG);
+                mPosApp.getThreadPoolExecutor().execute(new Timer());
+                first = false;
+            }
+            else{
+                finish();
+            }
         }
 
         @Override
@@ -67,10 +88,61 @@ public class SignatrueActivity extends SxBaseActivity{
         }
     };
 
+    private class Timer implements Runnable{
+
+        private int count = delay;
+        /**
+         * Starts executing the active part of the class' code. This method is
+         * called when a thread is started that has been created with a class which
+         * implements {@code Runnable}.
+         */
+        @Override
+        public void run() {
+            while (!printerCancel && count > 0){
+                Message msg = h.obtainMessage(UPDATE_PRINTER_TIMER);
+                msg.arg1 = count;
+                msg.sendToTarget();
+                count--;
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(count == 0){
+                Message msg = h.obtainMessage(UPDATE_PRINTER_TIMER);
+                msg.arg1 = count;
+                msg.sendToTarget();
+            }
+            printerCancel = false;
+        }
+    }
+
+    private Handler h = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case SETPRINTERTIMERDIALOG:
+                    showTimerDialog();
+                    break;
+                case UPDATE_PRINTER_TIMER:
+                    if(msg.arg1>0){
+                        mTtimer.setText(String.valueOf(msg.arg1));
+                    }else{
+                        mDialog.dismiss();
+                        printer();
+                    }
+                    break;
+            }
+
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign);
+        mPosApp = (PosApplication) getApplication();
     }
 
     /**
@@ -116,6 +188,25 @@ public class SignatrueActivity extends SxBaseActivity{
     @Override
     protected void doActionBarRightClick() {
 
+    }
+
+    private void showTimerDialog(){
+        AlertDialog.Builder ab = new AlertDialog.Builder(this,android.R.style.Theme_Material_Light_Dialog);
+        View v =  LayoutInflater.from(this).inflate(R.layout.timer_view,null,false);
+        mTtimer = (TextView) v.findViewById(R.id.timerTV);
+        ab.setView(v);
+        ab.setMessage(R.string.printer_timer_title);
+
+        ab.setNegativeButton(R.string.printer_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                printerCancel = true;
+                finish();
+            }
+        });
+        mDialog = ab.create();
+        mDialog.setCanceledOnTouchOutside(false);
+        mDialog.show();
     }
 
     private Bitmap saveSignature() {

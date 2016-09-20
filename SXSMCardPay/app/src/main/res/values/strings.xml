@@ -98,4 +98,6 @@
     <string name="db_flushes">发现遗留冲正数据，正在冲正......</string>
     <string name="flushes_respone_timeout">冲正响应超时</string>
     <string name="check_out">正在签退,请稍等...</string>
+    <string name="printer_timer_title">5秒后打印第二联小票</string>
+    <string name="printer_cancel">不打印</string>
 </resources>
