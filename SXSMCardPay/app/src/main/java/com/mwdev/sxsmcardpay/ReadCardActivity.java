@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,11 +70,6 @@ public class ReadCardActivity extends SxBaseActivity implements CardNumInterface
                 setAcitvityTitle_top(getResources().getString(R.string.trade_cancel));
                 break;
         }
-        Message message_timeout=new Message();
-        message_timeout.what=READCARD_TIMEOUT;
-        handler.sendMessageDelayed(message_timeout,31000);
-
-
     }
     Handler handler=new Handler(){
         @Override
@@ -204,4 +200,12 @@ public class ReadCardActivity extends SxBaseActivity implements CardNumInterface
         handler.sendMessage(m);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+           finish();
+        }
+
+        return false;
+    }
 }

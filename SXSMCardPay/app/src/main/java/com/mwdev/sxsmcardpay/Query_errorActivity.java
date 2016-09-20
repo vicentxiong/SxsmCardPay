@@ -63,8 +63,8 @@ public class Query_errorActivity extends SxBaseActivity implements View.OnClickL
                 type_error.setText(getResources().getString(R.string.tradeerror));
                 title=getString(R.string.do_trade);
                 switch (result){
-                    case InputCardPW.IMPACT_MAC:
-                        error=getResources().getString(R.string.macerror_reason);
+                    case InputCardPW.IMPACT_ERROR:
+                        error=getResources().getString(R.string.impact_error);
                         break;
                     case InputCardPW.IMPACT_TIMEOUT:
                         error=getResources().getString(R.string.timeout_reason);
@@ -79,8 +79,8 @@ public class Query_errorActivity extends SxBaseActivity implements View.OnClickL
                 type_error.setText(getResources().getString(R.string.trade_cancel_error));
                 title=getString(R.string.trade_cancel);
                 switch (result){
-                    case InputCardPW.IMPACT_MAC:
-                        error=getResources().getString(R.string.macerror_reason);
+                    case InputCardPW.IMPACT_ERROR:
+                        error=getResources().getString(R.string.impact_error);
                         break;
                     case InputCardPW.IMPACT_TIMEOUT:
                         error=getResources().getString(R.string.timeout_reason);
