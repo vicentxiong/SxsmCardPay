@@ -109,7 +109,6 @@ public class Query_errorActivity extends SxBaseActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         Intent intent =new Intent(Query_errorActivity.this,MainMenuActivity.class);
-        intent.putExtra(MainMenuActivity.LAUNCHER_MODE,1);
         startActivity(intent);
         finish();
     }

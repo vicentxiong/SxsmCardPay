@@ -116,12 +116,28 @@ public class LoginActivity extends SxRequestActivity{
 
     @Override
     protected void doConnectFail() {
-
+        dismissProgressDiglog();
+        onHanderToast(R.string.connect_pos_center_fail);
     }
 
     @Override
     protected void doResponeTimeOut(MessageFilter.MessageType type) {
+        dismissProgressDiglog();
+        onHanderToast(R.string.pos_center_respone_timeout);
+    }
 
+    @Override
+    protected void doBatteryCheckout() {
+        isfirstCheckout =false;
+    }
+
+    @Override
+    protected void doBatteryWarning(int level) {
+        isfirstWarning =false;
+    }
+
+    @Override
+    protected void doBatteryCharging() {
     }
 
     /**
@@ -135,7 +151,7 @@ public class LoginActivity extends SxRequestActivity{
             public void onClick(View v) {
                 setDiglogText(getResources().getString(R.string.checkin_now));
                 LoginActivity.this.showProgressDiglog();
-                sendRequest(myIso8583Mgr.checkIn(myPosApplication.getPsamID(),mCropName.getText().toString().trim()),"0800","000000");
+                sendRequest(myIso8583Mgr.checkIn(myPosApplication.getPsamID(), mCropName.getText().toString().trim()), "0800", "000000");
             }
         });
 

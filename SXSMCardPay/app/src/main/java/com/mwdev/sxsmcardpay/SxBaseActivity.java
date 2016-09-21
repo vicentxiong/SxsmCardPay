@@ -2,9 +2,14 @@ package com.mwdev.sxsmcardpay;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -29,7 +34,7 @@ import org.json.JSONObject;
  * Created by xiongxin on 16-8-18.
  * 作为所有Activity的基类
  */
-public abstract class SxBaseActivity extends Activity implements PosApplication.PosNetworkStatusListener{
+public abstract class SxBaseActivity extends Activity implements PosApplication.PosNetworkStatusListener,PosApplication.PosBatteryListener{
     private static final int SHOWPROGRESSBAR = 0;
     private static final int DISMISSPROGRESSBAR = 1;
     private static final int TOAST_KEY = 2;
@@ -39,6 +44,8 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
     public static final int SETPROGRESSBAR_SIZE = 6;
     public static final int SETPRINTERTIMERDIALOG = 7;
     public static final int UPDATE_PRINTER_TIMER = 8;
+    public static final int BATTERY_WARNING = 10;
+    public static final int BATTERY_CHECKOUT = 6;
     private ImageView mActionBarLeft;
     private ImageView mActionBarRight;
     private TextView mTitle;
@@ -50,6 +57,8 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
     private TextView mAttention;
     private boolean showProgress=false;
     private boolean isPrinterList;
+    protected boolean isfirstWarning = true,isfirstCheckout = true;
+    private Dialog mBatteryWarningDialog = null;
     private Handler mhandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -99,6 +108,7 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
         initProgress();
         mPosApp = (PosApplication) getApplication();
         mPosApp.addNetworkStatusListener(this);
+        mPosApp.addBatteryListener(this);
         isPrinterList = getResources().getInteger(R.integer.pos_malfuntion_list)==1;
     }
 
@@ -260,7 +270,7 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
 
     private void onHandlerProgressbarShow(){
         if(!showProgress){
-            mWinMgr.addView(mProgress,mWindowLayoutParams);
+            mWinMgr.addView(mProgress, mWindowLayoutParams);
             showProgress=true;
         }
     }
@@ -315,6 +325,64 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
             mPosApp.getSocketClient().getFilter().postDBFlushesTask(this);
         }
     }
+
+    @Override
+    public void onBattrey(int status, int level) {
+        PosLog.d("xx", "status == " + status + " level == " + level);
+        if(level<=BATTERY_CHECKOUT && status != BatteryManager.BATTERY_STATUS_CHARGING){
+            if(isfirstCheckout)
+                doBatteryCheckout();
+        }else if(level<=BATTERY_WARNING && status != BatteryManager.BATTERY_STATUS_CHARGING){
+            if(isfirstWarning)
+                doBatteryWarning(level);
+        }else if(status == BatteryManager.BATTERY_STATUS_CHARGING){
+            doBatteryCharging();
+        }
+    }
+
+    protected void doBatteryCheckout(){
+        mPosApp.getSocketClient().closeSession();
+        dismissProgressDiglog();
+        Intent i = new Intent(this,MainMenuActivity.class);
+        i.putExtra("battery",1);
+        startActivity(i);
+        finish();
+        isfirstCheckout = false;
+    }
+
+    protected void doBatteryWarning(int level){
+        PosLog.d("xx","doBatteryWarning");
+        dismissProgressDiglog();
+        AlertDialog.Builder ab = new AlertDialog.Builder(this,android.R.style.Theme_Material_Light_Dialog);
+        ab.setMessage(R.string.battery_warning);
+        View v = LayoutInflater.from(this).inflate(R.layout.battery_warning_view,null,false);
+        TextView warningTitle = (TextView) v.findViewById(R.id.batterywarningTV);
+        StringBuffer sb = new StringBuffer();
+        sb.append(getResources().getString(R.string.battery_warning_title1));
+        sb.append(level).append("%,");
+        sb.append(getResources().getString(R.string.battery_warning_title2));
+        warningTitle.setText(sb.toString());
+        ab.setView(v);
+        ab.setPositiveButton(R.string.battery_warning_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        mBatteryWarningDialog = ab.create();
+        mBatteryWarningDialog.setCanceledOnTouchOutside(false);
+        mBatteryWarningDialog.show();
+        isfirstWarning = false;
+    }
+
+    protected void doBatteryCharging(){
+        if(mBatteryWarningDialog!=null){
+            mBatteryWarningDialog.dismiss();
+            mBatteryWarningDialog = null;
+            isfirstWarning = true;
+        }
+    }
+
 
     public void DBFlushesStart(){
         setAcitvityTitle(getResources().getString(R.string.db_flushes));

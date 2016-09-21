@@ -10,6 +10,7 @@ import android.media.MediaTimestamp;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -188,6 +189,11 @@ public class SignatrueActivity extends SxBaseActivity{
     @Override
     protected void doActionBarRightClick() {
 
+    }
+
+    @Override
+    protected void doBatteryCheckout() {
+        isfirstCheckout =false;
     }
 
     private void showTimerDialog(){
@@ -411,5 +417,9 @@ public class SignatrueActivity extends SxBaseActivity{
         return spm.format(new Date());
     }
 
-
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        super.onKeyDown(keyCode, event);
+        return false;
+    }
 }

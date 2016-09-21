@@ -54,7 +54,6 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
     public final static int TRADE=1;
     public final static int TRADE_CANCEL=2;
     public final static int RETURN_GOODS=3;
-    public final static String LAUNCHER_MODE = "launcer_mode_key";
     public final static String TYPE_KEY="type_key";
 
     private Handler mH = new Handler(){
@@ -178,17 +177,41 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
     protected void onResume() {
         super.onResume();
         myPosApplication.resigterMessageCallBack(this);
+        myPosApplication.addBatteryListener(this);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         PosLog.d("xx", "onNewIntent ");
         super.onNewIntent(intent);
-        boolean first = intent.getIntExtra(LAUNCHER_MODE,0) == 0;
-        PosLog.d("xx", "first =  " + first);
-        if(!first){
-            myPosApplication.resigterMessageCallBack(this);
+        boolean batteryCheckout = intent.getIntExtra("battery",0) == 1;
+        PosLog.d("xx", "batteryCheckout =  " + batteryCheckout);
+        if(batteryCheckout){
+            setDiglogText(getResources().getString(R.string.checkout_dialog_statement));
+            showProgressDiglog();
+
+            myPosApplication.getThreadPoolExecutor().execute(new Runnable() {
+                @Override
+                public void run() {
+                    loadDbDataAndSend();
+                }
+            });
+            isfirstCheckout = false;
         }
+    }
+
+    @Override
+    protected void doBatteryCheckout() {
+        setDiglogText(getResources().getString(R.string.checkout_dialog_statement));
+        showProgressDiglog();
+
+        myPosApplication.getThreadPoolExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                loadDbDataAndSend();
+            }
+        });
+        isfirstCheckout = false;
     }
 
     /**
@@ -278,6 +301,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
                         loadDbDataAndSend();
                     }
                 });
+                isfirstCheckout =false;
             }
         });
 

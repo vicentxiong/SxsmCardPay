@@ -100,4 +100,9 @@
     <string name="check_out">正在签退,请稍等...</string>
     <string name="printer_timer_title">5秒后打印第二联小票</string>
     <string name="printer_cancel">不打印</string>
+    <string name="battery_warning">报警！</string>
+    <string name="battery_warning_title1">电量低于</string>
+    <string name="battery_warning_title2">请充电！否则几分钟后将自动结算签退</string>
+    <string name="battery_warning_ok">确定</string>
+    <string name="connect_pos_center_fail">连接失败，请检查网络</string>
 </resources>

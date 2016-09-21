@@ -2,6 +2,7 @@ package com.mwdev.sxsmcardpay;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -129,16 +130,25 @@ public class TradeSuccessActivity extends SxBaseActivity{
                 break;
             case MainMenuActivity.TRADE_CANCEL:
                  Intent intent_tradecancel=new Intent(TradeSuccessActivity.this,MainMenuActivity.class);
-                intent_tradecancel.putExtra(MainMenuActivity.LAUNCHER_MODE,1);
                 startActivity(intent_tradecancel);
                 finish();
                 break;
             case MainMenuActivity.RETURN_GOODS:
                 Intent intent_returngoods=new Intent(TradeSuccessActivity.this,MainMenuActivity.class);
-                intent_returngoods.putExtra(MainMenuActivity.LAUNCHER_MODE,1);
                 startActivity(intent_returngoods);
                 finish();
                 break;
         }
+    }
+
+    @Override
+    protected void doBatteryCheckout() {
+        isfirstCheckout =false;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        super.onKeyDown(keyCode, event);
+        return false;
     }
 }

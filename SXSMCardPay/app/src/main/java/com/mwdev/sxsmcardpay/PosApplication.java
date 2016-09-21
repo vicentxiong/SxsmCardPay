@@ -1,5 +1,9 @@
 package com.mwdev.sxsmcardpay;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.widget.Toast;
 
@@ -36,13 +40,20 @@ public class PosApplication extends TAApplication{
     private ThreadPoolExecutor mExecutor;
     private Iso8583Mgr mIso8583Mgr;
     private PosNetworkStatusListener l;
+    private PosBatteryListener batteryListener;
 
     public interface PosNetworkStatusListener{
         public void onNetworkStatus(boolean connect);
     }
 
+    public interface PosBatteryListener{
+        public void onBattrey(int status,int level);
+    }
     public void addNetworkStatusListener(PosNetworkStatusListener listener){
         l = listener;
+    }
+    public void addBatteryListener(PosBatteryListener l){
+        batteryListener = l;
     }
 
     @Override
@@ -64,7 +75,25 @@ public class PosApplication extends TAApplication{
         //加载psamid
         //getmIso8583Mgr().readPsamId();
 
+        //注册电池电量监听器
+        IntentFilter mFilter = new IntentFilter();
+        mFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+        registerReceiver(mReceiver,mFilter);
     }
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(action.equals(Intent.ACTION_BATTERY_CHANGED)){
+                int status = intent.getIntExtra("status", 0);
+                int level = intent.getIntExtra("level", 0);
+                if(batteryListener!=null){
+                    batteryListener.onBattrey(status,level);
+                }
+            }
+        }
+    };
 
     public SocketClient getSocketClient(){
         return mSocketClient;
@@ -74,6 +103,7 @@ public class PosApplication extends TAApplication{
         PosLog.stopFileLoger();
         mExecutor.shutdownNow();
         TANetworkStateReceiver.removeRegisterObserver(mNetObserver.get());
+        unregisterReceiver(mReceiver);
     }
 
     public Iso8583Mgr getmIso8583Mgr(){

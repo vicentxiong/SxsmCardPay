@@ -62,6 +62,11 @@ public class SocketClient{
         mConnector.setHandler(new ClentHandler());
     }
 
+    public void closeSession(){
+        if(mIoSession!=null)
+            mIoSession.closeNow();
+    }
+
     /**
      *异步连接远程服务器
      *
@@ -98,7 +103,7 @@ public class SocketClient{
             try {
 
                 Thread.sleep(mTimeOut);
-                mIoSession.closeNow();
+                closeSession();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -111,7 +116,7 @@ public class SocketClient{
                 count++;
                 try {
                     Thread.sleep(mTimeOut);
-                    mIoSession.closeNow();
+                    closeSession();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -153,7 +158,7 @@ public class SocketClient{
     private void connectAndSend(byte[] message){
         synchronized (mFilter){
             try{
-                PosLog.d(TAG,"connectAndSend");
+                PosLog.d("xx","connectAndSend");
                 //创建连接
                 mConnFeture = mConnector.connect(new InetSocketAddress(r.getString(R.string.socket_address),
                         r.getInteger(R.integer.socket_port)));
@@ -169,10 +174,12 @@ public class SocketClient{
                 //mIoSession.getCloseFuture().awaitUninterruptibly();
                 //mConnector.dispose();
             }catch (Exception ex){
-                PosLog.w(TAG, "socket exception : " + ex.getMessage());
+                PosLog.w("xx", "socket exception : " + ex.getMessage());
+                if(mRetryTask!=null)
+                    mRetryTask.setmRequest(false);
+
                 if(messageCallback!=null)
                     messageCallback.onConnectFail();
-                //mConnector.dispose();
             }
         }
 
@@ -293,7 +300,7 @@ public class SocketClient{
             int result = 0;
             byte[] bytes = PosUtil.HexStringToByteArray((String) message);
             //单次请求响应后关闭连接
-            mIoSession.closeNow();
+            closeSession();
             if(messageCallback != null){
                 if((result=mFilter.onReceiveredFilter(bytes))==MessageFilter.SUCCESSED_FILTER){
                     messageCallback.onMessageReceivered(bytes);
