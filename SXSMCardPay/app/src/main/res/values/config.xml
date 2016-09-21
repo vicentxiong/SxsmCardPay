@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="socket_timeout" >30000</integer>
+    <integer name="socket_timeout" >10000</integer>
     <integer name="socket_port">8882</integer>
     <string name="socket_address">119.10.100.65</string>   <!--119.10.100.65  市民卡公司内网ip 端口 8882-->
     <string name="db_name">POS_DATABASE</string>
@@ -14,6 +14,6 @@
         <item>com.mwdev.sxsmcardpay.database.Flushes</item>
     </string-array>
     <integer name="welcome_timeout">1000</integer>
-    <integer name="respone_timeout">10000</integer>
+    <integer name="respone_timeout">15000</integer>
     <integer name="pos_malfuntion_list">1</integer>
 </resources>
