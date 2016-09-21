@@ -76,6 +76,6 @@
         android:textColor="@color/fontcolor"
         android:textStyle="bold"
         android:id="@+id/sign_print_button"
-        android:background="@drawable/login_background"/>
+        android:background="@drawable/button_press"/>
 
 </LinearLayout>

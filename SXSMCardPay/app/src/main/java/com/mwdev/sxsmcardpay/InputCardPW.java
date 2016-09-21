@@ -114,7 +114,6 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                 Intent intent_3=new Intent(InputCardPW.this,Query_errorActivity.class);
                 intent_3.putExtra(ReadCardActivity.ERROR_KEY,IMPACT_ERROR);
                 startActivity(intent_3);
-//                finish();
             }else {
 
                 int j = cardpw.getText().toString().trim().length();
@@ -335,7 +334,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                         tradeNum = myPosApplication.createTradeSerialNumber();
                         binaryString_pin = getpinbinaryString(CardNum, pw);
                         psamid = myPosApplication.getPsamID();
-                        merchantNum = myPosApplication.getCropNum();
+//                        merchantNum = myPosApplication.getCropNum();
                         batchnum = myPosApplication.getBattchNum();
 //                            String password=Iso8583Mgr.hexString2binaryString("90D892CF608EA288");
                         Log.i("xiongxin", "batchnum===>" + batchnum);
@@ -399,7 +398,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
             case MainMenuActivity.TRADE_CANCEL:
                 Log.i("qiuyi", "type=======>" + MainMenuActivity.TRADE_CANCEL);
                 if(CardNum.length()>12) {
-                    merchantNum = myPosApplication.getCropNum();
+//                    merchantNum = myPosApplication.getCropNum();
                     psamid = myPosApplication.getPsamID();
                     tradeNum = myPosApplication.createTradeSerialNumber();
                     original_tradeNum = getIntent().getStringExtra(ReadCardActivity.TRADENUM_KEY);
@@ -475,7 +474,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
             case MainMenuActivity.RETURN_GOODS:
                 Log.i("qiuyi", "type=======>" + MainMenuActivity.RETURN_GOODS);
                 if(CardNum.length()>12) {
-                    merchantNum = myPosApplication.getCropNum();
+//                    merchantNum = myPosApplication.getCropNum();
                     psamid = myPosApplication.getPsamID();
                     tradeNum = myPosApplication.createTradeSerialNumber();
                     original_tradeNum = getIntent().getStringExtra(ReadCardActivity.TRADENUM_KEY);
@@ -814,6 +813,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
     protected void doResponeTimeOut(MessageFilter.MessageType messagetype) {
 //        isResponeTimeOut=true;
         PosLog.i("qiuyi11","===doResponeTimeOut===");
+        dismissProgressDiglog();
         switch (type){
             case MainMenuActivity.BALANCE_QUERY:
                 Intent intent=new Intent(InputCardPW.this,Query_errorActivity.class);
@@ -912,5 +912,11 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
 
         }
         return false;
+    }
+
+    @Override
+    protected void printerFinish() {
+//        super.printerFinish();
+        finish();
     }
 }

@@ -203,6 +203,7 @@ public class ReadCardActivity extends SxBaseActivity implements CardNumInterface
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK){
+            myIso8583Mgr.addResigter(null);
            finish();
         }
 

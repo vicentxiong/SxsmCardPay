@@ -1201,19 +1201,29 @@ public class Iso8583Mgr {
 		return bString;
 	}
 
-	public static String inputamount2amount(String inputamount){
-		String result="";
-		if(inputamount!=null&&!inputamount.equalsIgnoreCase("")){
-			int i=inputamount.indexOf(".");
-			result=inputamount.substring(0,i)+inputamount.substring(i+1,inputamount.length());
-			int length=result.length();
-			String add0="";
-			for(int j=0;j<12-length;j++){
-				add0+="0";
-			}
-			result=add0+result;
-		}
+	public static String inputamount2amount(String inputamount) {
+		String result = "";
+		if (inputamount != null && !inputamount.equalsIgnoreCase("")) {
+			if (inputamount.contains(".")) {
+				int i = inputamount.indexOf(".");
+				if(inputamount.length()-i==3){
+					result = inputamount.substring(0, i) + inputamount.substring(i + 1, inputamount.length());
+				}else if(inputamount.length()-i==2){
+					result = inputamount.substring(0, i) + inputamount.substring(i + 1, inputamount.length())+"0";
+				}else result = inputamount.substring(0, i) + "00";
 
+			}else result=inputamount+"00";
+
+
+			int length = result.length();
+			Log.i("qiuyi1","result=====>"+result);
+			String add0 = "";
+			for (int j = 0; j < 12 - length; j++) {
+				add0 += "0";
+			}
+			result = add0 + result;
+
+	}
 
 
 		return result;
@@ -1319,4 +1329,32 @@ String data = null;
 
 	return data;
 }
+	public int getnum(String data,String which){
+
+		int cnt = 0;
+		int offset = 0;
+//		while((offset = data.indexOf(which, offset)) != -1){
+//			offset = offset + which.length();
+//			cnt++;
+//		}
+
+		for(int i=0;i<data.length();i++){
+			if((data.charAt(i)+"").equalsIgnoreCase(which)){
+				cnt++;
+			}
+		}
+		return cnt;
+	}
+
+	public boolean isnumtrue(String data){
+		if(getnum(data,".")>=2){
+			return false;
+		}else if(getnum(data,".")==1){
+			int i=data.indexOf(".");
+			if(data.length()-i>=4){
+				return false;
+			}
+		}
+		return true;
+	}
 }

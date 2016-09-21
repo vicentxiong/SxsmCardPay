@@ -16,8 +16,9 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
             android:maxLines="1"
+            android:inputType="number"
+            android:maxLength="6"
             android:textSize="20dp"
             android:id="@+id/input_tradenum"
             android:singleLine="true"
@@ -40,11 +41,10 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-
-        android:inputType="text"
+        android:inputType="number"
         android:maxLines="1"
         android:textSize="20dp"
+        android:maxLength="6"
         android:id="@+id/input_batchnum"
         android:singleLine="true"
         android:gravity="center"
@@ -66,11 +66,10 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-
-        android:inputType="text"
+        android:inputType="number"
         android:maxLines="1"
         android:textSize="20dp"
+        android:maxLength="12"
         android:id="@+id/input_referencenum"
         android:singleLine="true"
         android:gravity="center"
@@ -90,9 +89,9 @@
        <EditText
             android:layout_width="210sp"
             android:layout_height="wrap_content"
-
-            android:inputType="text"
-
+           android:maxLength="9"
+            android:inputType="number"
+            android:digits="0123456789."
             android:textSize="20dp"
             android:id="@+id/input_amount_ed"
             android:gravity="center"

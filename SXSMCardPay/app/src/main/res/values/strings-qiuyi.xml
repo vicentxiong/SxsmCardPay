@@ -34,4 +34,9 @@
     <string name="confirm_query_amount">请查询</string>
     <string name="confirm_cancel_trade">确认撤销</string>
     <string name="impact_error">响应超时，冲正失败，请人工处理！</string>
+    <string name="length_error_input_6bit_tradenum">流水号长度错误，请输入6位数字，或扫描二维码！</string>
+    <string name="length_error_input_6bit_batchnum">批次号长度错误，请输入6位数字，或扫描二维码！</string>
+    <string name="length_error_input_12bit_referencenum">参考索引号长度错误，请输入12位数字，或扫描二维码！</string>
+    <string name="length_error_input_amount">请输入金额或扫描二维码！</string>
+    <string name="type_error_input_amount">金额格式错误，请重新输入金额或扫描二维码！</string>
 </resources>

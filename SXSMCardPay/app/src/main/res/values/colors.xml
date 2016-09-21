@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="fontcolor">#ffffffff</color>
     <color name="actionbarbackgroundcolor">#1E90FF</color>
+    <color name="actionbarbackgroundcolor_press">#FF0000</color>
     <color name="progressbarbackgroundcolor">#88000000</color>
     <color name="signatruecolor">#000000</color>
     <color name="dialogtextcolor">#1E90FF</color>
