@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.mwdev.sxsmcardpay.iso8583.util;
+import com.mwdev.sxsmcardpay.util.PosUtil;
 import com.ta.annotation.TAInjectResource;
 import com.ta.annotation.TAInjectView;
 
@@ -47,7 +47,7 @@ public class query_successActivity extends SxBaseActivity implements View.OnClic
     }
 
     public String real_amount(String amount){
-        String s=util.Delete0(amount);
+        String s= PosUtil.Delete0(amount);
         //000000000000
         String zheng=s.substring(0,10);
         String xiaoshu=s.substring(10,s.length());

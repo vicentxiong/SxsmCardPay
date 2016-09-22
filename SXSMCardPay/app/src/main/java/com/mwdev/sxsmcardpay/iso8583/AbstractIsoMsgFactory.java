@@ -18,6 +18,7 @@ import com.basewin.utils.BCDHelper;
 import com.basewin.utils.EncodeUtil;
 import com.basewin.utils.SimpleUtil;
 import com.mwdev.sxsmcardpay.util.PosLog;
+import com.mwdev.sxsmcardpay.util.PosUtil;
 
 public abstract class AbstractIsoMsgFactory {
 	public byte[] pack(Map<String, String> dataMap, IsoPackage pack)
@@ -60,7 +61,7 @@ public abstract class AbstractIsoMsgFactory {
 		System.arraycopy(bitMapByte, 0, bitMapByteNew, 0, bitMapByte.length);
 		System.arraycopy(bitMapByteMore, 0, bitMapByteNew, bitMapByte.length,
 				bitMapByteMore.length);
-		PosLog.i("qiuyi", "bitmap========>" + util.byteArray2Hex(bitMapByteNew));
+		PosLog.i("qiuyi", "bitmap========>" + PosUtil.byteArray2Hex(bitMapByteNew));
 		packClone.getIsoField("bitmap").setByteValue(bitMapByteNew);
 
 		return merge(packClone);

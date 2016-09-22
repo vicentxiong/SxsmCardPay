@@ -18,6 +18,7 @@ import com.basewin.interfaces.OnDetectListener;
 import com.basewin.packet8583.exception.Packet8583Exception;
 import com.basewin.services.ServiceManager;
 import com.mwdev.sxsmcardpay.PosApplication;
+import com.mwdev.sxsmcardpay.util.PosUtil;
 import com.pos.sdk.utils.PosByteArray;
 
 /**
@@ -108,13 +109,13 @@ public class Iso8583Mgr {
 		Log.i("qiuyi",
 				"bitmap  -------------》" + manager_packData.getBit("bitmap"));
 		Log.i("qiuyi",
-				"包装的数据包1：-------------》" + util.byteArray2Hex(needunpack));
+				"包装的数据包1：-------------》" + PosUtil.byteArray2Hex(needunpack));
 
 		// 这里增加mac码
 		// sourceMacData为要mac的数据
 		if (needMac) {
-			String sourceMacData = util.byteArray2Hex(needunpack).substring(34,
-					util.byteArray2Hex(needunpack).length() - 16);
+			String sourceMacData = PosUtil.byteArray2Hex(needunpack).substring(34,
+					PosUtil.byteArray2Hex(needunpack).length() - 16);
 			Log.i("qiuyi", "sourceMacData  -------------》" + sourceMacData);
 			// 计算mac码
 			String Mac = "";
@@ -130,7 +131,7 @@ public class Iso8583Mgr {
 				e1.printStackTrace();
 			}
 
-			byte[] MacByte = util.HexStringToByteArray(Mac);
+			byte[] MacByte = PosUtil.HexStringToByteArray(Mac);
 			// 添加64域计算好的mac码
 			manager_packData.setBinaryBit("64", MacByte);
 			// 重新打包数据（将计算号的mac码添加进报文里）
@@ -167,16 +168,16 @@ public class Iso8583Mgr {
 			f = Integer.toHexString(len);
 			f = f.substring(2, 4) + f.substring(0, 2);
 		}
-		byte[] bytelen = util.HexStringToByteArray(f);
-		Log.i("qiuyi", "bytelen：-------------》" + util.byteArray2Hex(bytelen));
+		byte[] bytelen = PosUtil.HexStringToByteArray(f);
+		Log.i("qiuyi", "bytelen：-------------》" + PosUtil.byteArray2Hex(bytelen));
 		// etx
-		byte[] ETX = util.HexStringToByteArray("03");
+		byte[] ETX = PosUtil.HexStringToByteArray("03");
 		byte[] LEN_ETX = new byte[len + 3];
 		System.arraycopy(bytelen, 0, LEN_ETX, 0, bytelen.length);
 		System.arraycopy(needunpack, 0, LEN_ETX, bytelen.length,
 				needunpack.length);
 		System.arraycopy(ETX, 0, LEN_ETX, bytelen.length + needunpack.length, 1);
-		Log.i("qiuyi", "LEN_ETX：-------------》" + util.byteArray2Hex(LEN_ETX));
+		Log.i("qiuyi", "LEN_ETX：-------------》" + PosUtil.byteArray2Hex(LEN_ETX));
 		// 得到校验码
 		int tep = 0;
 
@@ -184,19 +185,19 @@ public class Iso8583Mgr {
 			tep = tep ^ LEN_ETX[j];
 		}
 		Log.i("qiuyi", "tep：-------------》" + tep);
-		byte[] LRC = util.IntToHex(tep);
+		byte[] LRC = PosUtil.IntToHex(tep);
 		// Integer.
-		Log.i("qiuyi", "LRC：-------------》" + util.byteArray2Hex(LRC));
+		Log.i("qiuyi", "LRC：-------------》" + PosUtil.byteArray2Hex(LRC));
 		Log.i("qiuyi", "LRC.length：-------------》" + LRC.length);
 		// 拼成完整报文
-		byte[] STX = util.HexStringToByteArray("02");
+		byte[] STX = PosUtil.HexStringToByteArray("02");
 		byte[] STX_len_ETX_LRC = new byte[LEN_ETX.length + 2];
 		System.arraycopy(STX, 0, STX_len_ETX_LRC, 0, 1);
 		System.arraycopy(LEN_ETX, 0, STX_len_ETX_LRC, 1, LEN_ETX.length);
 		System.arraycopy(LRC, LRC.length - 1, STX_len_ETX_LRC,
 				LEN_ETX.length + 1, 1);
 		Log.i("qiuyi",
-				"包装的数据包2：-------------》" + util.byteArray2Hex(STX_len_ETX_LRC));
+				"包装的数据包2：-------------》" + PosUtil.byteArray2Hex(STX_len_ETX_LRC));
 		return STX_len_ETX_LRC;
 
 	}
@@ -329,9 +330,9 @@ public class Iso8583Mgr {
 		System.arraycopy(data, 20, sourceMacdata, 0, sourceMacdata.length);
 		byte[] Macdata=new byte[8];
 		System.arraycopy(data, data.length-10, Macdata, 0,8);
-//							Log.i("qiuyi","util.byteArray2Hex(data)=====>"+util.byteArray2Hex(data));
-		Log.i("xxx", "Macdata=====>"+util.byteArray2Hex(Macdata));
-		Log.i("xxx", "util.byteArray2Hex(sourceMacdata)=====>"+util.byteArray2Hex(data));
+
+		Log.i("xxx", "Macdata=====>"+ PosUtil.byteArray2Hex(Macdata));
+		Log.i("xxx", "byteArray2Hex(sourceMacdata)=====>"+PosUtil.byteArray2Hex(data));
 		String Mac = "";
 		try {
 			Mac = ServiceManager.getInstence().getPinpad()
@@ -344,7 +345,7 @@ public class Iso8583Mgr {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		if(Mac.equalsIgnoreCase(util.byteArray2Hex(Macdata))){
+		if(Mac.equalsIgnoreCase(PosUtil.byteArray2Hex(Macdata))){
 			return MAC_SUCCESS;
 		}else return MAC_ERROR;
 }
@@ -871,7 +872,7 @@ public class Iso8583Mgr {
 					}
 					try {
 						msm.getCard().transmitApduToCard(
-								util.HexStringToByteArray("00B0960006"),
+								PosUtil.HexStringToByteArray("00B0960006"),
 								new OnApduCmdListener() {
 
 									@Override
@@ -880,7 +881,7 @@ public class Iso8583Mgr {
 										// TODO
 										// Auto-generated
 										// method stub
-										psamId = util
+										psamId = PosUtil
 												.byteArray2Hex(arg0.buffer);
 										Log.i("qiuyi", "PSAM终端号===="
 												+ psamId);
@@ -929,7 +930,7 @@ public class Iso8583Mgr {
 					Log.i("qiuyi", "寻卡成功");
 					try {
 						msm.getCard().transmitApduToCard(
-								util.HexStringToByteArray("00A40000023F0100"),
+								PosUtil.HexStringToByteArray("00A40000023F0100"),
 								new OnApduCmdListener() {
 
 									@Override
@@ -943,7 +944,7 @@ public class Iso8583Mgr {
 														+ arg0);
 										Log.i("qiuyi",
 												"选择3F01 success arg1===="
-														+ util.byteArray2Hex(arg1));
+														+ PosUtil.byteArray2Hex(arg1));
 
 										try {
 											Thread.sleep(100);
@@ -957,7 +958,7 @@ public class Iso8583Mgr {
 										try {
 											msm.getCard()
 													.transmitApduToCard(
-															util.HexStringToByteArray("00B095001E"),
+															PosUtil.HexStringToByteArray("00B095001E"),
 															new OnApduCmdListener() {
 
 																@Override
@@ -970,9 +971,9 @@ public class Iso8583Mgr {
 																	// stub
 																	Log.i("qiuyi",
 																			"ic卡读卡===="
-																					+ util.byteArray2Hex(arg1));
+																					+ PosUtil.byteArray2Hex(arg1));
 
-																	String cardnum = util
+																	String cardnum = PosUtil
 																			.byteArray2Hex(arg0.buffer);
 																	Log.i("qiuyi",
 																			"ox15文件数据===="
@@ -1054,7 +1055,7 @@ public class Iso8583Mgr {
 					Log.i("qiuyi", "寻卡成功");
 					try {
 						msm.getCard().transmitApduToCard(
-								util.HexStringToByteArray("00A40000023F0000"),
+								PosUtil.HexStringToByteArray("00A40000023F0000"),
 								new OnApduCmdListener() {
 
 									@Override
@@ -1068,7 +1069,7 @@ public class Iso8583Mgr {
 														+ arg0);
 										Log.i("qiuyi",
 												"选择3F00 success arg1===="
-														+ util.byteArray2Hex(arg1));
+														+ PosUtil.byteArray2Hex(arg1));
 
 										try {
 											Thread.sleep(100);
@@ -1082,7 +1083,7 @@ public class Iso8583Mgr {
 										try {
 											msm.getCard()
 													.transmitApduToCard(
-															util.HexStringToByteArray("00B0850016"),
+															PosUtil.HexStringToByteArray("00B0850016"),
 															new OnApduCmdListener() {
 
 																@Override
@@ -1095,9 +1096,9 @@ public class Iso8583Mgr {
 																	// stub
 																	Log.i("qiuyi",
 																			"ic卡读卡===="
-																					+ util.byteArray2Hex(arg1));
+																					+ PosUtil.byteArray2Hex(arg1));
 
-																	String data_0x05 = util
+																	String data_0x05 = PosUtil
 																			.byteArray2Hex(arg0.buffer);
 																	Log.i("qiuyi",
 																			"0x05文件里数据===="
@@ -1377,7 +1378,7 @@ String data = null;
      */
 	public String textshow_amount(String data){
 		String result="";
-		if(getnum(data,".")==0){
+		if(getnum(data, ".")==0){
 			result=data+".00";
 		}else {
 			int i = data.indexOf(".");

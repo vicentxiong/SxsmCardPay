@@ -13,8 +13,8 @@ import com.mwdev.sxsmcardpay.database.Flushes;
 import com.mwdev.sxsmcardpay.database.PosDataBaseFactory;
 import com.mwdev.sxsmcardpay.database.TranslationRecord;
 import com.mwdev.sxsmcardpay.iso8583.Iso8583Mgr;
-import com.mwdev.sxsmcardpay.iso8583.util;
 import com.mwdev.sxsmcardpay.util.PosLog;
+import com.mwdev.sxsmcardpay.util.PosUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,8 +70,8 @@ public class MessageFilter {
 
         mPosApp.getmIso8583Mgr().unpackData(message);
         PosLog.d("xx", "start onReceiveredFilter");
-        String _msgid = util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("msgid"));
-        String _area3 = util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("3"));
+        String _msgid = PosUtil.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("msgid"));
+        String _area3 = PosUtil.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("3"));
         String _area39 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("39");
         MessageType target = new MessageType(_msgid,_area3);
         PosLog.d("xx", "result code : " + _area39);
@@ -135,7 +135,7 @@ public class MessageFilter {
             String pik = _area62.substring(0, 32);
             String mak = _area62.substring(40,72);
             String _area60 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("60");
-            String battch = util.Delete0(_area60.substring(4,16)).trim();
+            String battch = PosUtil.Delete0(_area60.substring(4,16)).trim();
 
             try {
                 PinpadBinder pinpad = ServiceManager.getInstence().getPinpad();
@@ -213,7 +213,7 @@ public class MessageFilter {
     public int onHandlerTradeImpactMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
             mPosApp.getThreadPoolExecutor().execute(
-                    new FlushesResponeTsk(util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("11")))
+                    new FlushesResponeTsk(PosUtil.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("11")))
             );
             handlerByActivity(R.string.impact_success);
             return IMPACT_FILTER;
@@ -256,7 +256,7 @@ public class MessageFilter {
     public int onHandlerTradeCancelImpactMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
             mPosApp.getThreadPoolExecutor().execute(
-                    new FlushesResponeTsk(util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("11")))
+                    new FlushesResponeTsk(PosUtil.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("11")))
             );
             handlerByActivity(R.string.impact_success);
             return IMPACT_FILTER;
@@ -358,22 +358,22 @@ public class MessageFilter {
         TranslationRecord record = new TranslationRecord();
         record.setDTLCARDNO(_area5515);
         record.setDTLCDCNT("000000");
-        record.setDTLPRCODE(util.Delete0(_area3));
-        record.setDTLTRANSTYPE(util.Delete0(_msgid));
+        record.setDTLPRCODE(PosUtil.Delete0(_area3));
+        record.setDTLTRANSTYPE(PosUtil.Delete0(_msgid));
         record.setDTLPOSID(_area41);
         record.setDTLSAMID("                ");
-        record.setDTLPOSSEQ(util.Delete0(_area11));
-        record.setDTLBATCHNO(util.Delete0(_area602));
+        record.setDTLPOSSEQ(PosUtil.Delete0(_area11));
+        record.setDTLBATCHNO(PosUtil.Delete0(_area602));
         record.setDTLTERMID("            ");
         record.setDTLTERMSEQ("0000000000");
-        record.setDTLDATE(util.Delete0(_area13));
-        record.setDTLTIME(util.Delete0(_area12));
-        record.setDTLSETTDATE(util.Delete0(_area15));
+        record.setDTLDATE(PosUtil.Delete0(_area13));
+        record.setDTLTIME(PosUtil.Delete0(_area12));
+        record.setDTLSETTDATE(PosUtil.Delete0(_area15));
         record.setDTLCENSEQ(_area37);
         record.setDTLSLAMT("000000000");
         record.setDTLBEFBAL("000000000");
         record.setDTLAFTBAL("000000000");
-        record.setDTLAMT(util.Delete0(_area4));
+        record.setDTLAMT(PosUtil.Delete0(_area4));
         record.setDTLUNITID(_area42);
         record.setDTLNETID("            ");
         record.setDTLTAC("        ");
@@ -395,10 +395,10 @@ public class MessageFilter {
         Flushes flushes = null;
         if("A0".equals(impactReason)){
             String _area2 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("2");
-            String _area4 = util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("3"));
-            String _area3 = util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("4"));
-            String _area11 = util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("11"));
-            String _area61 = util.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("61"));
+            String _area4 = PosUtil.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("3"));
+            String _area3 = PosUtil.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("4"));
+            String _area11 = PosUtil.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("11"));
+            String _area61 = PosUtil.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("61"));
             String _area611 = _area61.substring(0, 6);
             String _area612 = _area61.substring(6,12);
             flushes = new Flushes();

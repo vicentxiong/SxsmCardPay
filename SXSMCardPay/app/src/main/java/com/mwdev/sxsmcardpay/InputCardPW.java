@@ -20,7 +20,6 @@ import com.mwdev.sxsmcardpay.controler.MessageFilter;
 import com.mwdev.sxsmcardpay.database.Flushes;
 import com.mwdev.sxsmcardpay.database.PosDataBaseFactory;
 import com.mwdev.sxsmcardpay.iso8583.Iso8583Mgr;
-import com.mwdev.sxsmcardpay.iso8583.util;
 import com.mwdev.sxsmcardpay.util.PosLog;
 import com.mwdev.sxsmcardpay.util.PosUtil;
 import com.ta.annotation.TAInjectResource;
@@ -555,7 +554,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
         Log.i("xxx","password================>"+password);
         String hexStringpin = null;
         try {
-            hexStringpin = ServiceManager.getInstence().getPinpad().encryptData(KeyType.PIN_KEY, util.byteArray2Hex(pin));
+            hexStringpin = ServiceManager.getInstence().getPinpad().encryptData(KeyType.PIN_KEY, PosUtil.byteArray2Hex(pin));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -812,7 +811,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
     @Override
     protected void doResponeTimeOut(MessageFilter.MessageType messagetype) {
 //        isResponeTimeOut=true;
-        PosLog.i("qiuyi11","===doResponeTimeOut===");
+        PosLog.i("qiuyi11", "===doResponeTimeOut===");
         dismissProgressDiglog();
         switch (type){
             case MainMenuActivity.BALANCE_QUERY:

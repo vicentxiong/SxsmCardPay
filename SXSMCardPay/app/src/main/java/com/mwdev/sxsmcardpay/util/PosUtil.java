@@ -57,6 +57,82 @@ public class PosUtil {
         return (byte) "0123456789ABCDEF".indexOf(c);
     }
 
+    /**
+     * int to hex
+     *
+     * @param i
+     * @return
+     */
+    public static byte[] IntToHex(int i) {
+        String string = null;
+        if (i >= 0 && i < 10) {
+            string = "0" + i;
+        } else {
+            string = Integer.toHexString(i);
+        }
+        return HexStringToByteArray(string);
+    }
+
+    /**
+     * Gets the subarray from <tt>array</tt> that starts at <tt>offset</tt>.
+     */
+    public static byte[] get(byte[] array, int offset) {
+        return get(array, offset, array.length - offset);
+    }
+
+    /**
+     * Gets the subarray of length <tt>length</tt> from <tt>array</tt> that
+     * starts at <tt>offset</tt>.
+     */
+    public static byte[] get(byte[] array, int offset, int length) {
+        byte[] result = new byte[length];
+        System.arraycopy(array, offset, result, 0, length);
+        return result;
+    }
+
+    /*
+     * 非压缩BCD码转成压缩BCD码(去零)
+     */
+    public static String Delete0(String data) {
+        String result = "";
+        if(data!=null){
+            if (data.length() % 2 == 0) {
+                for (int i = 0; i < data.length(); i++) {
+                    if (i % 2 == 0) {
+                        if (!"0".equalsIgnoreCase(data.charAt(i) + "")) {
+                            return null;
+                        }
+
+                    } else {
+                        result += data.charAt(i);
+                    }
+
+                }
+            } else {
+                return null;
+            }
+        }else return null;
+
+        return result;
+
+    }
+
+
+    /*
+     * 加零
+     */
+    public static String add0(String data) {
+        String ss = "";
+        if (data != null) {
+            for (int i = 0; i < data.length(); i++) {
+                ss += "0" + data.charAt(i);
+            }
+        }else return null;
+
+        return ss;
+
+    }
+
     /*
      *生成pin 的密文
      * 参数
@@ -160,5 +236,21 @@ public class PosUtil {
 
         }
         return null;
+    }
+
+    public static String formatStringReZoro(int targetLength,String srcString){
+        if(srcString ==null || targetLength == 0 || srcString.length() > targetLength){
+            return null;
+        }
+        StringBuffer sb = new StringBuffer();
+        if(srcString.length() == targetLength){
+            return srcString;
+        }
+        int ZoroCount = targetLength - srcString.length();
+        for (int i = 0; i < ZoroCount; i++) {
+            sb.append("0");
+        }
+        sb.append(srcString);
+        return sb.toString();
     }
 }

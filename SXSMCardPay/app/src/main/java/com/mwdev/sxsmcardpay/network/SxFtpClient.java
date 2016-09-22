@@ -9,7 +9,6 @@ import com.mwdev.sxsmcardpay.R;
 import com.mwdev.sxsmcardpay.controler.MessageFilter;
 import com.mwdev.sxsmcardpay.database.PosDataBaseFactory;
 import com.mwdev.sxsmcardpay.database.TranslationRecord;
-import com.mwdev.sxsmcardpay.iso8583.util;
 import com.mwdev.sxsmcardpay.util.PosLog;
 import com.mwdev.sxsmcardpay.util.PosUtil;
 
@@ -104,15 +103,15 @@ public class SxFtpClient {
         //交易明细
         StringBuffer fileRecord = new StringBuffer();
         for (int i=0;i<list.size();i++){
-            fileRecord.append(list.get(i).getDTLCARDNO()).append(",").append("000000").append(",").
-                       append(list.get(i).getDTLPRCODE()).append(",").append(list.get(i).getDTLTRANSTYPE()).append(",").
+            fileRecord.append(PosUtil.formatStringReZoro(16,list.get(i).getDTLCARDNO())).append(",").append("000000").append(",").
+                       append(PosUtil.formatStringReZoro(6,list.get(i).getDTLPRCODE())).append(",").append(PosUtil.formatStringReZoro(4,list.get(i).getDTLTRANSTYPE())).append(",").
                        append(list.get(i).getDTLPOSID()).append(",").append("                ").append(",").
-                       append(list.get(i).getDTLPOSSEQ()).append(",").append(list.get(i).getDTLBATCHNO()).append(",").
+                       append(PosUtil.formatStringReZoro(6,list.get(i).getDTLPOSSEQ())).append(",").append(list.get(i).getDTLBATCHNO()).append(",").
                        append("            ").append(",").append("0000000000").append(",").
                        append(list.get(i).getDTLDATE()).append(",").append(list.get(i).getDTLTIME()).append(",").
-                       append(list.get(i).getDTLSETTDATE()).append(",").append(list.get(i).getDTLCENSEQ()).append(",").
+                       append(list.get(i).getDTLSETTDATE()).append(",").append(PosUtil.formatStringReZoro(12,list.get(i).getDTLCENSEQ())).append(",").
                        append("000000000").append(",").append("000000000").append(",").
-                       append("000000000").append(",").append(list.get(i).getDTLAMT()).append(",").
+                       append("000000000").append(",").append(PosUtil.formatStringReZoro(9,list.get(i).getDTLAMT())).append(",").
                        append(list.get(i).getDTLUNITID()).append(",").append("            ").append(",").
                        append("        ");
             fileRecord.append("\r\n");
