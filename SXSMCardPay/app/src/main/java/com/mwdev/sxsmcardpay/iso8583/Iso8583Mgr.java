@@ -1329,6 +1329,13 @@ String data = null;
 
 	return data;
 }
+
+	/**
+	 *  计算字符串有几个特定字符或字符串
+	 * @param data
+	 * @param which
+     * @return
+     */
 	public int getnum(String data,String which){
 
 		int cnt = 0;
@@ -1346,6 +1353,11 @@ String data = null;
 		return cnt;
 	}
 
+	/**
+	 *  判断金额字符串格式是否正确
+	 * @param data
+     * @return
+     */
 	public boolean isnumtrue(String data){
 		if(getnum(data,".")>=2){
 			return false;
@@ -1356,5 +1368,35 @@ String data = null;
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * 让输入的不太正规的金额，正确显示
+	 * @param data
+	 * @return
+     */
+	public String textshow_amount(String data){
+		String result="";
+		if(getnum(data,".")==0){
+			result=data+".00";
+		}else {
+			int i = data.indexOf(".");
+			if (i == 0) {
+               if(data.length() - i == 2){
+				   result = "0"+data + "0";
+			   }else {
+				   result = "0"+data;
+			   }
+			}else{
+			if (data.length() - i == 1) {
+				result = data + "00";
+			} else if (data.length() - i == 2) {
+				result = data + "0";
+			} else {
+				result = data;
+			}
+		}
+		}
+		return result;
 	}
 }
