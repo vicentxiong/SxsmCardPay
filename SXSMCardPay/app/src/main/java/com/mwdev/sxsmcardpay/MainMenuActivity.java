@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.mwdev.sxsmcardpay.controler.FtpDataTranterCallBack;
 import com.mwdev.sxsmcardpay.controler.MessageFilter;
 import com.mwdev.sxsmcardpay.database.PosDataBaseFactory;
@@ -48,7 +49,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
     private PosApplication myPosApplication;
     private Dialog mDialog;
     private View fileDialogroot;
-    private ProgressBar mDataUploadBar;
+    private NumberProgressBar mDataUploadBar;
 
     public final static int BALANCE_QUERY=0;
     public final static int TRADE=1;
@@ -83,7 +84,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
         setContentView(R.layout.mainmenu_activity);
         myPosApplication = (PosApplication) getApplication();
         fileDialogroot = LayoutInflater.from(this).inflate(R.layout.fileupload_progressbar,null,false);
-        mDataUploadBar = (ProgressBar) fileDialogroot.findViewById(R.id.progressBar);
+        mDataUploadBar = (NumberProgressBar) fileDialogroot.findViewById(R.id.progressBar);
     }
 
     @Override

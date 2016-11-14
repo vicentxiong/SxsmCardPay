@@ -41,4 +41,5 @@ dependencies {
     compile files('libs/zbardecoder.jar')
     provided files('external_libs/classes_2.0.15_20160722.jar')
     compile files('libs/core4.7.5.jar')
+    compile project(':library')
 }
