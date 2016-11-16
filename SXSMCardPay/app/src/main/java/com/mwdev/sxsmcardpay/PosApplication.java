@@ -60,12 +60,18 @@ public class PosApplication extends TAApplication{
     public void onCreate() {
         super.onCreate();
         //log输出本地
-        PosLog.startFileLoger();
+        //PosLog.startFileLoger();
         //初始化数据库工厂
-        PosDataBaseFactory.getIntance().initiedFactory(this);
+
         //获取线程池
         mExecutor  = (ThreadPoolExecutor)
                 Executors.newFixedThreadPool(getResources().getInteger(R.integer.threadpool_count));
+        mExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                PosDataBaseFactory.getIntance().initiedFactory(PosApplication.this);
+            }
+        });
         mSocketClient = new SocketClient(this);
         mFtpClient = new SxFtpClient(this);
         //注册pos设备的网络状态监听器
@@ -114,7 +120,7 @@ public class PosApplication extends TAApplication{
 
     public String getPsamID(){
         //return getmIso8583Mgr().getPsamId();
-        return "312105012177"; //330600000000001
+        return "312103000001"; //330600000000001
     }
 
     public ThreadPoolExecutor getThreadPoolExecutor(){

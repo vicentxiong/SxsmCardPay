@@ -45,7 +45,10 @@ public class Iso8583Mgr {
 	public final static int EMPTY_MAC=5;
 	private CardNumInterface mycardnumif;
 	private PosApplication mPosApp;
-
+	public static final String IS_CHECKOUT="is_checkout";
+	public static final String PIK_LOCAL="pik_local";
+	public static final String MAK_LOCAL="mak_local";
+	public static final String INTENT_TAG="intent_tag";
 	public void addResigter(CardNumInterface cardnuminterface) {
 		mycardnumif = cardnuminterface;
 	}
@@ -110,7 +113,8 @@ public class Iso8583Mgr {
 				"bitmap  -------------》" + manager_packData.getBit("bitmap"));
 		Log.i("qiuyi",
 				"包装的数据包1：-------------》" + PosUtil.byteArray2Hex(needunpack));
-
+        String needunpack_string=PosUtil.byteArray2Hex(needunpack);
+		String out_macString=needunpack_string.substring(0,needunpack_string.length()-16);
 		// 这里增加mac码
 		// sourceMacData为要mac的数据
 		if (needMac) {
@@ -135,15 +139,19 @@ public class Iso8583Mgr {
 			// 添加64域计算好的mac码
 			manager_packData.setBinaryBit("64", MacByte);
 			// 重新打包数据（将计算号的mac码添加进报文里）
-			try {
-				needunpack = manager_packData.pack();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
+			needunpack_string=out_macString+Mac;
+
+			needunpack=PosUtil.HexStringToByteArray(needunpack_string);
+//			try {
+//				needunpack = manager_packData.pack();
+//			} catch (ClassNotFoundException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 
 		return addSTX_ETX(needunpack);

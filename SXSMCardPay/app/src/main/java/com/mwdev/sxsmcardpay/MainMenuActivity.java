@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +15,14 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.basewin.services.PinpadBinder;
+import com.basewin.services.ServiceManager;
 import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.mwdev.sxsmcardpay.controler.FtpDataTranterCallBack;
 import com.mwdev.sxsmcardpay.controler.MessageFilter;
 import com.mwdev.sxsmcardpay.database.PosDataBaseFactory;
 import com.mwdev.sxsmcardpay.database.TranslationRecord;
+import com.mwdev.sxsmcardpay.iso8583.Iso8583Mgr;
 import com.mwdev.sxsmcardpay.util.PosLog;
 import com.ta.annotation.TAInjectResource;
 import com.ta.annotation.TAInjectView;
@@ -85,6 +89,31 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
         myPosApplication = (PosApplication) getApplication();
         fileDialogroot = LayoutInflater.from(this).inflate(R.layout.fileupload_progressbar,null,false);
         mDataUploadBar = (NumberProgressBar) fileDialogroot.findViewById(R.id.progressBar);
+        //
+        getkey_local();
+    }
+
+
+    //
+    public void getkey_local(){
+        Intent intent=getIntent();
+        boolean intent_tag=intent.getBooleanExtra(Iso8583Mgr.INTENT_TAG,false);
+        if(intent_tag){
+            String pik=mConfig.getString(Iso8583Mgr.PIK_LOCAL,null);
+            String mak=mConfig.getString(Iso8583Mgr.MAK_LOCAL,null);
+            Log.i("qiuqiu","pik==========>"+pik+"\nmak=========>"+mak);
+            if(pik!=null&&mak!=null){
+                PinpadBinder pinpad = null;
+                try {
+                    pinpad = ServiceManager.getInstence().getPinpad();
+                    pinpad.loadPinKey(pik,null);
+                    pinpad.loadMacKey(mak, null);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
     }
 
     @Override
@@ -116,6 +145,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
     protected void doMessageReceivered(Object message) {
         dismissProgressDiglog();
        // myPosApplication.exitApplication();
+        mConfig.setInt(Iso8583Mgr.IS_CHECKOUT,0);
         finish();
     }
 

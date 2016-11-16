@@ -94,6 +94,7 @@ public class LoginActivity extends SxRequestActivity{
         dismissProgressDiglog();
         saveConfig();
         if(myIso8583Mgr.getManager_unpackData().getBit("62")!=null){
+            mConfig.setInt(Iso8583Mgr.IS_CHECKOUT,1);
             Intent i =new Intent(this,MainMenuActivity.class);
             startActivity(i);
             finish();
@@ -165,7 +166,9 @@ public class LoginActivity extends SxRequestActivity{
             mConfig.setString(cropname_key,corpName);
             mConfig.setString(passwd_key,pwd);
         }else{
-            mConfig.clear();
+            mConfig.setInt(checkbox_status_key,0);
+            mConfig.setString(cropname_key,"");
+            mConfig.setString(passwd_key,"");
         }
     }
 

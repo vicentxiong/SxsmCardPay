@@ -121,23 +121,24 @@ public abstract class AbstractIsoMsgFactory {
 	// LLBINARY, LLLBINARY, LLTRACK, LLLTRACK;
 	private int subByte(byte[] bts, int offset, IsoField field)
 			throws UnsupportedEncodingException {
-		PosLog.i("qiuyi", "subByte开始");
+//		PosLog.i("qiuyi", "subByte开始");
 		byte[] val = null;
 		int length = field.getLength();
-		PosLog.i("qiuyi", "field.getType()===>" + field.getType());
+//		PosLog.i("qiuyi", "field.getType()===>" + field.getType());
+//		PosLog.i("qiuyi", "field.getIsoType()===>" + field.getIsoType());
 		switch (field.getIsoType()) {
 			case BINARY:
-				Log.i("qiuyi", "case 1");
+//				Log.i("qiuyi", "case 1");
 			case CHAR:
-				Log.i("qiuyi", "case 2");
+//				Log.i("qiuyi", "case 2");
 			case NUMERIC:
-				Log.i("qiuyi", "case 3");
+//				Log.i("qiuyi", "case 3");
 				val = new byte[field.getLength()];
 				System.out.println(field.getId());
 				System.arraycopy(bts, offset, val, 0, length);
 				break;
 			case LLVAR_NUMERIC:
-				PosLog.i("qiuyi", "case 6");
+//				PosLog.i("qiuyi", "case 6");
 				byte[] lllnumerLen = new byte[2];
 				lllnumerLen[0] = bts[offset];
 				lllnumerLen[1] = bts[(offset + 1)];
@@ -156,7 +157,7 @@ public abstract class AbstractIsoMsgFactory {
 				length = 2 + first3Len;
 				break;
 			case LLVAR:
-				PosLog.i("qiuyi", "case 4");
+//				PosLog.i("qiuyi", "case 4");
 			case LLBINARY:
 				byte[] llvarLen = new byte[2];
 
@@ -175,9 +176,9 @@ public abstract class AbstractIsoMsgFactory {
 				break;
 
 			case LLLVAR:
-				PosLog.i("qiuyi", "case 5");
+//				PosLog.i("qiuyi", "case 5");
 			case LLLBINARY:
-				PosLog.i("qiuyi", "case 9");
+//				PosLog.i("qiuyi", "case 9");
 				byte[] lllvarLen = new byte[3];
 				lllvarLen[0] = bts[offset];
 				lllvarLen[1] = bts[(offset + 1)];
@@ -199,7 +200,7 @@ public abstract class AbstractIsoMsgFactory {
 				length = 3 + first2Len;
 				break;
 			case LLLVAR_NUMERIC:
-				PosLog.i("qiuyi", "case 7");
+//				PosLog.i("qiuyi", "case 7");
 				byte[] lllnumerLen_1 = new byte[3];
 				lllnumerLen_1[0] = bts[offset];
 				lllnumerLen_1[1] = bts[(offset + 1)];
@@ -225,7 +226,7 @@ public abstract class AbstractIsoMsgFactory {
 				length = 3 + first3Len_1;
 				break;
 			case LLTRACK:
-				PosLog.i("qiuyi", "case 10");
+//				PosLog.i("qiuyi", "case 10");
 				byte[] lltrackLen = new byte[1];
 				lltrackLen[0] = bts[offset];
 
@@ -241,7 +242,7 @@ public abstract class AbstractIsoMsgFactory {
 				length = 1 + first4Len;
 				break;
 			case LLLTRACK:
-				PosLog.i("qiuyi", "case 11");
+//				PosLog.i("qiuyi", "case 11");
 				byte[] llltrackLen = new byte[2];
 				llltrackLen[0] = bts[offset];
 				llltrackLen[1] = bts[(offset + 1)];
@@ -420,11 +421,11 @@ public abstract class AbstractIsoMsgFactory {
 					break;
 			}
 
-			System.out.println("设置数据:========>"
-					+ EncodeUtil.hex(field.getByteValue()) + "\n");
-			PosLog.i("qiuyi",
-					"getByteValue()设置数据:=======>" + EncodeUtil.hex(field.getByteValue())
-							+ "\n");
+//			System.out.println("设置数据:========>"
+//					+ EncodeUtil.hex(field.getByteValue()) + "\n");
+//			PosLog.i("qiuyi",
+//					"getByteValue()设置数据:=======>" + EncodeUtil.hex(field.getByteValue())
+//							+ "\n");
 			PosLog.i("qiuyi", "getValue设置数据:=======>" + field.getValue() + "\n");
 
 			// if (field.getId().equalsIgnoreCase("bitmap")) {

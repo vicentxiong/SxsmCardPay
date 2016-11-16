@@ -15,6 +15,7 @@ import com.mwdev.sxsmcardpay.database.TranslationRecord;
 import com.mwdev.sxsmcardpay.iso8583.Iso8583Mgr;
 import com.mwdev.sxsmcardpay.util.PosLog;
 import com.mwdev.sxsmcardpay.util.PosUtil;
+import com.ta.util.config.TAIConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +56,7 @@ public class MessageFilter {
     private ArrayList<Flushes> tempTrade = new ArrayList<Flushes>();
     private PosApplication mPosApp;
     private SxBaseActivity mActivity;
+    private TAIConfig mConfig;
 
     public MessageFilter(PosApplication application){
         mPosApp = application;
@@ -141,6 +143,10 @@ public class MessageFilter {
                 PinpadBinder pinpad = ServiceManager.getInstence().getPinpad();
                 pinpad.loadPinKey(pik,null);
                 pinpad.loadMacKey(mak, null);
+                mConfig=mPosApp.getConfig(PosApplication.PREFERENCECONFIG);
+                mConfig.setString(Iso8583Mgr.PIK_LOCAL,pik);
+                mConfig.setString(Iso8583Mgr.MAK_LOCAL,mak);
+                Log.i("qiuqiu","pik==========>"+pik+"\nmak=========>"+mak);
                 mPosApp.setBattchNum(battch);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -235,11 +241,6 @@ public class MessageFilter {
      */
     public int onHandlerTradeCalcelMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
-            if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
-                //MAC校验错误 发送冲正
-                postFlushesTask("A0");
-                return POS_MAC_ERROR_FILTER;
-            }
             persistToDatabase(CREDIT_TYPE);
             return SUCCESSED_FILTER;
         }else{
