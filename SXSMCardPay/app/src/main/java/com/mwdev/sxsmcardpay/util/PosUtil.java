@@ -117,6 +117,19 @@ public class PosUtil {
 
     }
 
+    /**
+     * 响应消息类型转请求消息类型
+     * @param resp
+     * @return
+     */
+    public static String getRequestMsgId(String resp){
+        String req = "";
+        int number = Integer.parseInt(resp);
+        number-=10;
+        req=String.format("%04d", number);
+        return req;
+    }
+
 
     /*
      * 加零

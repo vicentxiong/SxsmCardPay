@@ -108,7 +108,8 @@ public class SocketClient{
                 e.printStackTrace();
             }
             PosLog.d("xx","retyr start ");
-            while(mRequest && count < retyrCount){
+            while(mContext.isConnected()&&mRequest && count < retyrCount &&
+            (msgType.equals(mFilter.TRADE_IMPACT_REQUEST_TYPE) || msgType.equals(mFilter.TRADE_CANCEL_IMPACT_REQUEST_TYPE))){
                 if(whenMessage==null){
                     break;
                 }
@@ -121,17 +122,29 @@ public class SocketClient{
                     e.printStackTrace();
                 }
             }
-            if(count == retyrCount){
-                PosLog.d("xx","dddddddddd");
-                if(msgType.equals(mFilter.TRADE_IMPACT_REQUEST_TYPE) || msgType.equals(mFilter.TRADE_CANCEL_IMPACT_REQUEST_TYPE)){
-                    messageCallback.onResponeTimeout(msgType);
-                    mFilter.handlerByActivity(R.string.flushes_respone_timeout);
-                }else if(msgType.equals(mFilter.TRADE_REQUEST_TYPE) || msgType.equals(mFilter.TRADE_CANCEL_REQUEST_TYPE)){
+            //attention 此处要可能存在bug
+            PosLog.d("xx","timeout over");
+            if(msgType.equals(mFilter.TRADE_IMPACT_REQUEST_TYPE) || msgType.equals(mFilter.TRADE_CANCEL_IMPACT_REQUEST_TYPE)){
+                if(count == retyrCount){
+                    mContext.getThreadPoolExecutor().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            mFilter.clearFlushesMessage(mFilter.getSaveTradeNumber());
+                        }
+                    });
+                    if(mContext.isConnected()){
+                        messageCallback.onResponeTimeout(msgType);
+                        mFilter.handlerByActivity(R.string.flushes_respone_timeout);
+                    }
+                }
+            }else if(msgType.equals(mFilter.TRADE_REQUEST_TYPE) || msgType.equals(mFilter.TRADE_CANCEL_REQUEST_TYPE)){
+                if(mRequest&&mContext.isConnected()){
                     mFilter.postFlushesTask("98");
                     messageCallback.onResponeTimeout(msgType);
-                }else{
-                    messageCallback.onResponeTimeout(msgType);
                 }
+            }else{
+                if(mRequest&&mContext.isConnected())
+                    messageCallback.onResponeTimeout(msgType);
             }
 
         }
@@ -294,6 +307,12 @@ public class SocketClient{
          */
         @Override
         public void messageReceived(IoSession session, Object message) throws Exception {
+            /*if(msgType.equals(mFilter.TRADE_REQUEST_TYPE) || msgType.equals(mFilter.TRADE_IMPACT_REQUEST_TYPE)){
+                return;
+            }*/
+            /*if(msgType.equals(mFilter.TRADE_CANCEL_IMPACT_REQUEST_TYPE) || msgType.equals(mFilter.TRADE_CANCEL_REQUEST_TYPE)){
+                return;
+            }*/
             PosLog.d("xx","messageReceived");
             if(mRetryTask!=null)
                 mRetryTask.setmRequest(false);

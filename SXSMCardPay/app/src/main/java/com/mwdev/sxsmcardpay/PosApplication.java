@@ -36,11 +36,20 @@ public class PosApplication extends TAApplication{
     private static final String TAG = PosApplication.class.getName();
     private SocketClient mSocketClient;
     private SxFtpClient mFtpClient;
-    private WeakReference<PosNetworkObserver> mNetObserver = new WeakReference<PosNetworkObserver>(new PosNetworkObserver());
     private ThreadPoolExecutor mExecutor;
     private Iso8583Mgr mIso8583Mgr;
+    private PosNetworkObserver mPosNetworkObserver;
     private PosNetworkStatusListener l;
     private PosBatteryListener batteryListener;
+    private boolean mConnected = false;
+
+    public boolean isConnected(){
+        return mConnected;
+    }
+
+    public void setConnect(boolean connect){
+        mConnected = connect;
+    }
 
     public interface PosNetworkStatusListener{
         public void onNetworkStatus(boolean connect);
@@ -58,9 +67,10 @@ public class PosApplication extends TAApplication{
 
     @Override
     public void onCreate() {
+        setUncaughtExceptionHandler(Thread.getDefaultUncaughtExceptionHandler());
         super.onCreate();
         //log输出本地
-        //PosLog.startFileLoger();
+        PosLog.startFileLoger();
         //初始化数据库工厂
 
         //获取线程池
@@ -75,11 +85,12 @@ public class PosApplication extends TAApplication{
         mSocketClient = new SocketClient(this);
         mFtpClient = new SxFtpClient(this);
         //注册pos设备的网络状态监听器
-        TANetworkStateReceiver.registerObserver(mNetObserver.get());
+        mPosNetworkObserver = new PosNetworkObserver();
+        TANetworkStateReceiver.registerObserver(mPosNetworkObserver);
         //初始化8583管理器
         mIso8583Mgr = new Iso8583Mgr(this);
         //加载psamid
-        //getmIso8583Mgr().readPsamId();
+        getmIso8583Mgr().readPsamId();
 
         //注册电池电量监听器
         IntentFilter mFilter = new IntentFilter();
@@ -108,7 +119,7 @@ public class PosApplication extends TAApplication{
     public void exitApplication(){
         PosLog.stopFileLoger();
         mExecutor.shutdownNow();
-        TANetworkStateReceiver.removeRegisterObserver(mNetObserver.get());
+        TANetworkStateReceiver.removeRegisterObserver(mPosNetworkObserver);
         unregisterReceiver(mReceiver);
     }
 
@@ -119,8 +130,9 @@ public class PosApplication extends TAApplication{
     }
 
     public String getPsamID(){
-        //return getmIso8583Mgr().getPsamId();
-        return "312103000001"; //330600000000001
+        PosLog.d("xx",getmIso8583Mgr().getPsamId());
+        return getmIso8583Mgr().getPsamId();
+//        return "312103000001"; //330600000000001
     }
 
     public ThreadPoolExecutor getThreadPoolExecutor(){
@@ -158,6 +170,8 @@ public class PosApplication extends TAApplication{
         @Override
         public void onConnect(TANetWorkUtil.netType type) {
             super.onConnect(type);
+            PosLog.d("xx","network connect");
+            mConnected = true;
             Toast.makeText(getApplicationContext(),
                     getResources().getString(R.string.network_connected), Toast.LENGTH_LONG).show();
 
@@ -168,6 +182,8 @@ public class PosApplication extends TAApplication{
         @Override
         public void onDisConnect() {
             super.onDisConnect();
+            PosLog.d("xx", "network disconnect");
+            mConnected = false;
             Toast.makeText(getApplicationContext(),
                     getResources().getString(R.string.network_disconnected),Toast.LENGTH_LONG).show();
             mSocketClient.clearWhenMessage();
@@ -209,8 +225,8 @@ public class PosApplication extends TAApplication{
      * @return
      */
     public String getCropNum(){
-        //return getConfig(PosApplication.PREFERENCECONFIG).getString("cropNameKey", "");
-        return "330600000000001";
+        return getConfig(PosApplication.PREFERENCECONFIG).getString("cropNameKey", "");
+//        return "330600000000001";
     }
 
 

@@ -13,8 +13,6 @@ public class Flushes {
     private String original_tradeNum;
     private String impact_reason;
 
-    public int retry;
-
 
     public String getMsgID() {
         return msgID;

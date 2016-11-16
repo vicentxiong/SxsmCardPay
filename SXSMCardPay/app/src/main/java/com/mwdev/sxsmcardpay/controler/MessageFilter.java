@@ -27,7 +27,6 @@ import java.util.List;
  */
 public class MessageFilter {
     public static final int IMPACT_FILTER = -3;
-    public static final int POS_MAC_ERROR_FILTER = -2;     //pos对pos中心的报文进行mac值验证返回的错误值
     public static final int INTERCEPT_FILTER = -1;  //消息监听器的拦截值
     public static final int SUCCESSED_FILTER = 0;
     public final MessageType CHEKCIN_REQUEST_TYPE = new MessageType("0800","000000");
@@ -56,7 +55,11 @@ public class MessageFilter {
     private ArrayList<Flushes> tempTrade = new ArrayList<Flushes>();
     private PosApplication mPosApp;
     private SxBaseActivity mActivity;
+	private String saveTradeNumber;
     private TAIConfig mConfig;
+	public String getSaveTradeNumber(){
+        return saveTradeNumber;
+    }
 
     public MessageFilter(PosApplication application){
         mPosApp = application;
@@ -76,7 +79,8 @@ public class MessageFilter {
         String _area3 = PosUtil.Delete0(mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("3"));
         String _area39 = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("39");
         MessageType target = new MessageType(_msgid,_area3);
-        PosLog.d("xx", "result code : " + _area39);
+        PosLog.d("xx","msgid:" + _msgid + "  area3:" + _area3);
+        PosLog.d("xx", "result code : " + _area39 + " messageType : " + target.toString());
         do {
             if(target.equals(CHEKCIN_RESPONES_TYPE)){
                 PosLog.d("xx","CHEKCIN_RESPONES_TYPE");
@@ -99,6 +103,8 @@ public class MessageFilter {
                 break;
             }
             if(target.equals(TRADE_IMPACT_RESPONES_TYPE)){
+                PosLog.d("xx","TRADE_IMPACT_RESPONES_TYPE");
+                resultCode = onHandlerTradeImpactMessage(message,_area39);
                 break;
             }
             if(target.equals(TRADE_CANCEL_RESPONES_TYPE)){
@@ -107,6 +113,7 @@ public class MessageFilter {
                 break;
             }
             if(target.equals(TRADE_CANCEL_IMPACT_RESPONES_TYPE)){
+                PosLog.d("xx","TRADE_CANCEL_IMPACT_RESPONES_TYPE");
                 resultCode = onHandlerTradeCancelImpactMessage(message,_area39);
                 break;
             }
@@ -145,9 +152,10 @@ public class MessageFilter {
                 pinpad.loadMacKey(mak, null);
                 mConfig=mPosApp.getConfig(PosApplication.PREFERENCECONFIG);
                 mConfig.setString(Iso8583Mgr.PIK_LOCAL,pik);
-                mConfig.setString(Iso8583Mgr.MAK_LOCAL,mak);
-                Log.i("qiuqiu","pik==========>"+pik+"\nmak=========>"+mak);
+                mConfig.setString(Iso8583Mgr.MAK_LOCAL, mak);
+                Log.i("qiuqiu", "pik==========>" + pik + "\nmak=========>" + mak);
                 mPosApp.setBattchNum(battch);
+                mPosApp.setConnect(true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -178,11 +186,6 @@ public class MessageFilter {
      */
     public int onHandleBalanceQueryMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
-            /*
-            if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
-                return POS_MAC_ERROR_FILTER;
-            }
-            */
             return SUCCESSED_FILTER;
         }else{
             return Integer.parseInt(responeCode,16);
@@ -197,13 +200,13 @@ public class MessageFilter {
      */
     public int onHandlerTradeMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
-            /*
-            if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
-                //MAC校验错误 发送冲正
-                postFlushesTask("A0");
-                return POS_MAC_ERROR_FILTER;
-            }*/
-            persistToDatabase(DEBIT_TYPE);
+            mPosApp.getThreadPoolExecutor().execute(new Runnable() {
+                @Override
+                public void run() {
+                    persistToDatabase(DEBIT_TYPE);
+                }
+            });
+
             return SUCCESSED_FILTER;
         }else{
             return  Integer.parseInt(responeCode,16);
@@ -241,7 +244,12 @@ public class MessageFilter {
      */
     public int onHandlerTradeCalcelMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
-            persistToDatabase(CREDIT_TYPE);
+            mPosApp.getThreadPoolExecutor().execute(new Runnable() {
+                @Override
+                public void run() {
+                    persistToDatabase(CREDIT_TYPE);
+                }
+            });
             return SUCCESSED_FILTER;
         }else{
             return  Integer.parseInt(responeCode,16);
@@ -279,12 +287,13 @@ public class MessageFilter {
      */
     public int onHandlerReturnGoodsMessage(byte[] message,String responeCode){
         if("00".equals(responeCode)){
-            /*
-            if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
-                return POS_MAC_ERROR_FILTER;
-            }
-            */
-            persistToDatabase(CREDIT_TYPE);
+
+            mPosApp.getThreadPoolExecutor().execute(new Runnable() {
+                @Override
+                public void run() {
+                    persistToDatabase(CREDIT_TYPE);
+                }
+            });
             return SUCCESSED_FILTER;
         }else{
             return  Integer.parseInt(responeCode,16);
@@ -299,14 +308,15 @@ public class MessageFilter {
      */
     public int onHandlerBatchSettlementMessage(byte[] message,String responeCode){
         int res = mPosApp.getmIso8583Mgr().getManager_unpackData().getBit("48").charAt(30);
-        PosLog.e("xin", "res ==> " + res + "  responeCode ==>" + responeCode);
+        PosLog.e("xx", "res ==> " + res + "  responeCode ==>" + responeCode);
         if("00".equals(responeCode)&&res=='1'){  //返回 1 对账平
-            /*
-            if(mPosApp.getmIso8583Mgr().makeMac(message)== Iso8583Mgr.MAC_ERROR){
-                return POS_MAC_ERROR_FILTER;
-            }
-            */
-            clearTransctionRecords();
+
+            mPosApp.getThreadPoolExecutor().execute(new Runnable() {
+                @Override
+                public void run() {
+                    clearTransctionRecords();
+                }
+            });
 
             return INTERCEPT_FILTER;
         }else if("00".equals(responeCode)&&res=='2'){ //返回 2 对账不平
@@ -360,7 +370,7 @@ public class MessageFilter {
         record.setDTLCARDNO(_area5515);
         record.setDTLCDCNT("000000");
         record.setDTLPRCODE(PosUtil.Delete0(_area3));
-        record.setDTLTRANSTYPE(PosUtil.Delete0(_msgid));
+        record.setDTLTRANSTYPE(PosUtil.getRequestMsgId(PosUtil.Delete0(_msgid)));
         record.setDTLPOSID(_area41);
         record.setDTLSAMID("                ");
         record.setDTLPOSSEQ(PosUtil.Delete0(_area11));
@@ -434,6 +444,7 @@ public class MessageFilter {
         Iterator it = allFlushes.values().iterator();
         if(it.hasNext()){
             f = (Flushes) it.next();
+            saveTradeNumber = f.getOriginal_tradeNum();
             MessageType type = new MessageType(f.getMsgID(),f.getTradeDealCode());
             if(type.equals(TRADE_IMPACT_REQUEST_TYPE)){
                 message = mPosApp.getmIso8583Mgr().trade_impact
@@ -445,9 +456,10 @@ public class MessageFilter {
                                 f.getTradeNUm(),
                                 f.getAmount(),
                                 f.getOriginal_batchNum(),
-                                f.getOriginal_batchNum());
+                                f.getOriginal_tradeNum());
 
             }else if(type.equals(TRADE_CANCEL_IMPACT_REQUEST_TYPE)){
+                PosLog.d("xx","getOriginal_tradeNum = " + f.getOriginal_tradeNum());
                 message = mPosApp.getmIso8583Mgr().trade_cancel__impact
                         (mPosApp.getPsamID(),
                                 mPosApp.getCropNum(),
@@ -530,6 +542,9 @@ public class MessageFilter {
         }
     }
 
+    /**
+     * 网络连接后，加载数据库中未冲正的数据进行上报
+     */
     public void loadDbFlushesMessage(){
         PosDataBaseFactory.getIntance().openPosDatabase();
         List<Flushes> list = PosDataBaseFactory.getIntance().query(Flushes.class, null, null, null, null, null);
@@ -546,6 +561,7 @@ public class MessageFilter {
     }
 
     public void clearFlushesMessage(String tradenumber){
+        PosLog.d("xx", "clearFlushesMessage tradenumber = " + tradenumber);
         allFlushes.remove(tradenumber);
 
         PosDataBaseFactory.getIntance().openPosDatabase();
@@ -564,6 +580,15 @@ public class MessageFilter {
     }
 
     /**
+     * 签退后，清除所有冲正数据
+     */
+    public void clearAllDBFlushes(){
+        PosDataBaseFactory.getIntance().openPosDatabase();
+        PosDataBaseFactory.getIntance().delete(Flushes.class, null);
+        PosDataBaseFactory.getIntance().closePosDatabase();
+    }
+
+    /**
      * 比较消息类型 和 交易处理马
      */
     public static class MessageType{
@@ -573,6 +598,11 @@ public class MessageFilter {
         public MessageType(String mMsdId, String mTradeCode) {
             this.mMsdId = mMsdId;
             this.mTradeCode = mTradeCode;
+        }
+
+        @Override
+        public String toString() {
+            return "msdid：" + mMsdId+" dlcode : "+ mTradeCode;
         }
 
         @Override

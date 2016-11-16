@@ -15,6 +15,10 @@ import com.mwdev.sxsmcardpay.util.PosUtil;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import it.sauronsoftware.ftp4j.FTPAbortedException;
@@ -64,11 +68,15 @@ public class SxFtpClient {
     }
 
     public File restoreRecord(){
-        PosLog.e("xiong","restoreRecord");
+        PosLog.e("xx","restoreRecord");
         PosDataBaseFactory.getIntance().openPosDatabase();
         List<TranslationRecord> list = PosDataBaseFactory.getIntance().
                 query(TranslationRecord.class, null, null, null, null, null);
         PosDataBaseFactory.getIntance().closePosDatabase();
+        if(list==null || list.size()==0){
+            PosLog.d("xx","no transctoin record ");
+            return null;
+        }
         //文件名
         StringBuffer fileName = new StringBuffer();
         fileName.append("PD").append(list.get(0).getDTLDATE().substring(2)).
@@ -79,7 +87,7 @@ public class SxFtpClient {
         fileDescriptionArea.append("10").append("\r\n");
         //交易头
         StringBuffer transctionHeader = new StringBuffer();
-        transctionHeader.append(list.get(0).getDTLUNITID()).append(",").append("000000").append(",").append("000000").append(",");
+        transctionHeader.append(list.get(0).getDTLUNITID()).append(",").append(getMinDate(list)).append(",").append(getMaxDate(list)).append(",");
         transctionHeader.append(String.format("%05d", list.size())).append(",");
         int debit_sum =0,debit_amount=0;
         int crebit_sum=0,crebit_amount=0;
@@ -127,24 +135,68 @@ public class SxFtpClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        PosLog.e("xiong","build file ok " + file.getAbsolutePath()+" file size = " + file.length());
+        PosLog.e("xx","build file ok " + file.getAbsolutePath()+" file size = " + file.length());
         return file;
 
     }
 
+    private String getMaxDate(List<TranslationRecord> list)  {
+        String maxDate = "";
+        DateFormat df = new SimpleDateFormat("yyyyMMdd");
+        try {
+
+            if (list != null && list.size() > 0) {
+                maxDate = list.get(0).getDTLSETTDATE();
+                for (int i = 1; i < list.size(); i++) {
+                    Date max = df.parse(maxDate);
+                    Date temp = df.parse(list.get(i).getDTLSETTDATE());
+                    if (temp.getTime() > max.getTime()) {
+                        maxDate = list.get(i).getDTLSETTDATE();
+                    }
+                }
+            }
+
+        } catch (ParseException e) {
+
+        }
+        return maxDate;
+    }
+
+    private String getMinDate(List<TranslationRecord> list)  {
+        String minDate = "";
+        DateFormat df = new SimpleDateFormat("yyyyMMdd");
+        try {
+
+            if (list != null && list.size() > 0) {
+                minDate = list.get(0).getDTLSETTDATE();
+                for (int i = 1; i < list.size(); i++) {
+                    Date max = df.parse(minDate);
+                    Date temp = df.parse(list.get(i).getDTLSETTDATE());
+                    if (temp.getTime() < max.getTime()) {
+                        minDate = list.get(i).getDTLSETTDATE();
+                    }
+                }
+            }
+
+        } catch (ParseException e) {
+
+        }
+        return minDate;
+    }
+
     private void ftpConnectAndUpload(File uploadFile,FtpDataTranterCallBack callBack){
         try {
-            PosLog.e("xiong","ftpConnectAndUpload start");
+            PosLog.e("xx","ftpConnectAndUpload start");
             mCropID = mContext.getCropNum();
-            PosLog.e("xiong","ftpConnectAndUpload start222222");
+            PosLog.e("xx","ftpConnectAndUpload start222222");
             userAndpasswd=REPART+mCropID;
 
-            PosLog.e("xiong","userAndpasswd ==" + userAndpasswd);
+            PosLog.e("xx","userAndpasswd ==" + userAndpasswd);
 
             mFtp.connect(r.getString(R.string.ftp_addresss), r.getInteger(R.integer.ftp_port));
             mFtp.login(userAndpasswd, userAndpasswd);
             mFtp.changeDirectory(ABS_PATH);
-            PosLog.e("xiong", "changeDirectory" );
+            PosLog.e("xx", "changeDirectory" );
             addFtpTranterCallBack(callBack);
             mFtp.upload(uploadFile,new SxFtpTransterListener());
         } catch (IOException e) {

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -73,14 +74,15 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
                     break;
 
                 case SxBaseActivity.SETPROGRESSBAR_SIZE:
-                    PosLog.d("xxx","SETPROGRESSBAR_SIZE start");
+                    PosLog.d("xx", "SETPROGRESSBAR_SIZE start");
                     mDataUploadBar.setMax(msg.arg1);
-                    PosLog.d("xxx", "SETPROGRESSBAR_SIZE stop");
+                    PosLog.d("xx", "SETPROGRESSBAR_SIZE stop");
                     break;
             }
 
         }
     };
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -143,6 +145,12 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
 
     @Override
     protected void doMessageReceivered(Object message) {
+        myPosApplication.getThreadPoolExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                myPosApplication.getSocketClient().getFilter().clearAllDBFlushes();
+            }
+        });
         dismissProgressDiglog();
        // myPosApplication.exitApplication();
         mConfig.setInt(Iso8583Mgr.IS_CHECKOUT,0);
@@ -184,18 +192,33 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
         onHanderToast(R.string.pos_center_respone_timeout);
     }
 
-    private void startFtpFileUpload(){
+    private void startFtpFileUpload() {
         File file = myPosApplication.restoreFtpFile();
-        Message msg = mH.obtainMessage(SxBaseActivity.SETPROGRESSBAR_SIZE);
-        msg.arg1 = (int) file.length();
-        PosLog.d("xx","file length == " + file.length());
-        msg.sendToTarget();
-        myPosApplication.startFtpConnectAndUpload(file, MainMenuActivity.this);
+        if(file!=null){
+            PosLog.d("xx", "file length == " + file.length());
+            Message msg = mH.obtainMessage(SxBaseActivity.SETPROGRESSBAR_SIZE);
+            msg.arg1 = (int) file.length();
+            msg.sendToTarget();
+            myPosApplication.startFtpConnectAndUpload(file, MainMenuActivity.this);
+        }else{
+            sendRequest(myPosApplication.getmIso8583Mgr().checkOut(myPosApplication.getPsamID(),
+                    myPosApplication.getCropNum()), "0820", "000000");
+        }
+
+//        for (int i = 1; i <= 100; i++) {
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            Message msg1 = mH.obtainMessage(SxBaseActivity.PROGRESSBAR_UPDATE);
+//            msg1.arg1 = i;
+//            msg1.sendToTarget();
+//        }
     }
 
 
-
-    private void showFileUploadProgressDialog(){
+    private void showFileUploadProgressDialog() {
         AlertDialog.Builder ab = new AlertDialog.Builder(this);
         ab.setView(fileDialogroot);
         mDialog = ab.create();
@@ -264,12 +287,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
      */
     @Override
     protected void doActionBarLeftClick() {
-        myPosApplication.getThreadPoolExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                startFtpFileUpload();
-            }
-        });
+
     }
 
     /**
@@ -302,7 +320,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
             }
 
         }
-       // sumAmount-=1;
+
         String req_debit_amount = String.format("%012d", debit_sumAmount);
         String req_debit_sum = String.format("%03d", debit_sumTrade);
         String req_crebit_amount = String.format("%012d", crebit_sumAmount);
@@ -310,6 +328,9 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
         String req_tradeNo = myPosApplication.createTradeSerialNumber();
         String req_psamId = myPosApplication.getPsamID();
         String req_cropNo = myPosApplication.getCropNum();
+//        req_debit_sum="010";  //测试对账不平
+        PosLog.d("xx", "req_debit_sum : " + req_debit_sum + "  req_debit_amount : " + req_debit_amount);
+        PosLog.d("xx", "req_crebit_sum : " + req_crebit_sum + "  req_crebit_amount : " + req_crebit_amount);
 
         sendRequest(myPosApplication.getmIso8583Mgr().batch_settlement(
                 req_debit_amount,req_debit_sum,req_crebit_amount,req_crebit_sum,req_tradeNo,req_psamId,req_cropNo,"111111"), "0500", "000000");
@@ -381,7 +402,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
 
     @Override
     public void ftpStart() {
-        PosLog.e("xiong","ftpStart" );
+        PosLog.e("xx", "ftpStart");
         dismissProgressDiglog();
         Message msg = mH.obtainMessage(SxBaseActivity.OPENPROGRESSBAR_DIALOG);
         msg.sendToTarget();
@@ -391,7 +412,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
     public void ftpTransferred(int length) {
         Message msg = mH.obtainMessage(SxBaseActivity.PROGRESSBAR_UPDATE);
         msg.arg1 = length;
-        mH.sendMessage(msg);
+        msg.sendToTarget();
     }
 
     @Override
@@ -435,7 +456,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
             if(mDialog!=null)
                 mDialog.dismiss();
         }
-        super.onKeyDown(keyCode, event);
+       // super.onKeyDown(keyCode, event);
         return false;
     }
 }

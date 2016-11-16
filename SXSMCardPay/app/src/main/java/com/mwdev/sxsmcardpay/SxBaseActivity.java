@@ -276,12 +276,12 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
     }
 
     private void onHandlerProgressbarDismiss(){
-        PosLog.d("xx", "dismissProgressDiglog start = " + showProgress);
+
         if(showProgress){
             mWinMgr.removeView(mProgress);
             showProgress=false;
         }
-        PosLog.d("xx", "dismissProgressDiglog stop");
+
     }
 
 
@@ -328,7 +328,7 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
 
     @Override
     public void onBattrey(int status, int level) {
-        PosLog.d("xx", "status == " + status + " level == " + level);
+       // PosLog.d("xx", "status == " + status + " level == " + level);
         if(level<=BATTERY_CHECKOUT && status != BatteryManager.BATTERY_STATUS_CHARGING){
             if(isfirstCheckout)
                 doBatteryCheckout();
@@ -385,7 +385,7 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
 
 
     public void DBFlushesStart(){
-        setAcitvityTitle(getResources().getString(R.string.db_flushes));
+        onHanderToast((R.string.db_flushes));
         showProgressDiglog();
     }
 
