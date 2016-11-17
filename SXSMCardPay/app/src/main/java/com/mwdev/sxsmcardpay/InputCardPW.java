@@ -113,6 +113,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                 Intent intent_3=new Intent(InputCardPW.this,Query_errorActivity.class);
                 intent_3.putExtra(ReadCardActivity.ERROR_KEY,IMPACT_ERROR);
                 startActivity(intent_3);
+                finish();
             }else {
 
                 int j = cardpw.getText().toString().trim().length();
@@ -770,6 +771,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                         Intent intent_trade=new Intent(InputCardPW.this,Query_errorActivity.class);
                         intent_trade.putExtra(ReadCardActivity.ERROR_KEY,result);
                         startActivity(intent_trade);
+                        finish();
                         break;
                 }
                 break;
@@ -787,6 +789,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                         Intent intent_trade=new Intent(InputCardPW.this,Query_errorActivity.class);
                         intent_trade.putExtra(ReadCardActivity.ERROR_KEY,result);
                         startActivity(intent_trade);
+                        finish();
                         break;
 
                 }
@@ -824,6 +827,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
                 Intent intent_trade=new Intent(InputCardPW.this,Query_errorActivity.class);
                 intent_trade.putExtra(ReadCardActivity.ERROR_KEY,0x98);
                 startActivity(intent_trade);
+                finish();
                 break;
             case MainMenuActivity.TRADE:
                 if(messagetype.equals(myPosApplication.getSocketClient().getFilter().TRADE_IMPACT_REQUEST_TYPE)){
