@@ -8,7 +8,7 @@
 
     <string name="save_passwd">记住密码</string>
     <string name="actionbar_login">登录</string>
-    <string name="actoinbar_mainmenu">商机联机支付</string>
+    <string name="actoinbar_mainmenu">商超联机支付</string>
     <string name="save_checkbox_status_key">checkboxKey</string>
     <string name="save_cropname_key">cropNameKey</string>
     <string name="save_passwd_key">passwdKey</string>
@@ -105,4 +105,5 @@
     <string name="battery_warning_title2">请充电！否则几分钟后将自动结算签退</string>
     <string name="battery_warning_ok">确定</string>
     <string name="connect_pos_center_fail">连接失败，请检查网络</string>
+    <string name="ftp_upload_fail">批上传失败，请检查网络后，重新结算签退</string>
 </resources>

@@ -53,8 +53,10 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
     private TAIConfig mConfig;
     private PosApplication myPosApplication;
     private Dialog mDialog;
+    private AlertDialog.Builder ab;
     private View fileDialogroot;
     private NumberProgressBar mDataUploadBar;
+    private File mRecordFile;
 
     public final static int BALANCE_QUERY=0;
     public final static int TRADE=1;
@@ -171,6 +173,7 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
         PosLog.e("xx","result == " + result);
         switch (result){
             case 0xF0:
+                loadDBRecordFile();
                 startFtpFileUpload();
                 break;
             default:
@@ -192,14 +195,18 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
         onHanderToast(R.string.pos_center_respone_timeout);
     }
 
+    private void loadDBRecordFile(){
+        mRecordFile = myPosApplication.restoreFtpFile();
+    }
+
     private void startFtpFileUpload() {
-        File file = myPosApplication.restoreFtpFile();
-        if(file!=null){
-            PosLog.d("xx", "file length == " + file.length());
+
+        if(mRecordFile!=null){
+            PosLog.d("xx", "file length == " + mRecordFile.length());
             Message msg = mH.obtainMessage(SxBaseActivity.SETPROGRESSBAR_SIZE);
-            msg.arg1 = (int) file.length();
+            msg.arg1 = (int) mRecordFile.length();
             msg.sendToTarget();
-            myPosApplication.startFtpConnectAndUpload(file, MainMenuActivity.this);
+            myPosApplication.startFtpConnectAndUpload(mRecordFile, MainMenuActivity.this);
         }else{
             sendRequest(myPosApplication.getmIso8583Mgr().checkOut(myPosApplication.getPsamID(),
                     myPosApplication.getCropNum()), "0820", "000000");
@@ -219,10 +226,13 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
 
 
     private void showFileUploadProgressDialog() {
-        AlertDialog.Builder ab = new AlertDialog.Builder(this);
-        ab.setView(fileDialogroot);
-        mDialog = ab.create();
-        mDialog.setCanceledOnTouchOutside(false);
+        if(ab==null){
+            ab = new AlertDialog.Builder(this);
+            ab.setView(fileDialogroot);
+            mDialog = ab.create();
+            mDialog.setCanceledOnTouchOutside(false);
+        }
+
         mDialog.show();
     }
 
@@ -417,13 +427,14 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
 
     @Override
     public void ftpCompleted() {
-        if(mDialog!=null)
-            mDialog.dismiss();
-        mDialog=null;
+        disMissUploadDialog();
         myPosApplication.getThreadPoolExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 myPosApplication.getSocketClient().getFilter().clearTransctionRecords();
+                if (mRecordFile != null) {
+                    mRecordFile.delete();
+                }
             }
         });
         sendRequest(myPosApplication.getmIso8583Mgr().checkOut(myPosApplication.getPsamID(),
@@ -432,29 +443,32 @@ public class MainMenuActivity extends SxRequestActivity implements View.OnClickL
 
     @Override
     public void ftpAborted() {
-        if(mDialog!=null)
-            mDialog.dismiss();
-        mDialog=null;
-
+        disMissUploadDialog();
+        onHanderToast(R.string.ftp_upload_fail);
     }
 
     @Override
     public void ftpFailed() {
-        if(mDialog!=null)
-            mDialog.dismiss();
-        mDialog=null;
+        disMissUploadDialog();
+        onHanderToast(R.string.ftp_upload_fail);
     }
 
     @Override
     public void ftpExceptionCaught(Throwable throwable) {
+        disMissUploadDialog();
+        onHanderToast(R.string.ftp_upload_fail);
+    }
 
+    private void disMissUploadDialog(){
+        if(mDialog!=null){
+            mDialog.dismiss();
+        }
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK){
-            if(mDialog!=null)
-                mDialog.dismiss();
+            disMissUploadDialog();
         }
        // super.onKeyDown(keyCode, event);
         return false;

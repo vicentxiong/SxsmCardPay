@@ -110,7 +110,7 @@ public class SignatrueActivity extends SxBaseActivity{
                     e.printStackTrace();
                 }
             }
-            if(count == 0){
+            if(count == 0&&!printerCancel){
                 Message msg = h.obtainMessage(UPDATE_PRINTER_TIMER);
                 msg.arg1 = count;
                 msg.sendToTarget();

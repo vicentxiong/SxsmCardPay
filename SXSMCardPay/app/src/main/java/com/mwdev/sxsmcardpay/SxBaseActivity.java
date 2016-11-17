@@ -435,7 +435,7 @@ public abstract class SxBaseActivity extends Activity implements PosApplication.
                 // 人工处理
                 JSONObject actoin = new JSONObject();
                 actoin.put("content-type", "txt");
-                actoin.put("content", "冲正不成功，请人工处理");
+                actoin.put("content", "冲正不成功，请人工处理或查询余额确定交易结果");
                 actoin.put("size", "2");
                 actoin.put("position", "left");
                 actoin.put("offset", "0");
