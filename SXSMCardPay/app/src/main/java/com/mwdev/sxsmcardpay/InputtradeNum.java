@@ -103,7 +103,7 @@ public class InputtradeNum extends SxBaseActivity{
                                     intent1.putExtra(ReadCardActivity.OPERATORNUM_KEY, getIntent().getStringExtra(ReadCardActivity.OPERATORNUM_KEY));
                                     intent1.putExtra(ReadCardActivity.OPERATORPW_KEY, getIntent().getStringExtra(ReadCardActivity.OPERATORPW_KEY));
                                     intent1.putExtra(ReadCardActivity.TRADENUM_KEY, trademum_ed.getText().toString().trim());
-                                    intent1.putExtra(ReadCardActivity.AMOUNT_KEY, original_amount);
+                                    intent1.putExtra(ReadCardActivity.AMOUNT_KEY, myPosApplication.getmIso8583Mgr().textshow_amount(tv_amount.getText().toString().trim()));
                                     intent1.putExtra(ReadCardActivity.BATCH, batchmum_ed.getText().toString().trim());
                                     intent1.putExtra(ReadCardActivity.REFERENCENUM, referencenum_ed.getText().toString().trim());
                                     startActivity(intent1);

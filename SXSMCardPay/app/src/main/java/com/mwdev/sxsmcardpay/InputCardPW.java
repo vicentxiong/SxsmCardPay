@@ -803,7 +803,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
 
     @Override
     protected void doConnectFail() {
-//        dismissProgressDiglog();
+        dismissProgressDiglog();
         Log.i("qiuyi11","doConnectFail()");
         onHanderToast(R.string.network_error);
         finish();
@@ -883,7 +883,7 @@ public class InputCardPW extends SxRequestActivity implements View.OnClickListen
             m.what=keynum;
             myHandler.sendMessageDelayed(m,500);
             pw=pw+keynum;
-            Log.i("qiuyi1","pw=======>"+pw);
+//            Log.i("qiuyi1","pw=======>"+pw);
             cardpw.setText(cardpw.getText().toString().trim()+keynum);
         }else{
 //            Toast.makeText(this, getResources().getString(R.string.password_length_overstep), Toast.LENGTH_SHORT).show();

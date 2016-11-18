@@ -21,8 +21,11 @@ public class InputAmountNumActivity extends SxBaseActivity implements View.OnCli
     @TAInjectResource(id = R.string.please_input_amount)
     String title;
     String merchantsnum;
+    String originalamount;
     @TAInjectView(id = R.id.merchantsnum_consumption_textview)
     TextView merchantsnum_tv;
+    @TAInjectView(id = R.id.original_amount_tv)
+    TextView originalamount_tv;
     @TAInjectView(id =R.id.input_amount_edittext)
     EditText amount_edit;
     @TAInjectView(id =R.id.input_amount_confirm)
@@ -77,6 +80,9 @@ public static String CONFIRM_AMOUNT;
         if(type==MainMenuActivity.RETURN_GOODS){
             title=getResources().getString(R.string.please_input_return_amount);
             setAcitvityTitle(title);
+            originalamount_tv.setVisibility(View.VISIBLE);
+            originalamount=getIntent().getStringExtra(ReadCardActivity.AMOUNT_KEY);
+            originalamount_tv.setText(getResources().getString(R.string.original_amount)+originalamount+getResources().getString(R.string.yuan));
 
         }
         mConfig = myPosApplication.getConfig(PosApplication.PREFERENCECONFIG);
